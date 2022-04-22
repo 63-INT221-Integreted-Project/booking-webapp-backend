@@ -1,17 +1,15 @@
 package sit.int221.bookingproj.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "events")
 public class Event {
-    @EmbeddedId
-    private EventId id;
-
-    @MapsId("eventCategoryId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "eventCategoryId", nullable = false)
-    private EventCategory eventCategory;
+    @Id
+    @Column(name = "eventId", length = 16)
+    private String id;
 
     @Column(name = "bookingName", length = 45)
     private String bookingName;
@@ -25,6 +23,13 @@ public class Event {
     @Lob
     @Column(name = "eventNotes")
     private String eventNotes;
+
+//    @JsonIgnore
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "eventCategoryId", nullable = false)
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @Column(name = "eventCategoryId")
+    private String eventCategoryId;
 
     public String getEventNotes() {
         return eventNotes;
@@ -58,19 +63,26 @@ public class Event {
         this.bookingName = bookingName;
     }
 
-    public EventCategory getEventCategory() {
-        return eventCategory;
+//    public EventCategory getEventCategory() {
+//        return eventCategory;
+//    }
+//
+//    public void setEventCategory(EventCategory eventCategory) {
+//        this.eventCategory = eventCategory;
+//    }
+    public String getEventCategoryId() {
+        return eventCategoryId;
     }
 
-    public void setEventCategory(EventCategory eventCategory) {
-        this.eventCategory = eventCategory;
+    public void setEventCategoryId(String eventCategory) {
+        this.eventCategoryId = eventCategory;
     }
 
-    public EventId getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(EventId id) {
+    public void setId(String id) {
         this.id = id;
     }
 }
