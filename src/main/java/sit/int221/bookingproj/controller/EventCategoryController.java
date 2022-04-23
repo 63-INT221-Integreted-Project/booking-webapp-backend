@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/eventcategories")
+@RequestMapping("/api/eventcategories")
 public class EventCategoryController {
     @Autowired
     public EventCategoryRepository eventCategoryRepository;
@@ -43,5 +43,6 @@ public class EventCategoryController {
     public void delete(@PathVariable String id){
         eventCategoryRepository.deleteById(id);
     }
+
 
 }

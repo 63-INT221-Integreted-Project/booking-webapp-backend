@@ -10,11 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController()
-@RequestMapping("/events")
+@RequestMapping("/api/events")
 public class EventController {
     @Autowired
     public EventRepository eventRepository;
-
     @GetMapping("/")
     public List getAllEvent(){
         return eventRepository.findAll();
@@ -43,6 +42,11 @@ public class EventController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void delete(@PathVariable(name = "id") String id){
         eventRepository.deleteById(id);
+    }
+
+    @GetMapping("/dates/{date}")
+    public List getByEventStartTimeWith(@PathVariable(name = "date") String date){
+        return eventRepository.findAllByEventStartTimeStartsWith(date);
     }
 
 }

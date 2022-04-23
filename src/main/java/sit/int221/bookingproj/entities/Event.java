@@ -1,6 +1,7 @@
 package sit.int221.bookingproj.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
 
@@ -26,10 +27,14 @@ public class Event {
 
 //    @JsonIgnore
 //    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "eventCategoryId", nullable = false)
-//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+
     @Column(name = "eventCategoryId")
     private String eventCategoryId;
+
+//    @JsonIgnore
+//    @JoinColumn(name = "eventCategoryId", nullable = false)
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    public EventCategory eventCategory;
 
     public String getEventNotes() {
         return eventNotes;
@@ -66,7 +71,7 @@ public class Event {
 //    public EventCategory getEventCategory() {
 //        return eventCategory;
 //    }
-//
+
 //    public void setEventCategory(EventCategory eventCategory) {
 //        this.eventCategory = eventCategory;
 //    }
