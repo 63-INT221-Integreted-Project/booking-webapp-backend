@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/eventcategories")
+@RequestMapping("/event-categories")
 public class EventCategoryController {
     @Autowired
     public EventCategoryRepository eventCategoryRepository;
