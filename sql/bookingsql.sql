@@ -14,6 +14,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema booking
 -- -----------------------------------------------------
+drop database  booking;
 CREATE SCHEMA IF NOT EXISTS `booking` DEFAULT CHARACTER SET utf8 ;
 USE `booking` ;
 
@@ -37,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `booking`.`events` (
   `eventId` VARCHAR(16) NOT NULL,
   `bookingName` VARCHAR(45) NULL,
   `bookingEmail` VARCHAR(45) NULL,
-  `eventStartTime` VARCHAR(45) NULL,
+  `eventStartTime` datetime NULL,
   `eventNotes` TEXT(500) NULL,
   `eventCategoryId` VARCHAR(16) NOT NULL,
   PRIMARY KEY (`eventId`, `eventCategoryId`),
@@ -60,4 +61,5 @@ insert event_categories value("EC-001","Backend Clinic", "for give an advisor fr
 insert event_categories value("EC-002","Frontend Clinic", "for give an advisor from client techer","2022-3-31T01:30:00.000-05:00");
 
 insert events value("E-001","จองปรึกษาออกแบบ Repo", "thiraphat.itamonchai@mail.kmutt.ac.th","2022-3-31T01:30:00.000-05:00", "เข้าปรึกษาพร้อมทีม ขออัดวีดีโอระหว่างปรึกษา","EC-002");
-
+insert events value("E-002","จองปรึกษาออกแบบ Component", "thiraphat.itamonchai@mail.kmutt.ac.th","2022-1-31T01:30:00.000-05:00", "เข้าปรึกษาพร้อมทีม ขออัดวีดีโอระหว่างปรึกษา","EC-001");
+insert events value("E-004","จองปรึกษาออกแบบ Project", "thiraphat.itamonchai@mail.kmutt.ac.th","2022-1-31T01:30:00.000-05:00", "เข้าปรึกษาพร้อมทีม ขออัดวีดีโอระหว่างปรึกษา","EC-002");
