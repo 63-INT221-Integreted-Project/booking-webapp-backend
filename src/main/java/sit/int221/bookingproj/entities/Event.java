@@ -1,9 +1,15 @@
 package sit.int221.bookingproj.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.tomcat.jni.Local;
 import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
+import java.sql.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "events")
@@ -19,7 +25,7 @@ public class Event {
     private String bookingEmail;
 
     @Column(name = "eventStartTime", length = 45)
-    private String eventStartTime;
+    private LocalDateTime eventStartTime;
 
     @Lob
     @Column(name = "eventNotes")
@@ -44,11 +50,11 @@ public class Event {
         this.eventNotes = eventNotes;
     }
 
-    public String getEventStartTime() {
+    public LocalDateTime getEventStartTime() {
         return eventStartTime;
     }
 
-    public void setEventStartTime(String eventStartTime) {
+    public void setEventStartTime(LocalDateTime eventStartTime) {
         this.eventStartTime = eventStartTime;
     }
 
