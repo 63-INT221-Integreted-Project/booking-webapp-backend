@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/eventcategories")
+@RequestMapping("/event-categories")
+@CrossOrigin(origins = "http://lcoalhost:3000")
 public class EventCategoryController {
     @Autowired
     public EventCategoryRepository eventCategoryRepository;
