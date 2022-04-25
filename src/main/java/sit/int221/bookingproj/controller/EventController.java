@@ -5,11 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sit.int221.bookingproj.entities.Event;
 import sit.int221.bookingproj.repositories.EventRepository;
-
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +46,7 @@ public class EventController {
     public void delete(@PathVariable(name = "id") String id){
         eventRepository.deleteById(id);
     }
-    @GetMapping("/check-between/")
+    @GetMapping("/check-between")
     public List getByMonth(@RequestParam(name = "date1") String date1, @RequestParam(name = "date2") String date2){
         String str1 = date1;
         String str2 = date2;
@@ -58,4 +55,6 @@ public class EventController {
         LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
         return eventRepository.findAllByEventStartTimeBetween(dateTime1,dateTime2);
     }
+
+
 }
