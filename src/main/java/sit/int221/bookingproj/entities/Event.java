@@ -15,7 +15,7 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "eventId", nullable = false)
-    private Integer id;
+    private Integer eventId;
 
     @Column(name = "bookingName", nullable = false, length = 100)
     private String bookingName;
@@ -36,14 +36,6 @@ public class Event {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "eventCategoryId", nullable = false, referencedColumnName = "eventCategoryId")
     private EventCategory eventCategory;
-
-    public EventCategory getEventCategory() {
-        return eventCategory;
-    }
-
-    public void setEventCategory(EventCategory eventCategory) {
-        this.eventCategory = eventCategory;
-    }
 
     public String getEventNotes() {
         return eventNotes;
@@ -77,19 +69,11 @@ public class Event {
         this.eventCategory = eventCategory;
     }
 
-    public String getEventId() {
+    public Integer getEventId() {
         return eventId;
     }
 
-    public void setBookingName(String bookingName) {
-        this.bookingName = bookingName;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    public void setEventId(Integer id) {
+        this.eventId = id;
     }
 }

@@ -15,7 +15,7 @@ public class EventCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "eventCategoryId", nullable = false)
-    private Integer id;
+    private Integer eventCategoryId;
 
     @Column(name = "eventCategoryName", nullable = false, length = 100)
     private String eventCategoryName;
@@ -62,11 +62,11 @@ public class EventCategory {
         this.eventCategoryName = eventCategoryName;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getEventCategoryId() {
+        return eventCategoryId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setEventCategoryId(Integer id) {
+        this.eventCategoryId = id;
     }
 }
