@@ -1,5 +1,7 @@
 package sit.int221.bookingproj.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,8 @@ import java.util.Optional;
 @RequestMapping("/api/events")
 @CrossOrigin(origins = "http://localhost:3000")
 public class EventController {
+
+    Logger logger = LoggerFactory.getLogger(EventController.class);
     @Autowired
     public EventRepository eventRepository;
 
@@ -49,10 +53,12 @@ public class EventController {
     public void delete(@PathVariable(name = "id") String id){
         eventRepository.deleteById(id);
     }
-    @GetMapping("/check-between/")
+    @GetMapping("/check-between")
     public List getByMonth(@RequestParam(name = "date1") String date1, @RequestParam(name = "date2") String date2){
         String str1 = date1;
         String str2 = date2;
+        logger.info(str1);
+        logger.info(str2);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
         LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
