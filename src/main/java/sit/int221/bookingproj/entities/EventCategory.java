@@ -1,9 +1,12 @@
 package sit.int221.bookingproj.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -11,19 +14,20 @@ import java.util.Set;
 public class EventCategory {
     @Id
     @Column(name = "eventCategoryId", nullable = false, length = 16)
-    private String id;
+    private String eventCategoryId;
 
-    @Column(name = "eventCategoryName", length = 45)
+    @Column(name = "eventCategoryName", length = 100)
     private String eventCategoryName;
 
-    @Column(name = "eventCategoryDescription", length = 45)
+    @Column(name = "eventCategoryDescription", length = 500)
     private String eventCategoryDescription;
 
-    @Column(name = "eventDuration", length = 45)
-    private String eventDuration;
+    @Column(name = "eventCategoryDuration")
+    private Integer eventCategoryDuration;
+
 
     @JsonIgnore
-    @OneToMany(mappedBy = "eventCategoryId")
+    @OneToMany(mappedBy = "eventCategory", fetch = FetchType.EAGER)
     private Set<Event> events = new LinkedHashSet<>();
 
     public Set<Event> getEvents() {
@@ -34,12 +38,12 @@ public class EventCategory {
         this.events = events;
     }
 
-    public String getEventDuration() {
-        return eventDuration;
+    public Integer getEventCategoryDuration() {
+        return eventCategoryDuration;
     }
 
-    public void setEventDuration(String eventDuration) {
-        this.eventDuration = eventDuration;
+    public void setEventCategoryDuration(Integer eventCategoryDuration) {
+        this.eventCategoryDuration = eventCategoryDuration;
     }
 
     public String getEventCategoryDescription() {
@@ -58,11 +62,11 @@ public class EventCategory {
         this.eventCategoryName = eventCategoryName;
     }
 
-    public String getId() {
-        return id;
+    public String getEventCategoryId() {
+        return eventCategoryId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setEventCategoryId(String id) {
+        this.eventCategoryId = id;
     }
 }

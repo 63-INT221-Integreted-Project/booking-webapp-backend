@@ -7,11 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sit.int221.bookingproj.entities.Event;
 import sit.int221.bookingproj.repositories.EventRepository;
-
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,4 +61,6 @@ public class EventController {
         LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
         return eventRepository.findAllByEventStartTimeBetween(dateTime1,dateTime2);
     }
+
+
 }
