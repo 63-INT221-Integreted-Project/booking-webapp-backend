@@ -7,23 +7,24 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "event_categories")
+@Table(name = "eventCategory")
 public class EventCategory {
     @Id
-    @Column(name = "eventCategoryId", nullable = false, length = 16)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "eventCategoryId", nullable = false)
+    private Integer id;
 
-    @Column(name = "eventCategoryName", length = 45)
+    @Column(name = "eventCategoryName", nullable = false, length = 100)
     private String eventCategoryName;
 
-    @Column(name = "eventCategoryDescription", length = 45)
+    @Column(name = "eventCategoryDescription", nullable = false, length = 500)
     private String eventCategoryDescription;
 
-    @Column(name = "eventDuration", length = 45)
-    private String eventDuration;
+    @Column(name = "eventDuration", nullable = false)
+    private Integer eventDuration;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "eventCategoryId")
+    @OneToMany(mappedBy = "eventCategory")
     private Set<Event> events = new LinkedHashSet<>();
 
     public Set<Event> getEvents() {
@@ -34,11 +35,11 @@ public class EventCategory {
         this.events = events;
     }
 
-    public String getEventDuration() {
+    public Integer getEventDuration() {
         return eventDuration;
     }
 
-    public void setEventDuration(String eventDuration) {
+    public void setEventDuration(Integer eventDuration) {
         this.eventDuration = eventDuration;
     }
 
@@ -58,11 +59,11 @@ public class EventCategory {
         this.eventCategoryName = eventCategoryName;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 }

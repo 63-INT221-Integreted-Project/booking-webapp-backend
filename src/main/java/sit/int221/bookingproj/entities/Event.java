@@ -1,46 +1,48 @@
 package sit.int221.bookingproj.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.tomcat.jni.Local;
-import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-
 @Entity
-@Table(name = "events")
+@Table(name = "event")
 public class Event {
     @Id
-    @Column(name = "eventId", length = 16)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "eventId", nullable = false)
+    private Integer id;
 
-    @Column(name = "bookingName", length = 45)
+    @Column(name = "bookingName", nullable = false, length = 100)
     private String bookingName;
 
-    @Column(name = "bookingEmail", length = 45)
+    @Column(name = "bookingEmail", nullable = false, length = 50)
     private String bookingEmail;
 
-    @Column(name = "eventStartTime", length = 45)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @Column(name = "eventStartTime", nullable = false)
     private LocalDateTime eventStartTime;
 
-    @Lob
-    @Column(name = "eventNotes")
+    @Column(name = "eventDuration", nullable = false)
+    private Integer eventDuration;
+
+    @Column(name = "eventNotes", length = 500)
     private String eventNotes;
 
-//    @JsonIgnore
-//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "eventCategoryId", nullable = false, referencedColumnName = "eventCategoryId")
+    private EventCategory eventCategory;
 
-    @Column(name = "eventCategoryId")
-    private String eventCategoryId;
+    public EventCategory getEventCategory() {
+        return eventCategory;
+    }
 
-//    @JsonIgnore
-//    @JoinColumn(name = "eventCategoryId", nullable = false)
-//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-//    public EventCategory eventCategory;
+    public void setEventCategory(EventCategory eventCategory) {
+        this.eventCategory = eventCategory;
+    }
 
     public String getEventNotes() {
         return eventNotes;
@@ -48,6 +50,14 @@ public class Event {
 
     public void setEventNotes(String eventNotes) {
         this.eventNotes = eventNotes;
+    }
+
+    public Integer getEventDuration() {
+        return eventDuration;
+    }
+
+    public void setEventDuration(Integer eventDuration) {
+        this.eventDuration = eventDuration;
     }
 
     public LocalDateTime getEventStartTime() {
@@ -74,26 +84,11 @@ public class Event {
         this.bookingName = bookingName;
     }
 
-//    public EventCategory getEventCategory() {
-//        return eventCategory;
-//    }
-
-//    public void setEventCategory(EventCategory eventCategory) {
-//        this.eventCategory = eventCategory;
-//    }
-    public String getEventCategoryId() {
-        return eventCategoryId;
-    }
-
-    public void setEventCategoryId(String eventCategory) {
-        this.eventCategoryId = eventCategory;
-    }
-
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 }
