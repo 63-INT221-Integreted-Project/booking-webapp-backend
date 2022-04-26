@@ -4,51 +4,45 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.tomcat.jni.Local;
-import org.springframework.context.annotation.Primary;
 
 import javax.persistence.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "events")
+@Table(name = "event")
 public class Event {
     @Id
-    @JsonProperty("eventId")
-
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "eventId", nullable = false)
-    private String eventId;
+    private Integer id;
 
-    @JsonIgnore
-    @JsonProperty("eventCategoryId")
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "eventCategoryId", referencedColumnName = "eventCategoryId")
-    private EventCategory eventCategory;
+    @Column(name = "bookingName", nullable = false, length = 100)
+    private String bookingName;
+
+    @Column(name = "bookingEmail", nullable = false, length = 50)
+    private String bookingEmail;
 
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    @Column(name = "eventStartTime")
+    @Column(name = "eventStartTime", nullable = false)
     private LocalDateTime eventStartTime;
 
-    @Column(name = "eventDuration")
+    @Column(name = "eventDuration", nullable = false)
     private Integer eventDuration;
 
     @Column(name = "eventNotes", length = 500)
     private String eventNotes;
 
-//    @JsonIgnore
-//    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JsonIgnore
-    @JsonProperty("booking")
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "bookingId", nullable = false, referencedColumnName = "bookingId")
-    private Booking booking;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "eventCategoryId", nullable = false, referencedColumnName = "eventCategoryId")
+    private EventCategory eventCategory;
 
-    public Booking getBooking() {
-        return booking;
+    public EventCategory getEventCategory() {
+        return eventCategory;
     }
 
-    public void setBooking(Booking booking) {
-        this.booking = booking;
+    public void setEventCategory(EventCategory eventCategory) {
+        this.eventCategory = eventCategory;
     }
 
     public String getEventNotes() {
@@ -87,7 +81,15 @@ public class Event {
         return eventId;
     }
 
-    public void setEventId(String id) {
-        this.eventId = id;
+    public void setBookingName(String bookingName) {
+        this.bookingName = bookingName;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

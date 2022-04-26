@@ -8,5 +8,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 @Repository
 public interface EventRepository extends JpaRepository<Event, String> {
+//    public List<Event> findAllByEventStartTimeStartsWith(String date);
     public List<Event> findAllByEventStartTimeBetween(LocalDateTime start, LocalDateTime end);
 }
