@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import sit.int221.bookingproj.entities.EventCategory;
 
 @Repository
-public interface EventCategoryRepository extends JpaRepository<EventCategory, String> {
+public interface EventCategoryRepository extends JpaRepository<EventCategory, Integer> {
 }

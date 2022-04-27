@@ -7,7 +7,7 @@ import sit.int221.bookingproj.entities.Event;
 import java.time.LocalDateTime;
 import java.util.List;
 @Repository
-public interface EventRepository extends JpaRepository<Event, String> {
+public interface EventRepository extends JpaRepository<Event, Integer> {
 //    public List<Event> findAllByEventStartTimeStartsWith(String date);
     public List<Event> findAllByEventStartTimeBetween(LocalDateTime start, LocalDateTime end);
 }

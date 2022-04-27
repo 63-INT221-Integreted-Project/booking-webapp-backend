@@ -21,7 +21,7 @@ public class EventCategoryController {
     }
 
     @GetMapping("/{id}")
-    public Optional<EventCategory> getEventCategoryById(@PathVariable String id){
+    public Optional<EventCategory> getEventCategoryById(@PathVariable Integer id){
         return eventCategoryRepository.findById(id);
     }
 
@@ -31,7 +31,7 @@ public class EventCategoryController {
     }
 
     @PutMapping("/{id}")
-    public EventCategory update(@PathVariable(name = "id") String id, @RequestBody EventCategory updateEventCategory){
+    public EventCategory update(@PathVariable(name = "id") Integer id, @RequestBody EventCategory updateEventCategory){
         Optional<EventCategory> optionalEventCategory = eventCategoryRepository.findById(id);
         if(!optionalEventCategory.isPresent()){
             return updateEventCategory;
@@ -41,7 +41,7 @@ public class EventCategoryController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void delete(@PathVariable String id){
+    public void delete(@PathVariable Integer id){
         eventCategoryRepository.deleteById(id);
     }
 

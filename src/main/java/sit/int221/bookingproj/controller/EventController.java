@@ -26,7 +26,7 @@ public class EventController {
         return eventRepository.findAll();
     }
     @GetMapping("/{id}")
-    public Optional<Event> getEventById(@PathVariable String id){
+    public Optional<Event> getEventById(@PathVariable Integer id){
         return eventRepository.findById(id);
     }
     @PostMapping("/")
@@ -37,7 +37,7 @@ public class EventController {
     
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Optional<Event> updateEvent(@PathVariable(name = "id") String id, @RequestBody Event updateEvent){
+    public Optional<Event> updateEvent(@PathVariable(name = "id") Integer id, @RequestBody Event updateEvent){
         Optional<Event> eventOptional = eventRepository.findById(id);
         if(!eventOptional.isPresent()){
             return eventOptional;
@@ -47,7 +47,7 @@ public class EventController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void delete(@PathVariable(name = "id") String id){
+    public void delete(@PathVariable(name = "id") Integer id){
         eventRepository.deleteById(id);
     }
     @GetMapping("/check-between")
