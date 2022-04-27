@@ -33,6 +33,7 @@ public class Event {
     @Column(name = "eventNotes", length = 500)
     private String eventNotes;
 
+
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "eventCategoryId", nullable = false, referencedColumnName = "eventCategoryId")
     private EventCategory eventCategory;
@@ -67,6 +68,22 @@ public class Event {
 
     public void setEventCategory(EventCategory eventCategory) {
         this.eventCategory = eventCategory;
+    }
+
+    public String getBookingName() {
+        return bookingName;
+    }
+
+    public void setBookingName(String bookingName) {
+        this.bookingName= bookingName;
+    }
+
+    public String getBookingEmail() {
+        return bookingEmail;
+    }
+
+    public void setBookingEmail(String bookingEmail) {
+        this.bookingEmail = bookingEmail;
     }
 
     public Integer getEventId() {
