@@ -1,13 +1,12 @@
 package sit.int221.bookingproj.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.annotations.Fetch;
-
 import javax.persistence.*;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import static javax.persistence.CascadeType.ALL;
 
 @Entity
 @Table(name = "eventCategory")
@@ -27,11 +26,18 @@ public class EventCategory {
     private Integer eventDuration;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "eventCategory")
+    @OneToMany(mappedBy = "eventCategory" , cascade = CascadeType.DETACH)
     private Set<Event> events = new LinkedHashSet<>();
 
     public Set<Event> getEvents() {
         return events;
+    }
+
+    @PreRemove
+    private void preRemove() {
+        for (Event e : events) {
+            e.setEventCategory(null);
+        }
     }
 
     public void setEvents(Set<Event> events) {
@@ -41,6 +47,7 @@ public class EventCategory {
     public Integer getEventDuration() {
         return eventDuration;
     }
+
 
     public void setEventDuration(Integer eventDuration) {
         this.eventDuration = eventDuration;

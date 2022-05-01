@@ -16,7 +16,6 @@ import java.util.Optional;
 @RequestMapping("/api/events")
 @CrossOrigin(origins = "http://localhost:3000")
 public class EventController {
-
     Logger logger = LoggerFactory.getLogger(EventController.class);
     @Autowired
     public EventRepository eventRepository;

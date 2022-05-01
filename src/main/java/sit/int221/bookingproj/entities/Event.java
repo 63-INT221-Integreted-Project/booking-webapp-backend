@@ -33,18 +33,9 @@ public class Event {
     @Column(name = "eventNotes", length = 500)
     private String eventNotes;
 
-
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "eventCategoryId", nullable = false, referencedColumnName = "eventCategoryId")
+    @ManyToOne(fetch = FetchType.EAGER, optional = true )
+    @JoinColumn(name = "eventCategoryId", nullable = true, referencedColumnName = "eventCategoryId")
     private EventCategory eventCategory;
-
-    public String getEventNotes() {
-        return eventNotes;
-    }
-
-    public void setEventNotes(String eventNotes) {
-        this.eventNotes = eventNotes;
-    }
 
     public Integer getEventDuration() {
         return eventDuration;
@@ -52,6 +43,14 @@ public class Event {
 
     public void setEventDuration(Integer eventDuration) {
         this.eventDuration = eventDuration;
+    }
+
+    public String getEventNotes() {
+        return eventNotes;
+    }
+
+    public void setEventNotes(String eventNotes) {
+        this.eventNotes = eventNotes;
     }
 
     public LocalDateTime getEventStartTime() {
@@ -74,16 +73,16 @@ public class Event {
         return bookingName;
     }
 
-    public void setBookingName(String bookingName) {
-        this.bookingName= bookingName;
+    public void setBookingName(String eventBookingName) {
+        this.bookingName= eventBookingName;
     }
 
     public String getBookingEmail() {
         return bookingEmail;
     }
 
-    public void setBookingEmail(String bookingEmail) {
-        this.bookingEmail = bookingEmail;
+    public void setBookingEmail(String eventBookingEmail) {
+        this.bookingEmail = eventBookingEmail;
     }
 
     public Integer getEventId() {
