@@ -1,6 +1,7 @@
 package sit.int221.bookingproj.controller;
 
 import io.swagger.annotations.Tag;
+import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.repositories.EventRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,15 +70,67 @@ public class EventController {
         return eventRepository.findAllByEventStartTimeBetween(dateTime1,dateTime2);
     }
 
+    public List findByDateTime(String date1,String date2){
+        String str1 = date1;
+        String str2 = date2;
+        logger.info(str1);
+        logger.info(str2);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
+        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
+        return eventRepository.findAllByEventStartTimeBetween(dateTime1,dateTime2);
+    }
+
     @GetMapping("/filter/eventCategoryName")
     public List getByCategory(@RequestParam String eventCategoryName){
         Optional<EventCategory> eventCategory1 = Optional.ofNullable(eventCategoryRepository.findAllByEventCategoryName(eventCategoryName));
         return eventRepository.findAllByEventCategory(eventCategory1);
     }
 
-    @GetMapping("/filter/eventsearch")
+    @GetMapping("/filter/event")
+    public List<Event> getSearchByFilter(@RequestParam String name, @RequestParam String word, @RequestParam String dateStart, @RequestParam String dateEnd){
+        List<Event> eventFiltered = new ArrayList<Event>();
+        boolean eventAdd = false;
+        if(!dateStart.equals(0) && dateEnd.equals(0)){
+            eventFiltered = findByDateTime(dateStart, dateEnd);
+            eventAdd = true;
+        }
+        if(!(name == "")){
+            Optional<EventCategory> eventCategory1 = Optional.ofNullable(eventCategoryRepository.findAllByEventCategoryName(name));
+            List<Event> resultSet = eventRepository.findAllByEventCategory(eventCategory1);
+            for(int i = 0; i < resultSet.size(); i++){
+                if(!(eventFiltered.contains(resultSet.get(i)))) {
+                    eventFiltered.add(resultSet.get(i));
+                }
+            }
+            eventAdd = true;
+        }
+        if(!(word == "")){
+            List<Event> resultSet = eventRepository.findAllByBookingEmailContainingOrBookingNameContainingOrEventNotesContaining(word, word, word);
+            for(int i = 0; i < resultSet.size(); i++){
+                if(!(eventFiltered.contains(resultSet.get(i)))){
+                    eventFiltered.add(resultSet.get(i));
+                }
+            }
+            eventAdd = true;
+        }
+        if(eventAdd == true){
+            return eventFiltered;
+
+        }
+        else{
+            return eventRepository.findAll();
+        }
+    }
+
+    @GetMapping(value = "/filter/eventsearch", params = "findingWord")
     public List<Event> getEventBySearchBooking(@RequestParam String findingWord){
         return eventRepository.findAllByBookingEmailContainingOrBookingNameContainingOrEventNotesContaining(findingWord, findingWord, findingWord);
+    }
+
+    @GetMapping(value = "/filter/eventsearch", params = "findingNumber")
+    public List<Event> getEventBySearchBookingByNumber(@RequestParam Integer findingNumber){
+        return eventRepository.findAllByEventDuration(findingNumber);
     }
 
 }
