@@ -43,7 +43,7 @@
       `eventNotes` VARCHAR(500) NULL,
       `eventCategoryId` INT,
       PRIMARY KEY (`eventId`),
-      INDEX `fk_event_eventCategory_idx` (`eventCategoryId` ASC) VISIBLE,
+      INDEX `fk_event_eventCategory_idx` (`eventCategoryId` ASC),
       CONSTRAINT `fk_event_eventCategory`
         FOREIGN KEY (`eventCategoryId`)
         REFERENCES `booking`.`eventCategory` (`eventCategoryId`)
