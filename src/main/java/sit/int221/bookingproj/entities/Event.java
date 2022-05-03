@@ -1,12 +1,7 @@
 package sit.int221.bookingproj.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.tomcat.jni.Local;
-
 import javax.persistence.*;
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -36,6 +31,7 @@ public class Event {
     @ManyToOne(fetch = FetchType.EAGER, optional = true )
     @JoinColumn(name = "eventCategoryId", nullable = true, referencedColumnName = "eventCategoryId")
     private EventCategory eventCategory;
+
 
     public Integer getEventDuration() {
         return eventDuration;
