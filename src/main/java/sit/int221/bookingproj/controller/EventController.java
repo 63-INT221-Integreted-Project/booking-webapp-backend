@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController()
-@RequestMapping("/api/event")
+@RequestMapping("/api/events")
 @CrossOrigin(origins = "http://localhost:3000")
 public class EventController {
     Logger logger = LoggerFactory.getLogger(EventController.class);
@@ -41,7 +41,7 @@ public class EventController {
     public EventGetDto getEventById(@PathVariable Integer id){
         return eventService.getById(id);
     }
-
+    
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     public void createEvent(@RequestBody EventCreateUpdateDto newEvent){
@@ -75,13 +75,13 @@ public class EventController {
     public List findByDateTime(String date1,String date2){
         String str1 = date1;
         String str2 = date2;
-        logger.info(str1);
-        logger.info(str2);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
         LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
         return eventRepository.findAllByEventStartTimeBetween(dateTime1,dateTime2);
     }
+
 
     @GetMapping("/search/eventCategoryName")
     public List getByCategory(@RequestParam String eventCategoryName){
@@ -97,7 +97,7 @@ public class EventController {
             eventFiltered = findByDateTime(dateStart, dateEnd);
             eventAdd = true;
         }
-        if(!(name == "" || word == null)){
+        if(word == null){
             Optional<EventCategory> eventCategory1 = Optional.ofNullable(eventCategoryRepository.findAllByEventCategoryName(name));
             List<Event> resultSet = eventRepository.findAllByEventCategory(eventCategory1);
             for(int i = 0; i < resultSet.size(); i++){
@@ -107,7 +107,7 @@ public class EventController {
             }
             eventAdd = true;
         }
-        if(!(word == "" || word == null)){
+        if(word == null){
             List<Event> resultSet = eventRepository.findAllByBookingEmailContainingOrBookingNameContainingOrEventNotesContaining(word, word, word);
             for(int i = 0; i < resultSet.size(); i++){
                 if(!(eventFiltered.contains(resultSet.get(i)))){

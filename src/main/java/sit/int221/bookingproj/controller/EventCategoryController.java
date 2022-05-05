@@ -26,11 +26,13 @@ public class EventCategoryController {
     }
 
     @PostMapping("/")
+    @ResponseStatus(HttpStatus.CREATED)
     public EventCategory createEventCategory(@RequestBody EventCategory newEventCategory){
         return eventCategoryRepository.saveAndFlush(newEventCategory);
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public EventCategory update(@PathVariable(name = "id") Integer id, @RequestBody EventCategory updateEventCategory){
         Optional<EventCategory> optionalEventCategory = eventCategoryRepository.findById(id);
         if(!optionalEventCategory.isPresent()){
@@ -40,7 +42,7 @@ public class EventCategoryController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     public void delete(@PathVariable Integer id){
         eventCategoryRepository.deleteById(id);
     }
