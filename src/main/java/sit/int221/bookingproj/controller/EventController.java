@@ -13,6 +13,7 @@ import sit.int221.bookingproj.entities.EventCategory;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.repositories.EventRepository;
 import sit.int221.bookingproj.services.EventService;
+import org.apache.commons.collections4.ListUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -43,13 +44,13 @@ public class EventController {
     public EventGetDto getEventById(@PathVariable Integer id){
         return eventService.getById(id);
     }
-    
+
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     public void createEvent(@RequestBody EventCreateUpdateDto newEvent){
         eventService.create(newEvent);
     }
-    
+
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Event updateEvent(@PathVariable(name = "id") Integer id, @RequestBody EventCreateUpdateDto updateEvent){
@@ -90,23 +91,18 @@ public class EventController {
             eventFiltered = eventService.findByDateTime(dateStart, dateEnd);
             eventAdd = true;
         }
-        if(name == null){
-            Optional<EventCategory> eventCategory1 = Optional.ofNullable(eventCategoryRepository.findAllByEventCategoryName(name));
-            List<Event> resultSet = eventRepository.findAllByEventCategory(eventCategory1);
-            for(int i = 0; i < resultSet.size(); i++){
-                if(!(eventFiltered.contains(resultSet.get(i)))) {
-                    eventFiltered.add(resultSet.get(i));
-                }
-            }
+        if(!(name == "")){
+//            Optional<EventCategory> eventCategory1 = Optional.ofNullable(eventCategoryRepository.findAllByEventCategoryName(name));
+//            System.out.println(eventCategory1);
+//            List<Event> resultSet = eventRepository.findAllByEventCategory(eventCategory1);
+            List<Event> resultSet = eventRepository.findAllByEventCategory_EventCategoryName(name);
+            System.out.println(resultSet);
+            eventFiltered = ListUtils.union(eventFiltered, resultSet);
             eventAdd = true;
         }
-        if(word == null){
+        if(!(word == "")){
             List<Event> resultSet = eventRepository.findAllByBookingEmailContainingOrBookingNameContainingOrEventNotesContaining(word, word, word);
-            for(int i = 0; i < resultSet.size(); i++){
-                if(!(eventFiltered.contains(resultSet.get(i)))){
-                    eventFiltered.add(resultSet.get(i));
-                }
-            }
+            eventFiltered = ListUtils.union(eventFiltered, resultSet);
             eventAdd = true;
         }
         if(eventAdd == true){

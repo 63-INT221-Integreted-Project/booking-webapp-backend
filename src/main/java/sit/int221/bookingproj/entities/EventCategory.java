@@ -73,4 +73,15 @@ public class EventCategory {
     public void setEventCategoryId(Integer id) {
         this.eventCategoryId = id;
     }
+
+    @Override
+    public String toString() {
+        return "EventCategory{" +
+                "eventCategoryId=" + eventCategoryId +
+                ", eventCategoryName='" + eventCategoryName + '\'' +
+                ", eventCategoryDescription='" + eventCategoryDescription + '\'' +
+                ", eventDuration=" + eventDuration +
+                ", events=" + events +
+                '}';
+    }
 }
