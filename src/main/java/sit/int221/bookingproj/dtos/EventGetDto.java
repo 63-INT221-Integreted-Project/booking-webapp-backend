@@ -2,9 +2,12 @@ package sit.int221.bookingproj.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.lang.Nullable;
 import sit.int221.bookingproj.entities.Event;
 import sit.int221.bookingproj.entities.EventCategory;
 
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
 import java.time.LocalDateTime;
 @Data
 public class EventGetDto {
@@ -15,6 +18,7 @@ public class EventGetDto {
     private LocalDateTime eventStartTime;
     private Integer eventDuration;
     private String eventNotes;
+    @Column(nullable = true)
     private EventCategoryDto eventCategory;
 
     public Integer getEventId() {
