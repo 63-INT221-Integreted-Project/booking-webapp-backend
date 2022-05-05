@@ -1,0 +1,31 @@
+version: "3"
+services:
+  oasip-backend:
+    container_name: oasip-backend
+    image: oasip-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - spring.datasource.url=jdbc:mysql://mysqldb:3306/oasipdb?useSSL=false
+      - spring.datasource.username=oasipdev
+      - spring.datasource.password=oasipdev
+    networks:
+      - oasip-network
+    depends_on:
+      - mysqldb
+
+  mysqldb:
+    container_name: oasip-mysqldb
+    image: mysql:5.7
+    networks:
+      - oasip-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=oasipdb
+      - MYSQL_USER=oasipdev
+      - MYSQL_PASSWORD=oasipdev
+
+networks:
+  oasip-network:
+    external:
+      name: oasip-network
