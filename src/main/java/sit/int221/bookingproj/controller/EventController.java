@@ -3,6 +3,7 @@ package sit.int221.bookingproj.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sit.int221.bookingproj.dtos.EventCreateUpdateDto;
@@ -16,6 +17,7 @@ import sit.int221.bookingproj.services.EventService;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,35 +71,26 @@ public class EventController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
         LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
-        return eventService.castTypeToDto(eventRepository.findAllByEventStartTimeBetween(dateTime1,dateTime2));
-    }
-
-    public List findByDateTime(String date1,String date2){
-        String str1 = date1;
-        String str2 = date2;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
-        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
-        return eventRepository.findAllByEventStartTimeBetween(dateTime1,dateTime2);
+        return eventService.castTypeToDto(eventRepository.findAllByEventStartTimeBetween(dateTime1,dateTime2, Sort.by(Sort.Direction.DESC, "eventStartTime")));
     }
 
 
-    @GetMapping("/search/eventCategoryName")
-    public List getByCategory(@RequestParam String eventCategoryName){
-        Optional<EventCategory> eventCategory1 = Optional.ofNullable(eventCategoryRepository.findAllByEventCategoryName(eventCategoryName));
-        return eventService.castTypeToDto(eventRepository.findAllByEventCategory(eventCategory1));
-    }
+
+//    @GetMapping("/search/eventCategoryName")
+//    public List getByCategory(@RequestParam String eventCategoryName){
+//        Optional<EventCategory> eventCategory1 = Optional.ofNullable(eventCategoryRepository.findAllByEventCategoryName(eventCategoryName));
+//        return eventService.castTypeToDto(eventRepository.findAllByEventCategory(eventCategory1));
+//    }
 
     @GetMapping("/search")
     public List<EventGetDto> getSearchByFilter(@RequestParam String name, @RequestParam String word, @RequestParam String dateStart, @RequestParam String dateEnd){
         List<Event> eventFiltered = new ArrayList<Event>();
         boolean eventAdd = false;
         if(!dateStart.equals(0) && dateEnd.equals(0)){
-            eventFiltered = findByDateTime(dateStart, dateEnd);
+            eventFiltered = eventService.findByDateTime(dateStart, dateEnd);
             eventAdd = true;
         }
-        if(word == null){
+        if(name == null){
             Optional<EventCategory> eventCategory1 = Optional.ofNullable(eventCategoryRepository.findAllByEventCategoryName(name));
             List<Event> resultSet = eventRepository.findAllByEventCategory(eventCategory1);
             for(int i = 0; i < resultSet.size(); i++){
@@ -117,10 +110,11 @@ public class EventController {
             eventAdd = true;
         }
         if(eventAdd == true){
+            eventFiltered.sort(Comparator.comparing(Event::getEventStartTime).reversed());
             return eventService.castTypeToDto(eventFiltered);
         }
         else{
-            return eventService.castTypeToDto(eventRepository.findAll());
+            return eventService.castTypeToDto(eventRepository.findAll(Sort.by(Sort.Direction.DESC, "eventStartTime")));
         }
     }
 

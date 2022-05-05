@@ -3,6 +3,7 @@ package sit.int221.bookingproj.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import sit.int221.bookingproj.controller.EventController;
 import sit.int221.bookingproj.dtos.EventCategoryDto;
@@ -29,6 +30,16 @@ public class EventService {
     Logger logger = LoggerFactory.getLogger(EventController.class);
     public List<EventGetDto> getAllEvent(){
         return eventRepository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList());
+    }
+
+    public List findByDateTime(String date1, String date2){
+        String str1 = date1;
+        String str2 = date2;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
+        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
+        return eventRepository.findAllByEventStartTimeBetween(dateTime1,dateTime2,Sort.by(Sort.Direction.DESC, "eventStartTime"));
     }
 
     public List<EventGetDto> castTypeToDto(List<Event> event){
