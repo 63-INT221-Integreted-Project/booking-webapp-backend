@@ -1,16 +1,20 @@
 package sit.int221.bookingproj.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sit.int221.bookingproj.controller.EventController;
 import sit.int221.bookingproj.dtos.EventCategoryDto;
 import sit.int221.bookingproj.dtos.EventCreateUpdateDto;
-import sit.int221.bookingproj.dtos.EventDto;
 import sit.int221.bookingproj.dtos.EventGetDto;
 import sit.int221.bookingproj.entities.Event;
 import sit.int221.bookingproj.entities.EventCategory;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.repositories.EventRepository;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,6 +26,7 @@ public class EventService {
     @Autowired
     private EventCategoryRepository eventCategoryRepository;
 
+    Logger logger = LoggerFactory.getLogger(EventController.class);
     public List<EventGetDto> getAllEvent(){
         return eventRepository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
@@ -47,6 +52,7 @@ public class EventService {
         }
         return eventRepository.saveAndFlush(convertDtoToEvent(eventCreateUpdateDto));
     }
+
 
 
     public Event convertDtoToEvent(EventCreateUpdateDto eventCreateUpdateDto){
