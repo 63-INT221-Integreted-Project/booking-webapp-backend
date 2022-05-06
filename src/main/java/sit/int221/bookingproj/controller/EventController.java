@@ -15,8 +15,10 @@ import sit.int221.bookingproj.repositories.EventRepository;
 import sit.int221.bookingproj.services.EventService;
 import org.apache.commons.collections4.ListUtils;
 
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -82,37 +84,95 @@ public class EventController {
 //        Optional<EventCategory> eventCategory1 = Optional.ofNullable(eventCategoryRepository.findAllByEventCategoryName(eventCategoryName));
 //        return eventService.castTypeToDto(eventRepository.findAllByEventCategory(eventCategory1));
 //    }
+//
+//    @GetMapping("/search")
+//    public List<EventGetDto> getSearchByFilter(@RequestParam(name = "name") String name, @RequestParam(name = "word") String word, @RequestParam(name = "dateStart") String dateStart, @RequestParam(name = "dateEnd") String dateEnd){
+//        List<Event> eventFiltered = new ArrayList<Event>();
+//        boolean eventAdd = false;
+//        if(!(dateStart == "" && dateEnd == "")){
+//            eventFiltered = eventService.findByDateTime(dateStart, dateEnd);
+//            eventAdd = true;
+//        }
+//        if(!(name == "")){
+////            Optional<EventCategory> eventCategory1 = Optional.ofNullable(eventCategoryRepository.findAllByEventCategoryName(name));
+////            System.out.println(eventCategory1);
+////            List<Event> resultSet = eventRepository.findAllByEventCategory(eventCategory1);
+//            List<Event> resultSet = eventRepository.findAllByEventCategory_EventCategoryName(name);
+//            System.out.println(resultSet);
+//            eventFiltered = ListUtils.union(eventFiltered, resultSet);
+//            eventAdd = true;
+//        }
+//        if(!(word == "" || word == null)){
+//            List<Event> resultSet = eventRepository.findAllByBookingEmailContainingOrBookingNameContainingOrEventNotesContaining(word, word, word);
+//            eventFiltered = ListUtils.union(eventFiltered, resultSet);
+//            eventAdd = true;
+//        }
+//        if(eventAdd == true){
+//            eventFiltered.sort(Comparator.comparing(Event::getEventStartTime).reversed());
+//            return eventService.castTypeToDto(eventFiltered);
+//        }
+//        else{
+//            return eventService.castTypeToDto(eventRepository.findAll(Sort.by(Sort.Direction.DESC, "eventStartTime")));
+//        }
+//    }
 
-    @GetMapping("/search")
-    public List<EventGetDto> getSearchByFilter(@RequestParam String name, @RequestParam String word, @RequestParam String dateStart, @RequestParam String dateEnd){
-        List<Event> eventFiltered = new ArrayList<Event>();
-        boolean eventAdd = false;
-        if(!dateStart.equals(0) && dateEnd.equals(0)){
-            eventFiltered = eventService.findByDateTime(dateStart, dateEnd);
-            eventAdd = true;
-        }
-        if(!(name == "")){
-//            Optional<EventCategory> eventCategory1 = Optional.ofNullable(eventCategoryRepository.findAllByEventCategoryName(name));
-//            System.out.println(eventCategory1);
-//            List<Event> resultSet = eventRepository.findAllByEventCategory(eventCategory1);
-            List<Event> resultSet = eventRepository.findAllByEventCategory_EventCategoryName(name);
-            System.out.println(resultSet);
-            eventFiltered = ListUtils.union(eventFiltered, resultSet);
-            eventAdd = true;
-        }
-        if(!(word == "")){
-            List<Event> resultSet = eventRepository.findAllByBookingEmailContainingOrBookingNameContainingOrEventNotesContaining(word, word, word);
-            eventFiltered = ListUtils.union(eventFiltered, resultSet);
-            eventAdd = true;
-        }
-        if(eventAdd == true){
-            eventFiltered.sort(Comparator.comparing(Event::getEventStartTime).reversed());
-            return eventService.castTypeToDto(eventFiltered);
-        }
-        else{
-            return eventService.castTypeToDto(eventRepository.findAll(Sort.by(Sort.Direction.DESC, "eventStartTime")));
-        }
+//    @GetMapping("/search/filter")
+//    public List getSearch(@RequestParam(name = "dateStart") String dateStart, @RequestParam(name = "dateEnd") String dateEnd, @RequestParam(name = "category") String category){
+//        List<Event> eventFiltered = new ArrayList<Event>();
+//        if(dateStart == null && dateEnd == null){
+//            if(category != null){
+//                eventFiltered = eventRepository.findAllByEventCategory_EventCategoryName(category);
+//            }
+//            else{
+//                eventFiltered = eventRepository.findAll();
+//            }
+//        }
+//        else if(dateStart != null && dateEnd != null){
+//            if(category == null){
+//                String str1 = dateStart;
+//                String str2 = dateEnd;
+//                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//                LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
+//                LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
+//                eventFiltered = eventRepository.findAllByEventStartTimeBetween(dateTime1, dateTime2,Sort.by(Sort.Direction.DESC, "eventStartTime"));
+//            }
+//        }
+//        else{
+//            String str1 = dateStart;
+//            String str2 = dateEnd;
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//            LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
+//            LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
+//            eventFiltered = eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(dateTime1, dateTime2, category);
+//        }
+//        return eventFiltered;
+//    }
+
+    @GetMapping(value = "/search" , params = {"dateStart", "dateEnd", "category"})
+    public List<Event> getSearch(@RequestParam(name = "dateStart") String dateStart, @RequestParam(name = "dateEnd") String dateEnd, @RequestParam(name = "category") String category) throws DateTimeParseException {
+        String str1 = dateStart;
+        String str2 = dateEnd;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
+        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
+         return eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(dateTime1, dateTime2, category , Sort.by(Sort.Direction.DESC, "eventStartTime"));
     }
+    @GetMapping(value = "/search" , params = {"dateStart", "dateEnd"})
+    public List<Event> getSearchDate(@RequestParam(name = "dateStart") String dateStart, @RequestParam(name = "dateEnd") String dateEnd) {
+        String str1 = dateStart;
+        String str2 = dateEnd;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
+        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
+        return eventRepository.findAllByEventStartTimeBetween(dateTime1, dateTime2 , Sort.by(Sort.Direction.DESC, "eventStartTime"));
+    }
+    @GetMapping(value = "/search" , params = {"category"})
+    public List<Event> getSearchCategory(@RequestParam(name = "category") String category) {
+        return eventRepository.findAllByEventCategory_EventCategoryName(category, Sort.by(Sort.Direction.DESC, "eventStartTime"));
+    }
+
+
+
 
 //    @GetMapping(value = "/filter/eventsearch", params = "findingWord")
 //    public List<Event> getEventBySearchBooking(@RequestParam String findingWord){
