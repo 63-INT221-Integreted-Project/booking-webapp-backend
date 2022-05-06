@@ -148,40 +148,58 @@ public class EventController {
 //        return eventFiltered;
 //    }
 
-    @GetMapping(value = "/search" , params = {"dateStart", "dateEnd", "category"})
-    public List<Event> getSearch(@RequestParam(name = "dateStart") String dateStart, @RequestParam(name = "dateEnd") String dateEnd, @RequestParam(name = "category") String category) throws DateTimeParseException {
+    @GetMapping(value = "/search" , params = {"dateStart", "dateEnd", "category", "word"})
+    public List<EventGetDto> getSearch(@RequestParam(name = "dateStart") String dateStart, @RequestParam(name = "dateEnd") String dateEnd, @RequestParam(name = "category") String category, @RequestParam(name = "word") String word) {
         String str1 = dateStart;
         String str2 = dateEnd;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
         LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
-         return eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(dateTime1, dateTime2, category , Sort.by(Sort.Direction.DESC, "eventStartTime"));
+        List<Event> eventWord = eventRepository.findAllByBookingEmailContainingOrBookingNameContaining(word, word);
+        List<Event> eventFilter = eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(dateTime1, dateTime2, category, Sort.by(Sort.Direction.DESC, "eventStartTime"));
+        List<Event> eventUnion = ListUtils.intersection(eventFilter, eventWord);
+        return eventService.castTypeToDto(eventUnion);
+    }
+    @GetMapping(value = "/search" , params = {"dateStart", "dateEnd", "word"})
+    public List<EventGetDto> getSearchDate(@RequestParam(name = "dateStart") String dateStart, @RequestParam(name = "dateEnd") String dateEnd, @RequestParam(name = "word") String word) {
+        String str1 = dateStart;
+        String str2 = dateEnd;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
+        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
+        List<Event> eventWord = eventRepository.findAllByBookingEmailContainingOrBookingNameContaining(word, word);
+        List<Event> eventFilter = eventRepository.findAllByEventStartTimeBetween(dateTime1, dateTime2 , Sort.by(Sort.Direction.DESC, "eventStartTime"));
+        List<Event> eventUnion = ListUtils.intersection(eventFilter, eventWord);
+        return eventService.castTypeToDto(eventUnion);
+    }
+    @GetMapping(value = "/search" , params = {"category", "word"})
+    public List<EventGetDto> getSearchCategory(@RequestParam(name = "category") String category, @RequestParam(name = "word") String word) {
+        List<Event> eventWord = eventRepository.findAllByBookingEmailContainingOrBookingNameContaining(word, word);
+        List<Event> eventFilter = eventRepository.findAllByEventCategory_EventCategoryName(category, Sort.by(Sort.Direction.DESC, "eventStartTime"));
+        List<Event> eventUnion = ListUtils.intersection(eventFilter, eventWord);
+        return eventService.castTypeToDto(eventUnion);
+    }
+
+    @GetMapping(value = "/search" , params = {"dateStart", "dateEnd", "category"})
+    public List<EventGetDto> getSearch(@RequestParam(name = "dateStart") String dateStart, @RequestParam(name = "dateEnd") String dateEnd, @RequestParam(name = "category") String category) throws DateTimeParseException {
+        String str1 = dateStart;
+        String str2 = dateEnd;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
+        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
+        return eventService.castTypeToDto(eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(dateTime1, dateTime2, category , Sort.by(Sort.Direction.DESC, "eventStartTime")));
     }
     @GetMapping(value = "/search" , params = {"dateStart", "dateEnd"})
-    public List<Event> getSearchDate(@RequestParam(name = "dateStart") String dateStart, @RequestParam(name = "dateEnd") String dateEnd) {
+    public List<EventGetDto> getSearchDate(@RequestParam(name = "dateStart") String dateStart, @RequestParam(name = "dateEnd") String dateEnd) {
         String str1 = dateStart;
         String str2 = dateEnd;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
         LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
-        return eventRepository.findAllByEventStartTimeBetween(dateTime1, dateTime2 , Sort.by(Sort.Direction.DESC, "eventStartTime"));
+        return eventService.castTypeToDto(eventRepository.findAllByEventStartTimeBetween(dateTime1, dateTime2 , Sort.by(Sort.Direction.DESC, "eventStartTime")));
     }
     @GetMapping(value = "/search" , params = {"category"})
-    public List<Event> getSearchCategory(@RequestParam(name = "category") String category) {
-        return eventRepository.findAllByEventCategory_EventCategoryName(category, Sort.by(Sort.Direction.DESC, "eventStartTime"));
+    public List<EventGetDto> getSearchCategory(@RequestParam(name = "category") String category) {
+        return eventService.castTypeToDto(eventRepository.findAllByEventCategory_EventCategoryName(category, Sort.by(Sort.Direction.DESC, "eventStartTime")));
     }
-
-
-
-
-//    @GetMapping(value = "/filter/eventsearch", params = "findingWord")
-//    public List<Event> getEventBySearchBooking(@RequestParam String findingWord){
-//        return eventRepository.findAllByBookingEmailContainingOrBookingNameContainingOrEventNotesContaining(findingWord, findingWord, findingWord);
-//    }
-//
-//    @GetMapping(value = "/filter/eventsearch", params = "findingNumber")
-//    public List<Event> getEventBySearchBookingByNumber(@RequestParam Integer findingNumber){
-//        return eventRepository.findAllByEventDuration(findingNumber);
-//    }
-
 }
