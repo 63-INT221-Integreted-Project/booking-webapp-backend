@@ -40,11 +40,11 @@ public class EventCategoryController {
         }
         return eventCategoryRepository.saveAndFlush(updateEventCategory);
     }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable Integer id){
-        eventCategoryRepository.deleteById(id);
-    }
+//
+//    @DeleteMapping("/{id}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public void delete(@PathVariable Integer id){
+//        eventCategoryRepository.deleteById(id);
+//    }
 
 }
