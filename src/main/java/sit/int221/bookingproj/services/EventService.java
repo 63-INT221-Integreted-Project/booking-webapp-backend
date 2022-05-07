@@ -64,8 +64,6 @@ public class EventService {
         return eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
     }
 
-
-
     public Event convertDtoToEvent(EventCreateDto eventCreateDto){
         EventCategory eventCategory = new EventCategory();
         eventCategory = eventCategoryRepository.findById(eventCreateDto.getEventCategoryId()).orElse(null);

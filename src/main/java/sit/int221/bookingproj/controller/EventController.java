@@ -51,6 +51,12 @@ public class EventController {
         }
     }
 
+    @GetMapping("/find/sort/")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public List<EventGetDto> findAndSort(){
+        return eventService.castTypeToDto(eventRepository.findAll(Sort.by(Sort.Direction.DESC, "eventStartTime")));
+    }
+
 //    @PutMapping("/{id}")
 //    @ResponseStatus(HttpStatus.ACCEPTED)
 //    public Event updateEvent(@PathVariable(name = "id") Integer id, @RequestBody EventCreateUpdateDto updateEvent){
