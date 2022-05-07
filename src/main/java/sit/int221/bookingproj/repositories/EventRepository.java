@@ -9,6 +9,7 @@ import sit.int221.bookingproj.entities.Event;
 import sit.int221.bookingproj.entities.EventCategory;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 

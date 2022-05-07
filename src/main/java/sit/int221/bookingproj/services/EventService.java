@@ -7,7 +7,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import sit.int221.bookingproj.controller.EventController;
 import sit.int221.bookingproj.dtos.EventCategoryDto;
-import sit.int221.bookingproj.dtos.EventCreateUpdateDto;
+import sit.int221.bookingproj.dtos.EventCategoryInEventDto;
+import sit.int221.bookingproj.dtos.EventCreateDto;
 import sit.int221.bookingproj.dtos.EventGetDto;
 import sit.int221.bookingproj.entities.Event;
 import sit.int221.bookingproj.entities.EventCategory;
@@ -36,7 +37,6 @@ public class EventService {
         String str1 = date1;
         String str2 = date2;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
         LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
         return eventRepository.findAllByEventStartTimeBetween(dateTime1,dateTime2,Sort.by(Sort.Direction.DESC, "eventStartTime"));
@@ -52,44 +52,61 @@ public class EventService {
         return convertEntityToDto(event.get());
     }
 
-    public void create(EventCreateUpdateDto eventCreateUpdateDto){
-        eventRepository.saveAndFlush(convertDtoToEvent(eventCreateUpdateDto));
+    public void create(EventCreateDto eventCreateDto){
+        eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
     }
 
-    public Event update(Integer id, EventCreateUpdateDto eventCreateUpdateDto){
+    public Event update(Integer id, EventCreateDto eventCreateDto){
         Optional<Event> event = eventRepository.findById(id);
         if(!event.isPresent()){
-            return convertDtoToEvent(eventCreateUpdateDto);
+            return convertDtoToEvent(eventCreateDto);
         }
-        return eventRepository.saveAndFlush(convertDtoToEvent(eventCreateUpdateDto));
+        return eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
     }
 
 
 
-    public Event convertDtoToEvent(EventCreateUpdateDto eventCreateUpdateDto){
+    public Event convertDtoToEvent(EventCreateDto eventCreateDto){
         EventCategory eventCategory = new EventCategory();
-        eventCategory = eventCategoryRepository.findById(eventCreateUpdateDto.getEventCategoryId()).orElse(null);
+        eventCategory = eventCategoryRepository.findById(eventCreateDto.getEventCategoryId()).orElse(null);
         Event event = new Event();
-        event.setEventId(eventCreateUpdateDto.getEventId());
-        event.setBookingName(eventCreateUpdateDto.getBookingName());
-        event.setBookingEmail(eventCreateUpdateDto.getBookingEmail());
-        event.setEventStartTime(eventCreateUpdateDto.getEventStartTime());
-        event.setEventDuration(eventCreateUpdateDto.getEventDuration());
-        event.setEventNotes(eventCreateUpdateDto.getEventNotes());
+        event.setEventId(eventCreateDto.getEventId());
+        event.setBookingName(eventCreateDto.getBookingName());
+        event.setBookingEmail(eventCreateDto.getBookingEmail());
+        event.setEventStartTime(eventCreateDto.getEventStartTime());
+        event.setEventDuration(eventCreateDto.getEventDuration());
+        event.setEventNotes(eventCreateDto.getEventNotes());
         event.setEventCategory(eventCategory);
         return event;
     }
 
     public EventGetDto convertEntityToDto(Event event){
         EventGetDto eventDto = new EventGetDto();
-        EventCategoryDto eventCategoryDto = new EventCategoryDto(event.getEventCategory().getEventCategoryId(), event.getEventCategory().getEventCategoryName() );
+        EventCategoryInEventDto eventCategoryInEventDto = new EventCategoryInEventDto(event.getEventCategory().getEventCategoryId(), event.getEventCategory().getEventCategoryName() );
         eventDto.setEventId(event.getEventId());
         eventDto.setBookingName(event.getBookingName());
         eventDto.setBookingEmail(event.getBookingEmail());
         eventDto.setEventStartTime(event.getEventStartTime());
         eventDto.setEventDuration(event.getEventDuration());
         eventDto.setEventNotes(event.getEventNotes());
-        eventDto.setEventCategory(eventCategoryDto);
+        eventDto.setEventCategory(eventCategoryInEventDto);
         return eventDto;
+    }
+
+   public boolean checkDuplicateEventTime(EventCreateDto eventCreateDto){
+        boolean check;
+        Optional<EventCategory> eventCategory = eventCategoryRepository.findById(eventCreateDto.getEventCategoryId());
+        String eventCategoryName = "";
+        if(eventCategory.isPresent()){
+            eventCategoryName = eventCategory.get().getEventCategoryName();
+        }
+        List<Event> events = eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(eventCreateDto.getEventStartTime() , eventCreateDto.getEventStartTime().plusMinutes(eventCreateDto.getEventDuration().longValue()) ,eventCategoryName ,Sort.by(Sort.Direction.DESC, "eventStartTime"));
+        if(events.isEmpty()){
+            check = true;
+        }
+        else{
+            check = false;
+        }
+        return check;
     }
 }

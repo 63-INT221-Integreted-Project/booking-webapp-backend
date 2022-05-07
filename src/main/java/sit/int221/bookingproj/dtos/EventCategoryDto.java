@@ -8,29 +8,50 @@ import javax.persistence.Id;
 
 @Data
 public class EventCategoryDto {
-    @Column(nullable = true)
     private Integer eventCategoryId;
-    @Column(nullable = true)
     private String eventCategoryName;
+    private String eventCategoryDescription;
+    private Integer eventDuration;
 
-    public EventCategoryDto(@Nullable Integer eventCategoryId,@Nullable String eventCategoryName) {
+    public EventCategoryDto(Integer eventCategoryId, String eventCategoryName) {
         this.eventCategoryId = eventCategoryId;
         this.eventCategoryName = eventCategoryName;
     }
 
-    public Integer getEventCategoryId() {
-        return eventCategoryId;
+    public EventCategoryDto() {
+
     }
 
-    public String getEventCategoryName() {
-        return eventCategoryName;
+
+    public Integer getEventCategoryId() {
+        return eventCategoryId;
     }
 
     public void setEventCategoryId(Integer eventCategoryId) {
         this.eventCategoryId = eventCategoryId;
     }
 
+    public String getEventCategoryName(String eventCategoryName) {
+        return this.eventCategoryName;
+    }
+
     public void setEventCategoryName(String eventCategoryName) {
         this.eventCategoryName = eventCategoryName;
+    }
+
+    public String getEventCategoryDescription() {
+        return eventCategoryDescription;
+    }
+
+    public void setEventCategoryDescription(String eventCategoryDescription) {
+        this.eventCategoryDescription = eventCategoryDescription;
+    }
+
+    public Integer getEventDuration() {
+        return eventDuration;
+    }
+
+    public void setEventDuration(Integer eventDuration) {
+        this.eventDuration = eventDuration;
     }
 }
