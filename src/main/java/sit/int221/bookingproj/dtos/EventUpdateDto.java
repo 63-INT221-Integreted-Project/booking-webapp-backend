@@ -8,14 +8,14 @@ import java.time.LocalDateTime;
 public class EventUpdateDto {
 
     private LocalDateTime eventStartTime;
-    private Integer eventDuration;
+    private String eventNotes;
 
-    public Integer getEventDuration() {
-        return eventDuration;
+    public String getEventNotes() {
+        return eventNotes;
     }
 
-    public void setEventDuration(Integer eventDuration) {
-        this.eventDuration = eventDuration;
+    public void setEventNotes(String eventNotes) {
+        this.eventNotes = eventNotes;
     }
 
     public LocalDateTime getEventStartTime() {
