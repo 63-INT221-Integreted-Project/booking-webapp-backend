@@ -2,10 +2,13 @@ package sit.int221.bookingproj.dtos;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class EventUpdateDto {
+
+    private LocalDateTime eventStartTime;
     private Integer eventDuration;
-    private String eventNotes;
 
     public Integer getEventDuration() {
         return eventDuration;
@@ -15,11 +18,11 @@ public class EventUpdateDto {
         this.eventDuration = eventDuration;
     }
 
-    public String getEventNotes() {
-        return eventNotes;
+    public LocalDateTime getEventStartTime() {
+        return eventStartTime;
     }
 
-    public void setEventNotes(String eventNotes) {
-        this.eventNotes = eventNotes;
+    public void setEventStartTime(LocalDateTime eventStartTime) {
+        this.eventStartTime = eventStartTime;
     }
 }

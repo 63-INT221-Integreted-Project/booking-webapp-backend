@@ -70,7 +70,7 @@ public class EventController {
         events = eventRepository.findById(id);
         events.ifPresent(event -> {
             event.setEventDuration(eventUpdateDto.getEventDuration());
-            event.setEventNotes(eventUpdateDto.getEventNotes());
+            event.setEventStartTime(eventUpdateDto.getEventStartTime());
             eventRepository.saveAndFlush(event);
         });
 
@@ -101,7 +101,7 @@ public class EventController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
         LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
-        List<Event> eventWord = eventRepository.findAllByBookingEmailContainingOrBookingNameContaining(word, word);
+        List<Event> eventWord = eventRepository.findAllByBookingEmailContainingOrBookingNameContaining(word, word, Sort.by(Sort.Direction.DESC, "eventStartTime"));
         List<Event> eventFilter = eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(dateTime1, dateTime2, category, Sort.by(Sort.Direction.DESC, "eventStartTime"));
         List<Event> eventUnion = ListUtils.intersection(eventFilter, eventWord);
         return eventService.castTypeToDto(eventUnion);
@@ -113,14 +113,14 @@ public class EventController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
         LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
-        List<Event> eventWord = eventRepository.findAllByBookingEmailContainingOrBookingNameContaining(word, word);
+        List<Event> eventWord = eventRepository.findAllByBookingEmailContainingOrBookingNameContaining(word, word, Sort.by(Sort.Direction.DESC, "eventStartTime"));
         List<Event> eventFilter = eventRepository.findAllByEventStartTimeBetween(dateTime1, dateTime2 , Sort.by(Sort.Direction.DESC, "eventStartTime"));
         List<Event> eventUnion = ListUtils.intersection(eventFilter, eventWord);
         return eventService.castTypeToDto(eventUnion);
     }
     @GetMapping(value = "/search" , params = {"category", "word"})
     public List<EventGetDto> getSearchCategory(@RequestParam(name = "category") String category, @RequestParam(name = "word") String word) {
-        List<Event> eventWord = eventRepository.findAllByBookingEmailContainingOrBookingNameContaining(word, word);
+        List<Event> eventWord = eventRepository.findAllByBookingEmailContainingOrBookingNameContaining(word, word , Sort.by(Sort.Direction.DESC, "eventStartTime"));
         List<Event> eventFilter = eventRepository.findAllByEventCategory_EventCategoryName(category, Sort.by(Sort.Direction.DESC, "eventStartTime"));
         List<Event> eventUnion = ListUtils.intersection(eventFilter, eventWord);
         return eventService.castTypeToDto(eventUnion);
