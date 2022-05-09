@@ -69,7 +69,7 @@ public class EventController {
         Optional<Event> events = Optional.of(new Event());
         events = eventRepository.findById(id);
         events.ifPresent(event -> {
-            event.setEventDuration(eventUpdateDto.getEventDuration());
+            event.setEventNotes(eventUpdateDto.getEventNotes());
             event.setEventStartTime(eventUpdateDto.getEventStartTime());
             eventRepository.saveAndFlush(event);
         });
