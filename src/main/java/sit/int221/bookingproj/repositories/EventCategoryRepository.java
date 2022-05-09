@@ -8,4 +8,5 @@ import sit.int221.bookingproj.entities.EventCategory;
 public interface EventCategoryRepository extends JpaRepository<EventCategory, Integer> {
     public EventCategory findByEventCategoryId(Integer id);
     public EventCategory findAllByEventCategoryName(String eventCategoryName);
+
 }

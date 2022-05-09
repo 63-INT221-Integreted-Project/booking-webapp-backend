@@ -19,7 +19,7 @@ public class EventGetDto {
     private Integer eventDuration;
     private String eventNotes;
     @Column(nullable = true)
-    private EventCategoryDto eventCategory;
+    private EventCategoryInEventDto eventCategory;
 
     public Integer getEventId() {
         return eventId;
@@ -45,7 +45,7 @@ public class EventGetDto {
         return eventNotes;
     }
 
-    public EventCategoryDto getEventCategory() {
+    public EventCategoryInEventDto getEventCategory() {
         return eventCategory;
     }
 
@@ -73,7 +73,7 @@ public class EventGetDto {
         this.eventNotes = eventNotes;
     }
 
-    public void setEventCategory(EventCategoryDto eventCategoryDto) {
+    public void setEventCategory(EventCategoryInEventDto eventCategoryDto) {
         this.eventCategory = eventCategoryDto;
     }
 }

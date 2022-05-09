@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sit.int221.bookingproj.entities.EventCategory;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
+import sit.int221.bookingproj.services.EventCategoryService;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,9 +16,12 @@ public class EventCategoryController {
     @Autowired
     public EventCategoryRepository eventCategoryRepository;
 
+    @Autowired
+    public EventCategoryService eventCategoryService;
+
     @GetMapping("/")
     public List getAllEventCategrory(){
-        return eventCategoryRepository.findAll();
+        return eventCategoryService.getAllEventCategoryDto();
     }
 
     @GetMapping("/{id}")

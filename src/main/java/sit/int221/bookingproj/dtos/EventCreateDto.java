@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class EventCreateUpdateDto {
+public class EventCreateDto {
     private Integer eventId;
     private String bookingName;
     private String bookingEmail;
