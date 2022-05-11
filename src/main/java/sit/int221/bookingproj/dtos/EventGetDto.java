@@ -16,7 +16,7 @@ public class EventGetDto {
     private String bookingName;
     private String bookingEmail;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Instant eventStartTime;
     private Integer eventDuration;
     private String eventNotes;
