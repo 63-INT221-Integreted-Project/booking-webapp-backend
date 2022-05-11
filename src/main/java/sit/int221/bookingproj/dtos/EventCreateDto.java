@@ -3,6 +3,7 @@ package sit.int221.bookingproj.dtos;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
@@ -10,8 +11,8 @@ public class EventCreateDto {
     private Integer eventId;
     private String bookingName;
     private String bookingEmail;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime eventStartTime;
+
+    private Instant eventStartTime;
     private Integer eventDuration;
     private String eventNotes;
     private Integer eventCategoryId;
@@ -28,7 +29,7 @@ public class EventCreateDto {
         return bookingEmail;
     }
 
-    public LocalDateTime getEventStartTime() {
+    public Instant getEventStartTime() {
         return eventStartTime;
     }
 
@@ -56,7 +57,7 @@ public class EventCreateDto {
         this.bookingEmail = bookingEmail;
     }
 
-    public void setEventStartTime(LocalDateTime eventStartTime) {
+    public void setEventStartTime(Instant eventStartTime) {
         this.eventStartTime = eventStartTime;
     }
 

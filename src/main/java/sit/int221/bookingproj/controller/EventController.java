@@ -15,6 +15,7 @@ import sit.int221.bookingproj.repositories.EventRepository;
 import sit.int221.bookingproj.services.EventService;
 import org.apache.commons.collections4.ListUtils;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -86,23 +87,27 @@ public class EventController {
     public List getByMonth(@RequestParam(name = "date1") String date1, @RequestParam(name = "date2") String date2){
         String str1 = date1;
         String str2 = date2;
-        logger.info(str1);
-        logger.info(str2);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
-        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
-        return eventService.castTypeToDto(eventRepository.findAllByEventStartTimeBetween(dateTime1,dateTime2, Sort.by(Sort.Direction.DESC, "eventStartTime")));
+        Instant instant = Instant.parse(str1);
+        Instant instant2 = Instant.parse(str2);
+//        logger.info(str1);
+//        logger.info(str2);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
+//        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
+        return eventService.castTypeToDto(eventRepository.findAllByEventStartTimeBetween(instant,instant2, Sort.by(Sort.Direction.DESC, "eventStartTime")));
     }
 
     @GetMapping(value = "/search" , params = {"dateStart", "dateEnd", "category", "word"})
     public List<EventGetDto> getSearch(@RequestParam(name = "dateStart") String dateStart, @RequestParam(name = "dateEnd") String dateEnd, @RequestParam(name = "category") String category, @RequestParam(name = "word") String word) {
         String str1 = dateStart;
         String str2 = dateEnd;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
-        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
+        Instant instant = Instant.parse(str1);
+        Instant instant2 = Instant.parse(str2);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
+//        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
         List<Event> eventWord = eventRepository.findAllByBookingEmailContainingOrBookingNameContaining(word, word, Sort.by(Sort.Direction.DESC, "eventStartTime"));
-        List<Event> eventFilter = eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(dateTime1, dateTime2, category, Sort.by(Sort.Direction.DESC, "eventStartTime"));
+        List<Event> eventFilter = eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(instant, instant2, category, Sort.by(Sort.Direction.DESC, "eventStartTime"));
         List<Event> eventUnion = ListUtils.intersection(eventFilter, eventWord);
         return eventService.castTypeToDto(eventUnion);
     }
@@ -110,11 +115,13 @@ public class EventController {
     public List<EventGetDto> getSearchDate(@RequestParam(name = "dateStart") String dateStart, @RequestParam(name = "dateEnd") String dateEnd, @RequestParam(name = "word") String word) {
         String str1 = dateStart;
         String str2 = dateEnd;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
-        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
+        Instant instant = Instant.parse(str1);
+        Instant instant2 = Instant.parse(str2);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
+//        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
         List<Event> eventWord = eventRepository.findAllByBookingEmailContainingOrBookingNameContaining(word, word, Sort.by(Sort.Direction.DESC, "eventStartTime"));
-        List<Event> eventFilter = eventRepository.findAllByEventStartTimeBetween(dateTime1, dateTime2 , Sort.by(Sort.Direction.DESC, "eventStartTime"));
+        List<Event> eventFilter = eventRepository.findAllByEventStartTimeBetween(instant, instant2 , Sort.by(Sort.Direction.DESC, "eventStartTime"));
         List<Event> eventUnion = ListUtils.intersection(eventFilter, eventWord);
         return eventService.castTypeToDto(eventUnion);
     }
@@ -130,19 +137,23 @@ public class EventController {
     public List<EventGetDto> getSearch(@RequestParam(name = "dateStart") String dateStart, @RequestParam(name = "dateEnd") String dateEnd, @RequestParam(name = "category") String category) throws DateTimeParseException {
         String str1 = dateStart;
         String str2 = dateEnd;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
-        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
-        return eventService.castTypeToDto(eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(dateTime1, dateTime2, category , Sort.by(Sort.Direction.DESC, "eventStartTime")));
+        Instant instant = Instant.parse(str1);
+        Instant instant2 = Instant.parse(str2);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
+//        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
+        return eventService.castTypeToDto(eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(instant, instant2, category , Sort.by(Sort.Direction.DESC, "eventStartTime")));
     }
     @GetMapping(value = "/search" , params = {"dateStart", "dateEnd"})
     public List<EventGetDto> getSearchDate(@RequestParam(name = "dateStart") String dateStart, @RequestParam(name = "dateEnd") String dateEnd) {
         String str1 = dateStart;
         String str2 = dateEnd;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
-        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
-        return eventService.castTypeToDto(eventRepository.findAllByEventStartTimeBetween(dateTime1, dateTime2 , Sort.by(Sort.Direction.DESC, "eventStartTime")));
+        Instant instant = Instant.parse(str1);
+        Instant instant2 = Instant.parse(str2);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
+//        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
+        return eventService.castTypeToDto(eventRepository.findAllByEventStartTimeBetween(instant, instant2 , Sort.by(Sort.Direction.DESC, "eventStartTime")));
     }
     @GetMapping(value = "/search" , params = {"category"})
     public List<EventGetDto> getSearchCategory(@RequestParam(name = "category") String category) {
