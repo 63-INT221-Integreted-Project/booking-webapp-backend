@@ -8,9 +8,12 @@ public class EventCategoryInEventDto {
     private Integer eventCategoryId;
     private String eventCategoryName;
 
-    public EventCategoryInEventDto(Integer eventCategoryId, String eventCategoryName) {
+    private Integer eventDuration;
+
+    public EventCategoryInEventDto(Integer eventCategoryId, String eventCategoryName, Integer eventDuration) {
         this.eventCategoryId = eventCategoryId;
         this.eventCategoryName = eventCategoryName;
+        this.eventDuration = eventDuration;
     }
 
     public Integer getEventCategoryId() {
@@ -27,5 +30,13 @@ public class EventCategoryInEventDto {
 
     public void setEventCategoryName(String eventCategoryName) {
         this.eventCategoryName = eventCategoryName;
+    }
+
+    public Integer getEventDuration() {
+        return eventDuration;
+    }
+
+    public void setEventDuration(Integer eventDuration) {
+        this.eventDuration = eventDuration;
     }
 }

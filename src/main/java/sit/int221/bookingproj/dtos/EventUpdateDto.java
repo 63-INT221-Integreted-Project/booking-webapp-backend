@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 
 @Data
 public class EventUpdateDto {
-
     private Instant eventStartTime;
     private String eventNotes;
 

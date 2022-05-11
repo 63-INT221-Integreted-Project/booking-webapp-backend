@@ -83,7 +83,7 @@ public class EventService {
 
     public EventGetDto convertEntityToDto(Event event){
         EventGetDto eventDto = new EventGetDto();
-        EventCategoryInEventDto eventCategoryInEventDto = new EventCategoryInEventDto(event.getEventCategory().getEventCategoryId(), event.getEventCategory().getEventCategoryName() );
+        EventCategoryInEventDto eventCategoryInEventDto = new EventCategoryInEventDto(event.getEventCategory().getEventCategoryId(), event.getEventCategory().getEventCategoryName(),event.getEventCategory().getEventDuration() );
         eventDto.setEventId(event.getEventId());
         eventDto.setBookingName(event.getBookingName());
         eventDto.setBookingEmail(event.getBookingEmail());
