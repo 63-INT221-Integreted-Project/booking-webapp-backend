@@ -3,13 +3,13 @@ package sit.int221.bookingproj.dtos;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
 public class EventUpdateDto {
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime eventStartTime;
+    private Instant eventStartTime;
     private String eventNotes;
 
     public String getEventNotes() {
@@ -20,11 +20,11 @@ public class EventUpdateDto {
         this.eventNotes = eventNotes;
     }
 
-    public LocalDateTime getEventStartTime() {
+    public Instant getEventStartTime() {
         return eventStartTime;
     }
 
-    public void setEventStartTime(LocalDateTime eventStartTime) {
+    public void setEventStartTime(Instant eventStartTime) {
         this.eventStartTime = eventStartTime;
     }
 }

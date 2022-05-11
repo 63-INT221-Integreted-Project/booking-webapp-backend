@@ -15,6 +15,7 @@ import sit.int221.bookingproj.entities.EventCategory;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.repositories.EventRepository;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -36,10 +37,12 @@ public class EventService {
     public List findByDateTime(String date1, String date2){
         String str1 = date1;
         String str2 = date2;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
-        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
-        return eventRepository.findAllByEventStartTimeBetween(dateTime1,dateTime2,Sort.by(Sort.Direction.DESC, "eventStartTime"));
+        Instant instant = Instant.parse(str1);
+        Instant instant2 = Instant.parse(str2);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+//        LocalDateTime dateTime1 = LocalDateTime.parse(str1, formatter);
+//        LocalDateTime dateTime2 = LocalDateTime.parse(str2, formatter);
+        return eventRepository.findAllByEventStartTimeBetween(instant,instant2,Sort.by(Sort.Direction.DESC, "eventStartTime"));
     }
 
     public List<EventGetDto> castTypeToDto(List<Event> event){
@@ -98,7 +101,7 @@ public class EventService {
         if(eventCategory.isPresent()){
             eventCategoryName = eventCategory.get().getEventCategoryName();
         }
-        List<Event> events = eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(eventCreateDto.getEventStartTime() , eventCreateDto.getEventStartTime().plusMinutes(eventCreateDto.getEventDuration().longValue()) ,eventCategoryName ,Sort.by(Sort.Direction.DESC, "eventStartTime"));
+        List<Event> events = eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(eventCreateDto.getEventStartTime() , eventCreateDto.getEventStartTime().plusSeconds(eventCreateDto.getEventDuration().longValue() * 60) ,eventCategoryName ,Sort.by(Sort.Direction.DESC, "eventStartTime"));
         if(events.isEmpty()){
             check = true;
         }

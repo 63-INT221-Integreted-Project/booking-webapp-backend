@@ -8,14 +8,16 @@ import sit.int221.bookingproj.entities.EventCategory;
 
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
+import java.time.Instant;
 import java.time.LocalDateTime;
 @Data
 public class EventGetDto {
     private Integer eventId;
     private String bookingName;
     private String bookingEmail;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime eventStartTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    private Instant eventStartTime;
     private Integer eventDuration;
     private String eventNotes;
     @Column(nullable = true)
@@ -33,7 +35,7 @@ public class EventGetDto {
         return bookingEmail;
     }
 
-    public LocalDateTime getEventStartTime() {
+    public Instant getEventStartTime() {
         return eventStartTime;
     }
 
@@ -61,7 +63,7 @@ public class EventGetDto {
         this.bookingEmail = bookingEmail;
     }
 
-    public void setEventStartTime(LocalDateTime eventStartTime) {
+    public void setEventStartTime(Instant eventStartTime) {
         this.eventStartTime = eventStartTime;
     }
 

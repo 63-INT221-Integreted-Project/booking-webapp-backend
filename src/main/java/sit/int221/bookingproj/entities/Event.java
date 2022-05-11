@@ -2,6 +2,7 @@ package sit.int221.bookingproj.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.persistence.*;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,9 +19,8 @@ public class Event {
     @Column(name = "bookingEmail", nullable = false, length = 50)
     private String bookingEmail;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     @Column(name = "eventStartTime", nullable = false)
-    private LocalDateTime eventStartTime;
+    private Instant eventStartTime;
 
     @Column(name = "eventDuration", nullable = false)
     private Integer eventDuration;
@@ -49,11 +49,11 @@ public class Event {
         this.eventNotes = eventNotes;
     }
 
-    public LocalDateTime getEventStartTime() {
+    public Instant getEventStartTime() {
         return eventStartTime;
     }
 
-    public void setEventStartTime(LocalDateTime eventStartTime) {
+    public void setEventStartTime(Instant eventStartTime) {
         this.eventStartTime = eventStartTime;
     }
 
