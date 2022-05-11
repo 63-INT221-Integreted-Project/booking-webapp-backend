@@ -35,8 +35,8 @@ public class EventGetDto {
         return bookingEmail;
     }
 
-    public Instant getEventStartTime() {
-        return eventStartTime;
+    public String getEventStartTime() {
+        return eventStartTime.toString();
     }
 
     public Integer getEventDuration() {
