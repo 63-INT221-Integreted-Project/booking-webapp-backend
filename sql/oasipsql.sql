@@ -12,7 +12,7 @@
     -- -----------------------------------------------------
     CREATE TABLE IF NOT EXISTS `oasipdb`.`eventCategory` (
       `eventCategoryId` INT NOT NULL AUTO_INCREMENT,
-      `eventCategoryName` VARCHAR(100) NOT NULL,
+      `eventCategoryName` VARCHAR(100) UNIQUE NOT NULL,
       `eventCategoryDescription` VARCHAR(500) NULL,
       `eventDuration` INT NOT NULL,
       PRIMARY KEY (`eventCategoryId`))
