@@ -56,17 +56,17 @@ public class EventService {
         return convertEntityToDto(event.get());
     }
 
-    public boolean validateForm(EventCreateDto eventCreateDto){
-        boolean check = false;
-        if(eventCreateDto.getBookingName().length() <= 100){
-            if(eventCreateDto.getBookingEmail().length() <= 50){
-                if(eventCreateDto.getEventNotes().length() <= 500){
-                    check = true;
-                }
-            }
-        }
-        return check;
-    }
+//    public boolean validateForm(EventCreateDto eventCreateDto){
+//        boolean check = false;
+//        if(eventCreateDto.getBookingName().length() <= 100){
+//            if(eventCreateDto.getBookingEmail().length() <= 50){
+//                if(eventCreateDto.getEventNotes().length() <= 500){
+//                    check = true;
+//                }
+//            }
+//        }
+//        return check;
+//    }
     public List<EventGetDto> getSearch(String dateStart, String dateEnd, String category, String word){
         List result = new ArrayList();
         List categoryFind = new ArrayList();
@@ -81,6 +81,9 @@ public class EventService {
             Instant instant2 = Instant.parse(str2);
             dateFind = eventRepository.findAllByEventStartTimeBetween(instant, instant2 , Sort.by(Sort.Direction.DESC, "eventStartTime"));
         }
+        else if(dateStart == "" && dateEnd == ""){
+            dateFind = eventRepository.findAll(Sort.by(Sort.Direction.DESC, "eventStartTime"));
+        }
         else if(dateStart == "" || dateEnd == ""){
             if(dateStart == ""){
                 Instant instant = Instant.now();
@@ -93,6 +96,7 @@ public class EventService {
                 dateFind = eventRepository.findAllByEventStartTimeBetween(instant, instant2 , Sort.by(Sort.Direction.DESC, "eventStartTime"));
             }
         }
+
 
         if(category != ""){
             EventCategory eventCategory = eventCategoryRepository.findAllByEventCategoryName(category);
@@ -123,7 +127,7 @@ public class EventService {
             }
     }
 
-    public Event update(Integer id, EventCreateDto eventCreateDto){
+    public Event update(Integer id,@Valid EventCreateDto eventCreateDto){
         Optional<Event> event = eventRepository.findById(id);
         if(!event.isPresent()){
             return convertDtoToEvent(eventCreateDto);

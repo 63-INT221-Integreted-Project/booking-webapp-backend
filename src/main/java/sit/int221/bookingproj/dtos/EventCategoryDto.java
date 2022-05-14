@@ -11,10 +11,10 @@ import javax.validation.constraints.*;
 public class EventCategoryDto {
     private Integer eventCategoryId;
     @NotEmpty
-    @Size(min = 0, max = 100)
+    @Size(min = 0, max = 100, message = "eventCategoryName is invalid")
     private String eventCategoryName;
     @NotEmpty
-    @Size(min = 0, max = 500)
+    @Size(min = 0, max = 500, message = "eventCategoryDescription is invalid")
     private String eventCategoryDescription;
     @NotEmpty
     @Min(value = 0, message = "the value can not under than 0")
@@ -29,7 +29,6 @@ public class EventCategoryDto {
     public EventCategoryDto() {
 
     }
-
 
     public Integer getEventCategoryId() {
         return eventCategoryId;

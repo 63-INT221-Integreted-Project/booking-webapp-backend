@@ -2,6 +2,7 @@ package sit.int221.bookingproj.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.validation.constraints.*;
 import java.time.Instant;
@@ -11,10 +12,11 @@ import java.time.LocalDateTime;
 public class EventCreateDto {
     private Integer eventId;
     @NotEmpty
-    @Size(min = 1, max = 100)
+    @UniqueElements
+    @Size(max = 100, message = "size of form is invalid")
     private String bookingName;
     @NotEmpty
-    @Size(min = 1, max = 50)
+    @Size(max = 50 , message = "size of form is invalid")
     @Email(message = "The email address is invalid.")
     private String bookingEmail;
 
@@ -24,7 +26,7 @@ public class EventCreateDto {
     @Min(value = 0, message = "the value must higher than 0")
     @Max(value = 480, message = "the value must don't higher than 480")
     private Integer eventDuration;
-    @Size(max = 500)
+    @Size(max = 500, message = "size of form is invalid")
     private String eventNotes;
     private Integer eventCategoryId;
 

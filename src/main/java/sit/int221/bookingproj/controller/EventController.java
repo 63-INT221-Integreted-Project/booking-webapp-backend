@@ -65,7 +65,7 @@ public class EventController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateEvent(@PathVariable Integer id, @RequestBody EventUpdateDto eventUpdateDto){
+    public void updateEvent(@PathVariable Integer id,@Valid @RequestBody EventUpdateDto eventUpdateDto){
         Optional<Event> events = Optional.of(new Event());
         events = eventRepository.findById(id);
         events.ifPresent(event -> {
