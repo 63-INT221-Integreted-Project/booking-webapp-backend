@@ -1,6 +1,7 @@
 package sit.int221.bookingproj.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import sit.int221.bookingproj.dtos.EventCategoryDto;
 import sit.int221.bookingproj.entities.EventCategory;
@@ -15,7 +16,7 @@ public class EventCategoryService {
     public EventCategoryRepository eventCategoryRepository;
 
     public List<EventCategoryDto> getAllEventCategoryDto(){
-        return eventCategoryRepository.findAll().stream().map(this::castEventCategoryDto).collect(Collectors.toList());
+        return eventCategoryRepository.findAll(Sort.by(Sort.Direction.DESC, "eventCategoryId")).stream().map(this::castEventCategoryDto).collect(Collectors.toList());
     }
 
     public EventCategoryDto castEventCategoryDto(EventCategory eventCategory){
