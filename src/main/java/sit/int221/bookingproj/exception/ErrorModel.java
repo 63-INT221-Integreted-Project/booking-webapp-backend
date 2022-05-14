@@ -1,0 +1,42 @@
+package sit.int221.bookingproj.exception;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.http.HttpStatus;
+
+import java.time.LocalDateTime;
+
+public class ErrorModel{
+
+    private HttpStatus httpStatus;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:SS")
+    private LocalDateTime timestamp;
+
+    private String message;
+
+    private String details;
+
+    public ErrorModel(HttpStatus httpStatus, String message, String details) {
+        this.httpStatus = httpStatus;
+        this.timestamp = LocalDateTime.now();
+        this.message = message;
+        this.details = details;
+    }
+
+
+
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+}

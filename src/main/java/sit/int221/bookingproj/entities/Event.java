@@ -1,7 +1,13 @@
 package sit.int221.bookingproj.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.intellij.lang.annotations.Pattern;
+
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
@@ -15,8 +21,7 @@ public class Event {
 
     @Column(name = "bookingName", nullable = false, length = 100)
     private String bookingName;
-
-    @Column(name = "bookingEmail", nullable = false, length = 50)
+    @Column(name = "bookingEmail", nullable = false)
     private String bookingEmail;
 
     @Column(name = "eventStartTime", nullable = false)

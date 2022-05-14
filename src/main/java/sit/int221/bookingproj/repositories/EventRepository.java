@@ -13,7 +13,6 @@ import java.util.Optional;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Integer> {
-//    public List<Event> findAllByEventStartTimeStartsWith(String date);
     public List<Event> findAllByEventStartTimeBetween(Instant start, Instant end, Sort eventStartTime);
     public List<Event> findAllByEventCategory(Optional<EventCategory> eventCategory);
 
