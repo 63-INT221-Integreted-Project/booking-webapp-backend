@@ -29,23 +29,19 @@ public class EventCategoryController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Optional<EventCategory> getEventCategoryById(@PathVariable Integer id){
-        return Optional.ofNullable(eventCategoryRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ไม่่พบสิ่งที่ต้องการ")));
+        return eventCategoryService.getEventCategoryById(id);
     }
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public EventCategory createEventCategory(@RequestBody EventCategory newEventCategory){
-        return eventCategoryRepository.saveAndFlush(newEventCategory);
+    public void createEventCategory(@RequestBody EventCategory newEventCategory){
+        eventCategoryService.createEventCategory(newEventCategory);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EventCategory update(@PathVariable(name = "id") Integer id, @RequestBody EventCategory updateEventCategory){
-        Optional<EventCategory> optionalEventCategory = eventCategoryRepository.findById(id);
-        if(!optionalEventCategory.isPresent()){
-            return updateEventCategory;
-        }
-        return eventCategoryRepository.saveAndFlush(updateEventCategory);
+    public void update(@PathVariable(name = "id") Integer id, @RequestBody EventCategory updateEventCategory){
+        eventCategoryService.updateEventCategory(id,updateEventCategory);
     }
 //
 //    @DeleteMapping("/{id}")

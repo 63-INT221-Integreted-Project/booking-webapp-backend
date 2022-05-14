@@ -1,14 +1,13 @@
 package sit.int221.bookingproj.services;
 
+import io.swagger.models.auth.In;
 import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.bookingproj.controller.EventController;
 import sit.int221.bookingproj.dtos.*;
@@ -18,11 +17,12 @@ import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.repositories.EventRepository;
 
 import javax.validation.Valid;
-import java.sql.SQLOutput;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,7 +45,6 @@ public class EventService {
         Instant instant2 = Instant.parse(str2);
         return eventRepository.findAllByEventStartTimeBetween(instant,instant2,Sort.by(Sort.Direction.DESC, "eventStartTime"));
     }
-
     public List<EventGetDto> castTypeToDto(List<Event> event){
         return event.stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
@@ -56,17 +55,11 @@ public class EventService {
         return convertEntityToDto(event.get());
     }
 
-//    public boolean validateForm(EventCreateDto eventCreateDto){
-//        boolean check = false;
-//        if(eventCreateDto.getBookingName().length() <= 100){
-//            if(eventCreateDto.getBookingEmail().length() <= 50){
-//                if(eventCreateDto.getEventNotes().length() <= 500){
-//                    check = true;
-//                }
-//            }
-//        }
-//        return check;
-//    }
+    public void deleteEvent(Integer id){
+        eventRepository.deleteById(id);
+    }
+
+
     public List<EventGetDto> getSearch(String dateStart, String dateEnd, String category, String word){
         List result = new ArrayList();
         List categoryFind = new ArrayList();
@@ -121,19 +114,69 @@ public class EventService {
         return castTypeToDto(result);
     }
 
-    public void create(@Valid EventCreateDto eventCreateDto) {
+    public boolean validateFormCreate(EventCreateDto eventCreateDto){
+        Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(eventCreateDto.getBookingEmail());
+        boolean check = false;
+        if(eventCreateDto.getBookingName().length() < 100 || eventCreateDto.getBookingEmail().length() < 50 || eventCreateDto.getEventNotes().length() < 500){
+            if(eventCreateDto.getEventDuration() > 0 && eventCreateDto.getEventDuration() < 480){
+                if(matcher.find()){
+                    check = true;
+                }
+                else{
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "email is invalid");
+                }
+            }
+            else{
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "duration is invalid");
+            }
+        }
+        else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "length exceeded the size");
+        }
+        return check;
+    }
+
+    public void create(EventCreateDto eventCreateDto) {
             if (checkDuplicateEventTime(eventCreateDto) == true) {
-                eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
+                if(validateFormCreate(eventCreateDto) == true){
+                    if(checkFuture(eventCreateDto.getEventStartTime())){
+                        eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
+                    }
+                }
+            }else{
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Overlap Datetime");
             }
     }
 
-    public Event update(Integer id,@Valid EventCreateDto eventCreateDto){
-        Optional<Event> event = eventRepository.findById(id);
-        if(!event.isPresent()){
-            return convertDtoToEvent(eventCreateDto);
+    public void update(Integer id,@Valid EventUpdateDto eventUpdateDto){
+        Optional<Event> events = Optional.of(new Event());
+        events = eventRepository.findById(id);
+        if(events.isPresent()){
+            if(eventUpdateDto.getEventNotes().length() < 500){
+                if(checkDuplicateEventTimeForUpdate(events,eventUpdateDto.getEventStartTime())){
+                    if(checkFuture(eventUpdateDto.getEventStartTime())){
+                        events.ifPresent(event -> {
+                            event.setEventNotes(eventUpdateDto.getEventNotes());
+                            event.setEventStartTime(eventUpdateDto.getEventStartTime());
+                            eventRepository.saveAndFlush(event);
+                        });
+                    }
+                    else{
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Stattime can not be past");
+                    }
+                }
+                else{
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Stattime can not overlap");
+                }
+            }
+            else{
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Length exceeded the size");
+            }
         }
-        return eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
-
+        else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can not update eventId" + id);
+        }
     }
 
     public Event convertDtoToEvent(EventCreateDto eventCreateDto){
@@ -163,9 +206,23 @@ public class EventService {
         return eventDto;
     }
 
+    public boolean checkDuplicateEventTimeForUpdate(Optional<Event> event, Instant startTime){
+        boolean check;
+        List eventTimeIn = new ArrayList();
+        eventTimeIn = eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(startTime, startTime.plusSeconds(event.get().getEventDuration() * 60),event.get().getEventCategory().getEventCategoryName(), Sort.by(Sort.Direction.DESC, "eventStartTime"));
+        if(eventTimeIn.isEmpty()){
+            check = true;
+        }
+        else{
+            check = false;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Overlap Datetime");
+        }
+        return check;
+    }
+
    public boolean checkDuplicateEventTime(EventCreateDto eventCreateDto){
         boolean check;
-        Optional<EventCategory> eventCategory = Optional.ofNullable(eventCategoryRepository.findById(eventCreateDto.getEventCategoryId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ไม่พบสิ่งที่ต้องการ")));
+        Optional<EventCategory> eventCategory = Optional.ofNullable(eventCategoryRepository.findById(eventCreateDto.getEventCategoryId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "can not find event id" + eventCreateDto.getEventCategoryId())));
         String eventCategoryName = "";
         if(eventCategory.isPresent()){
             eventCategoryName = eventCategory.get().getEventCategoryName();
@@ -176,6 +233,18 @@ public class EventService {
         }
         else{
             check = false;
+        }
+        return check;
+    }
+
+    public boolean checkFuture(Instant instantCheck){
+        boolean check = false;
+        Instant instant = Instant.now();
+        if(instant.isBefore(instantCheck)){
+            check = true;
+        }
+        else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Starttime can not be past");
         }
         return check;
     }

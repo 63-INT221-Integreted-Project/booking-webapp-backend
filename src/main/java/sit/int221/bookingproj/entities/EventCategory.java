@@ -21,8 +21,6 @@ public class EventCategory {
     @Column(name = "eventCategoryDescription", length = 500)
     private String eventCategoryDescription;
 
-    @Min(value = 0, message = "the value can not under than 0")
-    @Max(value = 480 , message = "the value can not higher than 480")
     @Column(name = "eventDuration", nullable = false)
     private Integer eventDuration;
 

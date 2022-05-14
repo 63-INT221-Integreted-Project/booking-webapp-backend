@@ -11,13 +11,7 @@ import javax.validation.constraints.Size;
 @Data
 public class EventCategoryInEventDto {
     private Integer eventCategoryId;
-    @NotEmpty
-    @Size(min = 0, max = 100)
     private String eventCategoryName;
-
-    @NotEmpty
-    @Min(value = 0, message = "the value must higher than 0")
-    @Max(value = 480, message = "the value must don't higher than 480")
     private Integer eventDuration;
 
     public EventCategoryInEventDto(Integer eventCategoryId, String eventCategoryName, Integer eventDuration) {

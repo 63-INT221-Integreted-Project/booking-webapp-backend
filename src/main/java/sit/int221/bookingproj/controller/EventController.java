@@ -53,7 +53,7 @@ public class EventController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createEvent(@Valid @RequestBody EventCreateDto newEvent)  {
+    public void createEvent(@RequestBody EventCreateDto newEvent)  {
         eventService.create(newEvent);
     }
 
@@ -65,21 +65,15 @@ public class EventController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateEvent(@PathVariable Integer id,@Valid @RequestBody EventUpdateDto eventUpdateDto){
-        Optional<Event> events = Optional.of(new Event());
-        events = eventRepository.findById(id);
-        events.ifPresent(event -> {
-            event.setEventNotes(eventUpdateDto.getEventNotes());
-            event.setEventStartTime(eventUpdateDto.getEventStartTime());
-            eventRepository.saveAndFlush(event);
-        });
+    public void updateEvent(@PathVariable Integer id, @RequestBody EventUpdateDto eventUpdateDto){
+        eventService.update(id,eventUpdateDto);
 
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void delete(@PathVariable(name = "id") Integer id){
-        eventRepository.deleteById(id);
+        eventService.deleteEvent(id);
     }
 
     @GetMapping("/check-between")

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.validator.constraints.UniqueElements;
 
+import javax.persistence.Column;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -11,22 +13,16 @@ import java.time.LocalDateTime;
 @Data
 public class EventCreateDto {
     private Integer eventId;
+
     @NotEmpty
-    @UniqueElements
-    @Size(max = 100, message = "size of form is invalid")
     private String bookingName;
     @NotEmpty
-    @Size(max = 50 , message = "size of form is invalid")
-    @Email(message = "The email address is invalid.")
     private String bookingEmail;
-
-    @FutureOrPresent
+    @NotEmpty
     private Instant eventStartTime;
-
-    @Min(value = 0, message = "the value must higher than 0")
-    @Max(value = 480, message = "the value must don't higher than 480")
+    @NotEmpty
     private Integer eventDuration;
-    @Size(max = 500, message = "size of form is invalid")
+
     private String eventNotes;
     private Integer eventCategoryId;
 
