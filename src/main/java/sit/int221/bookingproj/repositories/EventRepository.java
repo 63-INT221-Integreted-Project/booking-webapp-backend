@@ -13,11 +13,9 @@ import java.util.Optional;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, Integer> {
-//    public List<Event> findAllByEventStartTimeStartsWith(String date);
     public List<Event> findAllByEventStartTimeBetween(Instant start, Instant end, Sort eventStartTime);
     public List<Event> findAllByEventCategory(Optional<EventCategory> eventCategory);
 
-    public List<Event> findAllByEventCategory_EventCategoryIdAndEventStartTimeBetweenAndBookingEmailContainsAndBookingNameContainsAndEventNotesContains(Integer id, LocalDateTime startTime , LocalDateTime endTime, String bookingEmail, String bookingName, String eventNote);
     public List<Event> findAllByEventDuration(Integer findingNumberDuration);
     public List<Event> findAllByEventStartTimeAfter(Instant instant);
     public List<Event> findAllByBookingEmailContainingOrBookingNameContaining(String word, String word2, Sort eventStartTime);

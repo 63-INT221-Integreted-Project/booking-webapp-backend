@@ -2,6 +2,7 @@ package sit.int221.bookingproj.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import sit.int221.bookingproj.entities.EventCategory;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.services.EventCategoryService;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/event-categories")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin()
 public class EventCategoryController {
     @Autowired
     public EventCategoryRepository eventCategoryRepository;
@@ -20,29 +21,27 @@ public class EventCategoryController {
     public EventCategoryService eventCategoryService;
 
     @GetMapping("/")
+    @ResponseStatus(HttpStatus.OK)
     public List getAllEventCategrory(){
         return eventCategoryService.getAllEventCategoryDto();
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public Optional<EventCategory> getEventCategoryById(@PathVariable Integer id){
-        return eventCategoryRepository.findById(id);
+        return eventCategoryService.getEventCategoryById(id);
     }
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public EventCategory createEventCategory(@RequestBody EventCategory newEventCategory){
-        return eventCategoryRepository.saveAndFlush(newEventCategory);
+    public void createEventCategory(@RequestBody EventCategory newEventCategory){
+        eventCategoryService.createEventCategory(newEventCategory);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EventCategory update(@PathVariable(name = "id") Integer id, @RequestBody EventCategory updateEventCategory){
-        Optional<EventCategory> optionalEventCategory = eventCategoryRepository.findById(id);
-        if(!optionalEventCategory.isPresent()){
-            return updateEventCategory;
-        }
-        return eventCategoryRepository.saveAndFlush(updateEventCategory);
+    public void update(@PathVariable(name = "id") Integer id, @RequestBody EventCategory updateEventCategory){
+        eventCategoryService.updateEventCategory(id,updateEventCategory);
     }
 //
 //    @DeleteMapping("/{id}")

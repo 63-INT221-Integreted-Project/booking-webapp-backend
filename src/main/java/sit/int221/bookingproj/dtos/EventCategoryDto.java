@@ -5,12 +5,15 @@ import org.springframework.lang.Nullable;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.validation.constraints.*;
 
 @Data
 public class EventCategoryDto {
     private Integer eventCategoryId;
+
     private String eventCategoryName;
     private String eventCategoryDescription;
+
     private Integer eventDuration;
 
     public EventCategoryDto(Integer eventCategoryId, String eventCategoryName) {
@@ -21,7 +24,6 @@ public class EventCategoryDto {
     public EventCategoryDto() {
 
     }
-
 
     public Integer getEventCategoryId() {
         return eventCategoryId;

@@ -2,18 +2,27 @@ package sit.int221.bookingproj.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.hibernate.validator.constraints.UniqueElements;
 
+import javax.persistence.Column;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
 public class EventCreateDto {
     private Integer eventId;
-    private String bookingName;
-    private String bookingEmail;
 
+    @NotEmpty
+    private String bookingName;
+    @NotEmpty
+    private String bookingEmail;
+    @NotEmpty
     private Instant eventStartTime;
+    @NotEmpty
     private Integer eventDuration;
+
     private String eventNotes;
     private Integer eventCategoryId;
 

@@ -2,6 +2,8 @@ package sit.int221.bookingproj.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -16,7 +18,7 @@ public class EventCategory {
     @Column(name = "eventCategoryName", nullable = false, length = 100)
     private String eventCategoryName;
 
-    @Column(name = "eventCategoryDescription", nullable = false, length = 500)
+    @Column(name = "eventCategoryDescription", length = 500)
     private String eventCategoryDescription;
 
     @Column(name = "eventDuration", nullable = false)
@@ -74,14 +76,4 @@ public class EventCategory {
         this.eventCategoryId = id;
     }
 
-    @Override
-    public String toString() {
-        return "EventCategory{" +
-                "eventCategoryId=" + eventCategoryId +
-                ", eventCategoryName='" + eventCategoryName + '\'' +
-                ", eventCategoryDescription='" + eventCategoryDescription + '\'' +
-                ", eventDuration=" + eventDuration +
-                ", events=" + events +
-                '}';
-    }
 }
