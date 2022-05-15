@@ -86,8 +86,18 @@ public class EventController {
     }
 
     @GetMapping(value = "/search" , params = {"dateStart", "dateEnd", "category", "word"})
-    public List<EventGetDto> getSearchTest(@RequestParam(name = "dateStart") String dateStart, @RequestParam(name = "dateEnd") String dateEnd, @RequestParam(name = "category") String category, @RequestParam(name = "word") String word){
+    public List<EventGetDto> getSearch(@RequestParam(name = "dateStart") String dateStart, @RequestParam(name = "dateEnd") String dateEnd, @RequestParam(name = "category") String category, @RequestParam(name = "word") String word){
         return eventService.getSearch(dateStart,dateEnd,category,word);
+    }
+
+    @GetMapping(value = "/upcoming")
+    public List<EventGetDto> findUpcoming(){
+        return eventService.findUpcoming();
+    }
+
+    @GetMapping(value = "/past")
+    public List<EventGetDto> findPast(){
+        return eventService.findPast();
     }
 //    @GetMapping(value = "/search" , params = {"dateStart", "dateEnd", "category", "word"})
 //    @ResponseStatus(HttpStatus.OK)

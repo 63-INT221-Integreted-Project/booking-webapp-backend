@@ -48,6 +48,7 @@ public class EventCategoryService {
 
     public boolean validateForm(EventCategory newEventCategory, String action) {
         EventCategory name = new EventCategory();
+        
         name = eventCategoryRepository.findAllByEventCategoryName(newEventCategory.getEventCategoryName());
         if (Objects.equals(action, "create")) {
             checkDuplicate(newEventCategory);

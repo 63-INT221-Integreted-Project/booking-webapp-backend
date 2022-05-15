@@ -153,7 +153,7 @@ public class EventService {
         Optional<Event> events = Optional.of(new Event());
         events = eventRepository.findById(id);
         if(events.isPresent()){
-            if(eventUpdateDto.getEventNotes().length() < 500){
+            if(eventUpdateDto.getEventNotes() == null || eventUpdateDto.getEventNotes().length() < 500){
                 if(checkDuplicateEventTimeForUpdate(events,eventUpdateDto.getEventStartTime())){
                     if(checkFuture(eventUpdateDto.getEventStartTime())){
                         events.ifPresent(event -> {
@@ -247,5 +247,14 @@ public class EventService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Starttime can not be past");
         }
         return check;
+    }
+
+    public List<EventGetDto> findUpcoming(){
+        Instant instant = Instant.now();
+        return castTypeToDto(eventRepository.findAllByEventStartTimeAfter(instant,Sort.by(Sort.Direction.ASC, "eventStartTime")));
+    }
+    public List<EventGetDto> findPast(){
+        Instant instant = Instant.now();
+        return castTypeToDto(eventRepository.findAllByEventStartTimeBefore(instant,Sort.by(Sort.Direction.DESC, "eventStartTime")));
     }
 }
