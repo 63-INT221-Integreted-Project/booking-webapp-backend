@@ -8,7 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "eventCategory")
+@Table(name = "event_category")
 public class EventCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
