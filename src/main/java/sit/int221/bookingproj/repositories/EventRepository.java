@@ -15,10 +15,13 @@ import java.util.Optional;
 public interface EventRepository extends JpaRepository<Event, Integer> {
     public List<Event> findAllByEventStartTimeBetween(Instant start, Instant end, Sort eventStartTime);
     public List<Event> findAllByEventCategory(Optional<EventCategory> eventCategory);
+    public List<Event> findAllByEventStartTimeBefore(LocalDateTime localDateTime);
 
     public List<Event> findAllByEventDuration(Integer findingNumberDuration);
     public List<Event> findAllByBookingEmailContainingOrBookingNameContaining(String word, String word2, Sort eventStartTime);
     public List<Event> findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(Instant dateStart, Instant dateEnd, String name, Sort eventStartTime);
     public List<Event> findAllByEventCategory_EventCategoryName(String categoryName, Sort eventStartTime);
     public List<Event> findAllByEventStartTimeBetweenAndEventCategory_EventCategoryNameOrBookingNameContainingOrEventNotesContaining(Instant dateStart, Instant dateEnd, String name, String word1, String word2, Sort eventStartTime);
+    public Event findAllByEventStartTimeBetweenAndEventCategory_EventCategoryId(Instant dateStart, Instant dateEnd, Integer id, Sort eventStartTime);
+
 }

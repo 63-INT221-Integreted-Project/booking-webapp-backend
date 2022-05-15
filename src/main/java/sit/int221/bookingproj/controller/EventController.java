@@ -53,8 +53,8 @@ public class EventController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createEvent(@RequestBody EventCreateDto newEvent)  {
-        eventService.create(newEvent);
+    public Event createEvent(@Valid @RequestBody EventCreateDto newEvent)  {
+        return eventService.create(newEvent);
     }
 
     @GetMapping("/find/sort/")
@@ -65,7 +65,7 @@ public class EventController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateEvent(@PathVariable Integer id, @RequestBody EventUpdateDto eventUpdateDto){
+    public void updateEvent(@PathVariable Integer id,@Valid @RequestBody EventUpdateDto eventUpdateDto){
         eventService.update(id,eventUpdateDto);
     }
 

@@ -2,6 +2,7 @@ package sit.int221.bookingproj.services;
 
 import io.swagger.models.auth.In;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import sit.int221.bookingproj.repositories.EventRepository;
 
 import javax.validation.Valid;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -114,38 +116,12 @@ public class EventService {
         return castTypeToDto(result);
     }
 
-    public boolean validateFormCreate(EventCreateDto eventCreateDto){
-        Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(eventCreateDto.getBookingEmail());
-        boolean check = false;
-        if(eventCreateDto.getBookingName().length() < 100 || eventCreateDto.getBookingEmail().length() < 50 || eventCreateDto.getEventNotes().length() < 500){
-            if(eventCreateDto.getEventDuration() > 0 && eventCreateDto.getEventDuration() < 480){
-                if(matcher.find()){
-                    check = true;
-                }
-                else{
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "email is invalid");
-                }
-            }
-            else{
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "duration is invalid");
-            }
-        }
-        else{
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "length exceeded the size");
-        }
-        return check;
-    }
 
-    public void create(EventCreateDto eventCreateDto) {
+    public Event create(EventCreateDto eventCreateDto) {
             if (checkDuplicateEventTime(eventCreateDto)) {
-                if(validateFormCreate(eventCreateDto)){
-                    if(checkFuture(eventCreateDto.getEventStartTime())){
-                        eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
-                    }
-                }
+                return eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
             }else{
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Overlap Datetime");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start Time can not overlap");
             }
     }
 
@@ -153,29 +129,16 @@ public class EventService {
         Optional<Event> events = Optional.of(new Event());
         events = eventRepository.findById(id);
         if(events.isPresent()){
-            if(eventUpdateDto.getEventNotes() == null || eventUpdateDto.getEventNotes().length() < 500){
-                if(checkDuplicateEventTimeForUpdate(events,eventUpdateDto.getEventStartTime())){
-                    if(checkFuture(eventUpdateDto.getEventStartTime())){
-                        events.ifPresent(event -> {
-                            event.setEventNotes(eventUpdateDto.getEventNotes());
-                            event.setEventStartTime(eventUpdateDto.getEventStartTime());
-                            eventRepository.saveAndFlush(event);
-                        });
-                    }
-                    else{
-                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Stattime can not be past");
-                    }
-                }
-                else{
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Stattime can not overlap");
-                }
-            }
-            else{
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Length exceeded the size");
+            if(checkDuplicateEventTimeForUpdate(events,eventUpdateDto.getEventStartTime())){
+                events.ifPresent(event -> {
+                    event.setEventNotes(eventUpdateDto.getEventNotes());
+                    event.setEventStartTime(eventUpdateDto.getEventStartTime());
+                    eventRepository.saveAndFlush(event);
+                });
             }
         }
         else{
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can not update eventId" + id);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can not find eventId" + id);
         }
     }
 
@@ -208,14 +171,14 @@ public class EventService {
 
     public boolean checkDuplicateEventTimeForUpdate(Optional<Event> event, Instant startTime){
         boolean check;
-        List eventTimeIn = new ArrayList();
-        eventTimeIn = eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(startTime, startTime.plusSeconds(event.get().getEventDuration() * 60),event.get().getEventCategory().getEventCategoryName(), Sort.by(Sort.Direction.DESC, "eventStartTime"));
-        if(eventTimeIn.isEmpty()){
+        Event eventTimeIn = new Event();
+        eventTimeIn = eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryId(startTime, startTime.plusSeconds(event.get().getEventDuration() * 60),event.get().getEventCategory().getEventCategoryId(), Sort.by(Sort.Direction.DESC, "eventStartTime"));
+        if(eventTimeIn == null || event.get().getEventId() == eventTimeIn.getEventId()){
             check = true;
         }
         else{
             check = false;
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Overlap Datetime");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start Time can not overlap");
         }
         return check;
     }
@@ -233,18 +196,6 @@ public class EventService {
         }
         else{
             check = false;
-        }
-        return check;
-    }
-
-    public boolean checkFuture(Instant instantCheck){
-        boolean check = false;
-        Instant instant = Instant.now();
-        if(instant.isBefore(instantCheck)){
-            check = true;
-        }
-        else{
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Starttime can not be past");
         }
         return check;
     }

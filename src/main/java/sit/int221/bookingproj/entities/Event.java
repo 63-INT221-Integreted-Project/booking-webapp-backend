@@ -1,6 +1,7 @@
 package sit.int221.bookingproj.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.intellij.lang.annotations.Pattern;
 
 import javax.persistence.*;

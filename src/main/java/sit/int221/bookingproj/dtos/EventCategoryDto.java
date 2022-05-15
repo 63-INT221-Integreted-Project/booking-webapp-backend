@@ -1,6 +1,7 @@
 package sit.int221.bookingproj.dtos;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.Column;
@@ -15,9 +16,13 @@ public class EventCategoryDto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer eventCategoryId;
 
+    @Size(max = 100 , message = "length exceeded the size")
     private String eventCategoryName;
+    @Size(max = 500, message = "length exceeded the size")
     private String eventCategoryDescription;
 
+    @Max(value = 480, message = "event duration is out of range")
+    @Min(value = 0, message = "event duration is out of range")
     private Integer eventDuration;
 
     public EventCategoryDto(Integer eventCategoryId, String eventCategoryName) {

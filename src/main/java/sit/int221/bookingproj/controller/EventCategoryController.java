@@ -7,6 +7,7 @@ import sit.int221.bookingproj.entities.EventCategory;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.services.EventCategoryService;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +20,9 @@ public class EventCategoryController {
 
     @Autowired
     public EventCategoryService eventCategoryService;
+
+    @ExceptionHandler(IllegalStateException.class)
+    public void handleIllegalStateException() {}
 
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
@@ -34,14 +38,14 @@ public class EventCategoryController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public EventCategory createEventCategory(@RequestBody EventCategory newEventCategory){
+    public EventCategory createEventCategory(@Valid @RequestBody EventCategory newEventCategory){
         return eventCategoryService.createEventCategory(newEventCategory);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EventCategory update(@PathVariable(name = "id") Integer id, @RequestBody EventCategory updateEventCategory){
-        return eventCategoryService.updateEventCategory(id,updateEventCategory);
+    public void update(@PathVariable(name = "id") Integer id, @Valid @RequestBody EventCategory updateEventCategory){
+        eventCategoryService.updateEventCategory(id,updateEventCategory);
     }
 //
 //    @DeleteMapping("/{id}")

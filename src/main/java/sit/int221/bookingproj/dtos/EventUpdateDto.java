@@ -5,14 +5,16 @@ import lombok.Data;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.Size;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
 public class EventUpdateDto {
-    @FutureOrPresent
+    @FutureOrPresent(message = "eventStartTime is NOT in the future")
     private Instant eventStartTime;
     @Nullable
+    @Size(max = 500, message = "length exceeded the size")
     private String eventNotes;
 
     public String getEventNotes() {

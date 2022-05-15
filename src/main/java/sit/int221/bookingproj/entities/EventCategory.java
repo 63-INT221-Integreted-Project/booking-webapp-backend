@@ -1,26 +1,35 @@
 package sit.int221.bookingproj.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.validator.constraints.UniqueElements;
+
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "event_category")
 public class EventCategory {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "eventCategoryId", nullable = false)
     private Integer eventCategoryId;
 
-    @Column(name = "eventCategoryName", nullable = false, length = 100)
+
+    @Size(max = 100 , message = "length exceeded the size")
+    @Column(name = "eventCategoryName", nullable = false, length = 100, unique = false)
     private String eventCategoryName;
 
+    @Size(max = 500, message = "length exceeded the size")
     @Column(name = "eventCategoryDescription", length = 500)
     private String eventCategoryDescription;
 
+    @Max(value = 480, message = "event duration is out of range")
+    @Min(value = 0, message = "event duration is out of range")
     @Column(name = "eventDuration", nullable = false)
     private Integer eventDuration;
 

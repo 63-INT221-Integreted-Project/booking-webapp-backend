@@ -8,27 +8,23 @@ import sit.int221.bookingproj.entities.EventCategory;
 
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 @Data
 public class EventGetDto {
+
     private Integer eventId;
 
     private String bookingName;
-
     private String bookingEmail;
-
-//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
 
     private Instant eventStartTime;
 
     private Integer eventDuration;
+
     private String eventNotes;
-    @Column(nullable = true)
+
     private EventCategoryInEventDto eventCategory;
 
     public Integer getEventId() {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 public class ErrorModel{
 
@@ -13,16 +14,14 @@ public class ErrorModel{
 
     private String message;
 
-    private String details;
+    private Map details;
 
-    public ErrorModel(HttpStatus httpStatus, String message, String details) {
+    public ErrorModel(HttpStatus httpStatus, String message, Map<String, String> details) {
         this.httpStatus = httpStatus;
         this.timestamp = LocalDateTime.now();
         this.message = message;
         this.details = details;
     }
-
-
 
     public HttpStatus getHttpStatus() {
         return httpStatus;
@@ -36,7 +35,7 @@ public class ErrorModel{
         return message;
     }
 
-    public String getDetails() {
+    public Map getDetails() {
         return details;
     }
 }

@@ -3,26 +3,33 @@ package sit.int221.bookingproj.dtos;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.validator.constraints.UniqueElements;
+import org.springframework.lang.Nullable;
 
-import javax.persistence.Column;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
 public class EventCreateDto {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer eventId;
-
-    @NotEmpty
+    @NotEmpty(message = "can not empty")
+    @Size(max = 100, message = "length exceeded the size")
     private String bookingName;
-    @NotEmpty
+    @NotEmpty(message = "can not empty")
+    @Email(regexp = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$", message = "Email is invalid")
     private String bookingEmail;
-    @NotEmpty
+
+    @FutureOrPresent(message = "eventStartTime is NOT in the future")
     private Instant eventStartTime;
-    @NotEmpty
+
+    @Max(value = 480,message = "event duration is out of range")
     private Integer eventDuration;
 
+    @Nullable
+    @Size(max = 500, message = "length exceeded the size")
     private String eventNotes;
     private Integer eventCategoryId;
 

@@ -9,6 +9,7 @@ import sit.int221.bookingproj.dtos.EventCategoryDto;
 import sit.int221.bookingproj.entities.EventCategory;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,51 +28,47 @@ public class EventCategoryService {
         return Optional.ofNullable(eventCategoryRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "can not find eventCategoryId" + id)));
     }
 
-    public EventCategory createEventCategory(EventCategory newEventCategory){
-        if(validateForm(newEventCategory, "create")) {
+    public EventCategory createEventCategory(@Valid EventCategory newEventCategory){
+        if(checkUniqueName(newEventCategory.getEventCategoryName())){
             return eventCategoryRepository.saveAndFlush(newEventCategory);
         }
-        return newEventCategory;
+        else{
+            return null;
+        }
     }
 
-    public EventCategory updateEventCategory(Integer id, EventCategory updateEventCategory){
+    public void updateEventCategory(Integer id,@Valid  EventCategory updateEventCategory){
         Optional<EventCategory> optionalEventCategory = eventCategoryRepository.findById(id);
         if(optionalEventCategory.isPresent()){
-            if(validateForm(updateEventCategory, "update")){
-                return eventCategoryRepository.saveAndFlush(updateEventCategory);
+            if(checkUniqueName(updateEventCategory.getEventCategoryName())){
+                eventCategoryRepository.saveAndFlush(updateEventCategory);
             }
-        } else{
+        }
+        else{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "can not find event category id" + id);
         }
-        return updateEventCategory;
     }
 
-    public boolean validateForm(EventCategory newEventCategory, String action) {
-        EventCategory name = new EventCategory();
-        
-        name = eventCategoryRepository.findAllByEventCategoryName(newEventCategory.getEventCategoryName());
-        if (Objects.equals(action, "create")) {
-            checkDuplicate(newEventCategory);
-            if (name != null)
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "event category name is not unique");
-
-            return true;
+    public boolean checkUniqueName(String eventCategoryName){
+        boolean check;
+        if(!(eventCategoryRepository.existsAllByEventCategoryName(eventCategoryName))){
+            check = true;
         }
-        checkDuplicate(newEventCategory);
-        if(name == null) return true;
-        if(Objects.equals(name.getEventCategoryName(), newEventCategory.getEventCategoryName()) && !Objects.equals(name.getEventCategoryId(), newEventCategory.getEventCategoryId()))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "event category name is not unique");
-        return true;
+        else{
+            check = false;
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "event category name must be unique");
+        }
+        return check;
     }
-
-    private void checkDuplicate(EventCategory newEventCategory) {
-        if(newEventCategory.getEventCategoryName().length() > 100)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "categoryName length exceeded the size");
-        if(newEventCategory.getEventCategoryDescription().length() > 500)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "categoryDescription length exceeded the size");
-        if (!(newEventCategory.getEventDuration() > 0 && newEventCategory.getEventDuration() < 480))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "duration is out of range");
-    }
+//
+//    private void checkDuplicate(EventCategory newEventCategory) {
+//        if(newEventCategory.getEventCategoryName().length() > 100)
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "categoryName length exceeded the size");
+//        if(newEventCategory.getEventCategoryDescription().length() > 500)
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "categoryDescription length exceeded the size");
+//        if (!(newEventCategory.getEventDuration() > 0 && newEventCategory.getEventDuration() < 480))
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "duration is out of range");
+//    }
 
     public EventCategoryDto castEventCategoryDto(EventCategory eventCategory){
         EventCategoryDto eventCategoryDto = new EventCategoryDto();
