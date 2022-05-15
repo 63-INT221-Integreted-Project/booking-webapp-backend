@@ -249,12 +249,4 @@ public class EventService {
         return check;
     }
 
-    public List<EventGetDto> findUpcoming(){
-        Instant instant = Instant.now();
-        return castTypeToDto(eventRepository.findAllByEventStartTimeAfter(instant,Sort.by(Sort.Direction.ASC, "eventStartTime")));
-    }
-    public List<EventGetDto> findPast(){
-        Instant instant = Instant.now();
-        return castTypeToDto(eventRepository.findAllByEventStartTimeBefore(instant,Sort.by(Sort.Direction.DESC, "eventStartTime")));
-    }
 }
