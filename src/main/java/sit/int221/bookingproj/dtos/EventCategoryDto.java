@@ -1,7 +1,9 @@
 package sit.int221.bookingproj.dtos;
 
 import lombok.Data;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -9,6 +11,7 @@ import javax.validation.constraints.*;
 
 @Data
 public class EventCategoryDto {
+
     private Integer eventCategoryId;
 
     private String eventCategoryName;

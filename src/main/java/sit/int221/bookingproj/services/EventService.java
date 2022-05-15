@@ -138,8 +138,8 @@ public class EventService {
     }
 
     public void create(EventCreateDto eventCreateDto) {
-            if (checkDuplicateEventTime(eventCreateDto) == true) {
-                if(validateFormCreate(eventCreateDto) == true){
+            if (checkDuplicateEventTime(eventCreateDto)) {
+                if(validateFormCreate(eventCreateDto)){
                     if(checkFuture(eventCreateDto.getEventStartTime())){
                         eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
                     }
@@ -149,7 +149,7 @@ public class EventService {
             }
     }
 
-    public void update(Integer id,@Valid EventUpdateDto eventUpdateDto){
+    public void update(Integer id, EventUpdateDto eventUpdateDto){
         Optional<Event> events = Optional.of(new Event());
         events = eventRepository.findById(id);
         if(events.isPresent()){

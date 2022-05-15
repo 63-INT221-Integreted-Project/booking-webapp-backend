@@ -67,7 +67,6 @@ public class EventController {
     @ResponseStatus(HttpStatus.OK)
     public void updateEvent(@PathVariable Integer id, @RequestBody EventUpdateDto eventUpdateDto){
         eventService.update(id,eventUpdateDto);
-
     }
 
     @DeleteMapping("/{id}")

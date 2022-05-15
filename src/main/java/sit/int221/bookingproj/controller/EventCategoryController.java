@@ -34,14 +34,14 @@ public class EventCategoryController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createEventCategory(@RequestBody EventCategory newEventCategory){
-        eventCategoryService.createEventCategory(newEventCategory);
+    public EventCategory createEventCategory(@RequestBody EventCategory newEventCategory){
+        return eventCategoryService.createEventCategory(newEventCategory);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@PathVariable(name = "id") Integer id, @RequestBody EventCategory updateEventCategory){
-        eventCategoryService.updateEventCategory(id,updateEventCategory);
+    public EventCategory update(@PathVariable(name = "id") Integer id, @RequestBody EventCategory updateEventCategory){
+        return eventCategoryService.updateEventCategory(id,updateEventCategory);
     }
 //
 //    @DeleteMapping("/{id}")

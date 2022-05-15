@@ -30,7 +30,7 @@ public class Event {
     @Column(name = "eventDuration", nullable = false)
     private Integer eventDuration;
 
-    @Column(name = "eventNotes", length = 500)
+    @Column(name = "eventNotes", length = 500, nullable = true)
     private String eventNotes;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = true )
