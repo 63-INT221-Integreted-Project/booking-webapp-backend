@@ -2,40 +2,48 @@ package sit.int221.bookingproj.services;
 
 import io.swagger.models.auth.In;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.tomcat.jni.Error;
 import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.support.MetaDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.bookingproj.controller.EventController;
 import sit.int221.bookingproj.dtos.*;
 import sit.int221.bookingproj.entities.Event;
 import sit.int221.bookingproj.entities.EventCategory;
+import sit.int221.bookingproj.exception.ErrorModel;
+import sit.int221.bookingproj.exception.OverlapTimeException;
+import sit.int221.bookingproj.exception.RestExceptionHandler;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.repositories.EventRepository;
 
 import javax.validation.Valid;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
-public class EventService {
+public class EventService{
     @Autowired
     private EventRepository eventRepository;
     @Autowired
     private EventCategoryRepository eventCategoryRepository;
 
     Logger logger = LoggerFactory.getLogger(EventController.class);
-
+    @ExceptionHandler(IllegalStateException.class)
+    public void handleIllegalStateException() {}
+    @ExceptionHandler(OverlapTimeException.class)
+    public void handleOverlapTime() {}
     public List<EventGetDto> getAllEvent(){
         return eventRepository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
@@ -117,15 +125,15 @@ public class EventService {
     }
 
 
-    public Event create(EventCreateDto eventCreateDto) {
+    public Event create(EventCreateDto eventCreateDto) throws OverlapTimeException {
             if (checkDuplicateEventTime(eventCreateDto)) {
                 return eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
             }else{
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start Time can not overlap");
+                throw new OverlapTimeException("Start Time can not overlap");
             }
     }
 
-    public void update(Integer id, EventUpdateDto eventUpdateDto){
+    public void update(Integer id, EventUpdateDto eventUpdateDto) throws OverlapTimeException {
         Optional<Event> events = Optional.of(new Event());
         events = eventRepository.findById(id);
         if(events.isPresent()){
@@ -169,7 +177,7 @@ public class EventService {
         return eventDto;
     }
 
-    public boolean checkDuplicateEventTimeForUpdate(Optional<Event> event, Instant startTime){
+    public boolean checkDuplicateEventTimeForUpdate(Optional<Event> event, Instant startTime) throws OverlapTimeException {
         boolean check;
         Event eventTimeIn = new Event();
         eventTimeIn = eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryId(startTime, startTime.plusSeconds(event.get().getEventDuration() * 60),event.get().getEventCategory().getEventCategoryId(), Sort.by(Sort.Direction.DESC, "eventStartTime"));
@@ -178,7 +186,7 @@ public class EventService {
         }
         else{
             check = false;
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start Time can not overlap");
+            throw new OverlapTimeException("Start Time can not overlap");
         }
         return check;
     }

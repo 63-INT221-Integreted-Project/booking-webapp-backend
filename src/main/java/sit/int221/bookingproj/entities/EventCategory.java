@@ -19,7 +19,6 @@ public class EventCategory {
     @Column(name = "eventCategoryId", nullable = false)
     private Integer eventCategoryId;
 
-
     @Size(max = 100 , message = "length exceeded the size")
     @Column(name = "eventCategoryName", nullable = false, length = 100, unique = false)
     private String eventCategoryName;

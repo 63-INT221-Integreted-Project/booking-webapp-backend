@@ -26,6 +26,7 @@ public class EventCreateDto {
     private Instant eventStartTime;
 
     @Max(value = 480,message = "event duration is out of range")
+    @Min(value = 1,message = "must higher than 1")
     private Integer eventDuration;
 
     @Nullable

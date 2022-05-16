@@ -22,11 +22,25 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         ex.getBindingResult().getFieldErrors().forEach(error -> {
             errorMaping.put(error.getField(), error.getDefaultMessage());
         });
-
-//        ex.getBindingResult().getFieldError().getDefaultMessage();
         ErrorModel error = new ErrorModel(HttpStatus.BAD_REQUEST, "Validation Error", errorMaping);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(OverlapTimeException.class)
+    public ResponseEntity<Object> handleOverlapTime(OverlapTimeException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("eventStartTime", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.BAD_REQUEST, "Validation Error", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(UniqueEventCategoryNameException.class)
+    public ResponseEntity<Object> handleUniqueEventCategoryNameException(UniqueEventCategoryNameException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("eventCategoryName", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.BAD_REQUEST, "Validation Error", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+
 
 //    @ExceptionHandler(IllegalStateException.class)
 //    protected ResponseEntity<Object> handleIllegalStateNotValid(IllegalStateException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {

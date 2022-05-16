@@ -22,7 +22,7 @@ public class EventCategoryDto {
     private String eventCategoryDescription;
 
     @Max(value = 480, message = "event duration is out of range")
-    @Min(value = 0, message = "event duration is out of range")
+    @Min(value = 1,message = "must higher than 1")
     private Integer eventDuration;
 
     public EventCategoryDto(Integer eventCategoryId, String eventCategoryName) {

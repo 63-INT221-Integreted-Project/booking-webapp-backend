@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.bookingproj.entities.EventCategory;
+import sit.int221.bookingproj.exception.UniqueEventCategoryNameException;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.services.EventCategoryService;
 
@@ -38,13 +39,13 @@ public class EventCategoryController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public EventCategory createEventCategory(@Valid @RequestBody EventCategory newEventCategory){
+    public EventCategory createEventCategory(@Valid @RequestBody EventCategory newEventCategory) throws UniqueEventCategoryNameException {
         return eventCategoryService.createEventCategory(newEventCategory);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@PathVariable(name = "id") Integer id, @Valid @RequestBody EventCategory updateEventCategory){
+    public void update(@PathVariable(name = "id") Integer id, @Valid @RequestBody EventCategory updateEventCategory) throws UniqueEventCategoryNameException {
         eventCategoryService.updateEventCategory(id,updateEventCategory);
     }
 //

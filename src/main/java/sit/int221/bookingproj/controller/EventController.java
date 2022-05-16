@@ -13,6 +13,7 @@ import sit.int221.bookingproj.dtos.EventCreateDto;
 import sit.int221.bookingproj.dtos.EventGetDto;
 import sit.int221.bookingproj.dtos.EventUpdateDto;
 import sit.int221.bookingproj.entities.Event;
+import sit.int221.bookingproj.exception.OverlapTimeException;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.repositories.EventRepository;
 import sit.int221.bookingproj.services.EventService;
@@ -23,6 +24,7 @@ import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 
+@Validated
 @RestController()
 @RequestMapping("/api/events")
 @CrossOrigin()
@@ -53,7 +55,7 @@ public class EventController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public Event createEvent(@Valid @RequestBody EventCreateDto newEvent)  {
+    public Event createEvent(@Valid @RequestBody EventCreateDto newEvent) throws OverlapTimeException {
         return eventService.create(newEvent);
     }
 
@@ -65,7 +67,7 @@ public class EventController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateEvent(@PathVariable Integer id,@Valid @RequestBody EventUpdateDto eventUpdateDto){
+    public void updateEvent(@PathVariable Integer id,@Valid @RequestBody EventUpdateDto eventUpdateDto) throws OverlapTimeException {
         eventService.update(id,eventUpdateDto);
     }
 
