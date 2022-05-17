@@ -8,13 +8,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.bookingproj.dtos.EventCategoryDto;
 import sit.int221.bookingproj.entities.EventCategory;
-import sit.int221.bookingproj.exception.OverlapTimeException;
 import sit.int221.bookingproj.exception.UniqueEventCategoryNameException;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -42,16 +40,17 @@ public class EventCategoryService {
         }
     }
 
-    public void updateEventCategory(Integer id,@Valid EventCategory updateEventCategory) throws UniqueEventCategoryNameException {
+    public EventCategory updateEventCategory(Integer id, @Valid EventCategory updateEventCategory) throws UniqueEventCategoryNameException {
         Optional<EventCategory> optionalEventCategory = eventCategoryRepository.findById(id);
         if(optionalEventCategory.isPresent()){
             if(checkUniqueName(updateEventCategory)){
-                eventCategoryRepository.saveAndFlush(updateEventCategory);
+                return eventCategoryRepository.saveAndFlush(updateEventCategory);
             }
         }
         else{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "can not find event category id" + id);
         }
+        return updateEventCategory;
     }
 
     public boolean checkUniqueName(EventCategory eventCategory) throws UniqueEventCategoryNameException {
