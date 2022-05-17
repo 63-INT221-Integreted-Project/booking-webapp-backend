@@ -2,7 +2,6 @@ package sit.int221.bookingproj.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import sit.int221.bookingproj.entities.EventCategory;
 import sit.int221.bookingproj.exception.UniqueEventCategoryNameException;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
@@ -45,8 +44,8 @@ public class EventCategoryController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@PathVariable(name = "id") Integer id, @Valid @RequestBody EventCategory updateEventCategory) throws UniqueEventCategoryNameException {
-        eventCategoryService.updateEventCategory(id,updateEventCategory);
+    public EventCategory EventCategoryupdate(@PathVariable(name = "id") Integer id, @Valid @RequestBody EventCategory updateEventCategory) throws UniqueEventCategoryNameException {
+        return eventCategoryService.updateEventCategory(id,updateEventCategory);
     }
 //
 //    @DeleteMapping("/{id}")
