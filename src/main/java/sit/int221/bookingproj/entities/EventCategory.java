@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.UniqueElements;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -21,6 +22,7 @@ public class EventCategory {
 
     @Size(max = 100 , message = "length exceeded the size")
     @Column(name = "eventCategoryName", nullable = false, length = 100, unique = false)
+    @NotBlank(message = "can not be blank")
     private String eventCategoryName;
 
     @Size(max = 500, message = "length exceeded the size")

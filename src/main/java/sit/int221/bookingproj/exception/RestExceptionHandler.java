@@ -39,7 +39,28 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorModel error = new ErrorModel(HttpStatus.BAD_REQUEST, "Validation Error", errorMaping);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(EventCategoryIdNullException.class)
+    public ResponseEntity<Object> handleEventCategoryIdNullException(EventCategoryIdNullException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("eventCategoryId", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.BAD_REQUEST, "Validation Error", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("eventCategoryId", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.BAD_REQUEST, "Validation Error", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 
+    @ExceptionHandler(EventTimeNullException.class)
+    public ResponseEntity<Object> handleIllegalArgumentException(EventTimeNullException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("eventStartTime", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.BAD_REQUEST, "Validation Error", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 
 
 //    @ExceptionHandler(IllegalStateException.class)

@@ -34,7 +34,7 @@ public class EventCategoryService {
     }
 
     public EventCategory createEventCategory(EventCategory newEventCategory) throws UniqueEventCategoryNameException {
-        if(checkUniqueName(newEventCategory.getEventCategoryName())){
+        if(checkUniqueName(newEventCategory)){
             return eventCategoryRepository.saveAndFlush(newEventCategory);
         }
         else{
@@ -42,10 +42,10 @@ public class EventCategoryService {
         }
     }
 
-    public void updateEventCategory(Integer id,EventCategory updateEventCategory) throws UniqueEventCategoryNameException {
+    public void updateEventCategory(Integer id,@Valid EventCategory updateEventCategory) throws UniqueEventCategoryNameException {
         Optional<EventCategory> optionalEventCategory = eventCategoryRepository.findById(id);
         if(optionalEventCategory.isPresent()){
-            if(checkUniqueName(updateEventCategory.getEventCategoryName())){
+            if(checkUniqueName(updateEventCategory)){
                 eventCategoryRepository.saveAndFlush(updateEventCategory);
             }
         }
@@ -54,9 +54,10 @@ public class EventCategoryService {
         }
     }
 
-    public boolean checkUniqueName(String eventCategoryName) throws UniqueEventCategoryNameException {
+    public boolean checkUniqueName(EventCategory eventCategory) throws UniqueEventCategoryNameException {
         boolean check;
-        if(!(eventCategoryRepository.existsAllByEventCategoryName(eventCategoryName))){
+        EventCategory eventCategory1 = eventCategoryRepository.findAllByEventCategoryName(eventCategory.getEventCategoryName());
+        if(eventCategory1 == null || eventCategory.getEventCategoryId() == eventCategory1.getEventCategoryId()){
             check = true;
         }
         else{

@@ -1,16 +1,11 @@
 package sit.int221.bookingproj.services;
 
-import io.swagger.models.auth.In;
 import org.apache.commons.collections4.ListUtils;
-import org.apache.tomcat.jni.Error;
-import org.apache.tomcat.jni.Local;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.support.MetaDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,18 +13,14 @@ import sit.int221.bookingproj.controller.EventController;
 import sit.int221.bookingproj.dtos.*;
 import sit.int221.bookingproj.entities.Event;
 import sit.int221.bookingproj.entities.EventCategory;
-import sit.int221.bookingproj.exception.ErrorModel;
+import sit.int221.bookingproj.exception.EventCategoryIdNullException;
+import sit.int221.bookingproj.exception.EventTimeNullException;
 import sit.int221.bookingproj.exception.OverlapTimeException;
-import sit.int221.bookingproj.exception.RestExceptionHandler;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.repositories.EventRepository;
 
-import javax.validation.Valid;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,6 +35,16 @@ public class EventService{
     public void handleIllegalStateException() {}
     @ExceptionHandler(OverlapTimeException.class)
     public void handleOverlapTime() {}
+
+    @ExceptionHandler(EventCategoryIdNullException.class)
+    public void handleEventCategoryIdNullException() {}
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public void handleIllegalArgumentException() {}
+
+    @ExceptionHandler(EventTimeNullException.class)
+    public void handleEventTimeNullException() {}
+
     public List<EventGetDto> getAllEvent(){
         return eventRepository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
@@ -125,25 +126,38 @@ public class EventService{
     }
 
 
-    public Event create(EventCreateDto eventCreateDto) throws OverlapTimeException {
-            if (checkDuplicateEventTime(eventCreateDto)) {
-                return eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
-            }else{
-                throw new OverlapTimeException("Start Time can not overlap");
-            }
+    public Event create(EventCreateDto eventCreateDto) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException {
+        if(eventCreateDto.getEventDuration() == null){
+            Optional<EventCategory> eventCategory = eventCategoryRepository.findById(eventCreateDto.getEventCategoryId());
+            eventCreateDto.setEventDuration(eventCategory.get().getEventDuration());
+        }
+        if (checkDuplicateEventTime(eventCreateDto) && checkEventStartTimeNull(eventCreateDto)) {
+            return eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
+        }
+        else{
+            throw new OverlapTimeException("Start Time can not overlap");
+        }
     }
+
 
     public void update(Integer id, EventUpdateDto eventUpdateDto) throws OverlapTimeException {
         Optional<Event> events = Optional.of(new Event());
         events = eventRepository.findById(id);
         if(events.isPresent()){
-            if(checkDuplicateEventTimeForUpdate(events,eventUpdateDto.getEventStartTime())){
-                events.ifPresent(event -> {
-                    event.setEventNotes(eventUpdateDto.getEventNotes());
-                    event.setEventStartTime(eventUpdateDto.getEventStartTime());
+            if(eventUpdateDto.getEventStartTime() == null) {
+                events.get().setEventStartTime(events.get().getEventStartTime());
+                eventUpdateDto.setEventStartTime(events.get().getEventStartTime());
+            }
+                if(checkDuplicateEventTimeForUpdate(events,eventUpdateDto.getEventStartTime())){
+                    events.ifPresent(event -> {
+                        event.setEventNotes(eventUpdateDto.getEventNotes());
+                    if(eventUpdateDto.getEventStartTime() != null){
+                        event.setEventStartTime(eventUpdateDto.getEventStartTime());
+                    }
                     eventRepository.saveAndFlush(event);
                 });
             }
+
         }
         else{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can not find eventId" + id);
@@ -163,6 +177,15 @@ public class EventService{
         event.setEventCategory(eventCategory);
         return event;
     }
+
+//    public boolean validateEventCategoryNull(EventCreateDto eventCreateDto) throws EventCategoryIdNullException {
+//        if(eventCreateDto.getEventCategoryId() != null){
+//            return true;
+//        }
+//       else{
+//            throw new EventCategoryIdNullException("Event Category ID Can not be null");
+//        }
+//    }
 
     public EventGetDto convertEntityToDto(Event event){
         EventGetDto eventDto = new EventGetDto();
@@ -187,6 +210,17 @@ public class EventService{
         else{
             check = false;
             throw new OverlapTimeException("Start Time can not overlap");
+        }
+        return check;
+    }
+
+    public boolean checkEventStartTimeNull(EventCreateDto eventCreateDto) throws EventTimeNullException {
+        boolean check = false;
+        if(eventCreateDto.getEventStartTime() != null){
+            check = true;
+        }
+        else{
+            throw new EventTimeNullException("Event Start Time Can not be null");
         }
         return check;
     }

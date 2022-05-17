@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "eventId", nullable = false)
+    @Column(name = "eventId")
     private Integer eventId;
 
     @Column(name = "bookingName", nullable = false, length = 100)

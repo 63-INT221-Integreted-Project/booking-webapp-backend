@@ -14,11 +14,12 @@ import java.time.LocalDateTime;
 public class EventCreateDto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "eventId")
     private Integer eventId;
-    @NotEmpty(message = "can not empty")
+    @NotBlank(message = "can not blank")
     @Size(max = 100, message = "length exceeded the size")
     private String bookingName;
-    @NotEmpty(message = "can not empty")
+    @NotBlank(message = "can not blank")
     @Email(regexp = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$", message = "Email is invalid")
     private String bookingEmail;
 

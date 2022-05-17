@@ -5,23 +5,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import sit.int221.bookingproj.dtos.EventCreateDto;
 import sit.int221.bookingproj.dtos.EventGetDto;
 import sit.int221.bookingproj.dtos.EventUpdateDto;
 import sit.int221.bookingproj.entities.Event;
+import sit.int221.bookingproj.exception.EventCategoryIdNullException;
+import sit.int221.bookingproj.exception.EventTimeNullException;
 import sit.int221.bookingproj.exception.OverlapTimeException;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.repositories.EventRepository;
 import sit.int221.bookingproj.services.EventService;
-import org.apache.commons.collections4.ListUtils;
 
 import javax.validation.Valid;
 import java.time.Instant;
-import java.time.format.DateTimeParseException;
 import java.util.*;
 
 @Validated
@@ -55,7 +53,7 @@ public class EventController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public Event createEvent(@Valid @RequestBody EventCreateDto newEvent) throws OverlapTimeException {
+    public Event createEvent(@Valid @RequestBody EventCreateDto newEvent) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException {
         return eventService.create(newEvent);
     }
 
