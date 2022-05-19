@@ -53,14 +53,6 @@ public class EventService{
     public List<EventGetDto> getAllEvent(){
         return eventRepository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
-
-    public List findByDateTime(String date1, String date2){
-        String str1 = date1;
-        String str2 = date2;
-        Instant instant = Instant.parse(str1);
-        Instant instant2 = Instant.parse(str2);
-        return eventRepository.findAllByEventStartTimeBetween(instant,instant2,Sort.by(Sort.Direction.DESC, "eventStartTime"));
-    }
     public List<EventGetDto> castTypeToDto(List<Event> event){
         return event.stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
@@ -190,15 +182,6 @@ public class EventService{
         event.setEventCategory(eventCategory);
         return event;
     }
-
-//    public boolean validateEventCategoryNull(EventCreateDto eventCreateDto) throws EventCategoryIdNullException {
-//        if(eventCreateDto.getEventCategoryId() != null){
-//            return true;
-//        }
-//       else{
-//            throw new EventCategoryIdNullException("Event Category ID Can not be null");
-//        }
-//    }
 
     public EventGetDto convertEntityToDto(Event event){
         EventGetDto eventDto = new EventGetDto();
