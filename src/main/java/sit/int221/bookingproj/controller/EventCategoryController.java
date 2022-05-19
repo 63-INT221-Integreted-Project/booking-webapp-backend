@@ -3,6 +3,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sit.int221.bookingproj.entities.EventCategory;
+import sit.int221.bookingproj.exception.NotFoundEventException;
 import sit.int221.bookingproj.exception.UniqueEventCategoryNameException;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.services.EventCategoryService;
@@ -32,7 +33,7 @@ public class EventCategoryController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<EventCategory> getEventCategoryById(@PathVariable Integer id){
+    public Optional<EventCategory> getEventCategoryById(@PathVariable Integer id) throws NotFoundEventException {
         return eventCategoryService.getEventCategoryById(id);
     }
 
@@ -44,7 +45,7 @@ public class EventCategoryController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EventCategory EventCategoryupdate(@PathVariable(name = "id") Integer id, @Valid @RequestBody EventCategory updateEventCategory) throws UniqueEventCategoryNameException {
+    public EventCategory updateEventCategory(@PathVariable(name = "id") Integer id, @Valid @RequestBody EventCategory updateEventCategory) throws UniqueEventCategoryNameException {
         return eventCategoryService.updateEventCategory(id,updateEventCategory);
     }
 //

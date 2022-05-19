@@ -13,6 +13,7 @@ import sit.int221.bookingproj.dtos.EventUpdateDto;
 import sit.int221.bookingproj.entities.Event;
 import sit.int221.bookingproj.exception.EventCategoryIdNullException;
 import sit.int221.bookingproj.exception.EventTimeNullException;
+import sit.int221.bookingproj.exception.NotFoundEventException;
 import sit.int221.bookingproj.exception.OverlapTimeException;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.repositories.EventRepository;
@@ -47,7 +48,7 @@ public class EventController {
     }
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EventGetDto getEventById(@PathVariable Integer id){
+    public EventGetDto getEventById(@PathVariable Integer id) throws NotFoundEventException {
         return eventService.getById(id);
     }
 
@@ -71,7 +72,7 @@ public class EventController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable(name = "id") Integer id){
+    public void delete(@PathVariable(name = "id") Integer id) throws EventCategoryIdNullException, NotFoundEventException {
         eventService.deleteEvent(id);
     }
 

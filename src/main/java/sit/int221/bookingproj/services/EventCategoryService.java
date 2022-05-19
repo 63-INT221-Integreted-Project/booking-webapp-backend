@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.bookingproj.dtos.EventCategoryDto;
 import sit.int221.bookingproj.entities.EventCategory;
+import sit.int221.bookingproj.exception.NotFoundEventException;
 import sit.int221.bookingproj.exception.UniqueEventCategoryNameException;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 
@@ -23,12 +24,14 @@ public class EventCategoryService {
 
     @ExceptionHandler(UniqueEventCategoryNameException.class)
     public void handleUniqueEventCategoryNameException() {}
+    @ExceptionHandler(NotFoundEventException.class)
+    public void handleNotFoundEventException() {}
     public List<EventCategoryDto> getAllEventCategoryDto(){
         return eventCategoryRepository.findAll(Sort.by(Sort.Direction.DESC, "eventCategoryId")).stream().map(this::castEventCategoryDto).collect(Collectors.toList());
     }
 
-    public Optional<EventCategory> getEventCategoryById(Integer id){
-        return Optional.ofNullable(eventCategoryRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "can not find eventCategoryId" + id)));
+    public Optional<EventCategory> getEventCategoryById(Integer id) throws NotFoundEventException {
+        return Optional.ofNullable(eventCategoryRepository.findById(id).orElseThrow(() -> new NotFoundEventException("Can not find for id " + id)));
     }
 
     public EventCategory createEventCategory(EventCategory newEventCategory) throws UniqueEventCategoryNameException {
@@ -61,7 +64,7 @@ public class EventCategoryService {
         }
         else{
             check = false;
-            throw new UniqueEventCategoryNameException("event category name must be unique");
+            throw new UniqueEventCategoryNameException("Event Category Name must be Unique");
         }
         return check;
     }

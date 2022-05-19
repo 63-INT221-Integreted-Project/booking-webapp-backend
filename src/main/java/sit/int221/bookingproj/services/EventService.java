@@ -15,6 +15,7 @@ import sit.int221.bookingproj.entities.Event;
 import sit.int221.bookingproj.entities.EventCategory;
 import sit.int221.bookingproj.exception.EventCategoryIdNullException;
 import sit.int221.bookingproj.exception.EventTimeNullException;
+import sit.int221.bookingproj.exception.NotFoundEventException;
 import sit.int221.bookingproj.exception.OverlapTimeException;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.repositories.EventRepository;
@@ -45,6 +46,10 @@ public class EventService{
     @ExceptionHandler(EventTimeNullException.class)
     public void handleEventTimeNullException() {}
 
+    @ExceptionHandler(NotFoundEventException.class)
+    public void handleNotFoundEventException(){}
+
+
     public List<EventGetDto> getAllEvent(){
         return eventRepository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
@@ -60,14 +65,20 @@ public class EventService{
         return event.stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
 
-    public EventGetDto getById(Integer id){
+    public EventGetDto getById(Integer id) throws NotFoundEventException {
         Optional<Event> event = Optional.of(new Event());
-        event = Optional.ofNullable(eventRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ไม่พบสิ่งที่ต้องการ")));
+        event = Optional.ofNullable(eventRepository.findById(id).orElseThrow(() -> new NotFoundEventException("Event not found")));
         return convertEntityToDto(event.get());
     }
 
-    public void deleteEvent(Integer id){
-        eventRepository.deleteById(id);
+    public void deleteEvent(Integer id) throws EventCategoryIdNullException, NotFoundEventException {
+        Optional<Event> event = eventRepository.findById(id);
+        if(event != null){
+            eventRepository.deleteById(id);
+        }
+        else{
+            throw new NotFoundEventException("Can not find for id " + id);
+        }
     }
 
 
@@ -129,9 +140,11 @@ public class EventService{
     public Event create(EventCreateDto eventCreateDto) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException {
         if(eventCreateDto.getEventDuration() == null){
             Optional<EventCategory> eventCategory = eventCategoryRepository.findById(eventCreateDto.getEventCategoryId());
-            eventCreateDto.setEventDuration(eventCategory.get().getEventDuration());
+            if(checkEventStartTimeNull(eventCreateDto)){
+                eventCreateDto.setEventDuration(eventCategory.get().getEventDuration());
+            }
         }
-        if (checkDuplicateEventTime(eventCreateDto) && checkEventStartTimeNull(eventCreateDto)) {
+        if (checkDuplicateEventTime(eventCreateDto)) {
             return eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
         }
         else{
@@ -140,7 +153,7 @@ public class EventService{
     }
 
 
-    public void update(Integer id, EventUpdateDto eventUpdateDto) throws OverlapTimeException {
+        public void update(Integer id, EventUpdateDto eventUpdateDto) throws OverlapTimeException {
         Optional<Event> events = Optional.of(new Event());
         events = eventRepository.findById(id);
         if(events.isPresent()){
