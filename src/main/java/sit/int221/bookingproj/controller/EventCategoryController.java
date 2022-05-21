@@ -49,10 +49,10 @@ public class EventCategoryController {
         return eventCategoryService.updateEventCategory(id,updateEventCategory);
     }
 
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable Integer id){
-        eventCategoryRepository.deleteById(id);
-    }
+//    @DeleteMapping("/{id}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public void delete(@PathVariable Integer id){
+//        eventCategoryRepository.deleteById(id);
+//    }
 
 }
