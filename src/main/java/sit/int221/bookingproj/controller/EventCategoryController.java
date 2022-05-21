@@ -48,11 +48,11 @@ public class EventCategoryController {
     public EventCategory updateEventCategory(@PathVariable(name = "id") Integer id, @Valid @RequestBody EventCategory updateEventCategory) throws UniqueEventCategoryNameException {
         return eventCategoryService.updateEventCategory(id,updateEventCategory);
     }
-//
-//    @DeleteMapping("/{id}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public void delete(@PathVariable Integer id){
-//        eventCategoryRepository.deleteById(id);
-//    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void delete(@PathVariable Integer id){
+        eventCategoryRepository.deleteById(id);
+    }
 
 }
