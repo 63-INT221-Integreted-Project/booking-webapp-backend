@@ -83,7 +83,7 @@ public class EventController {
         String str2 = date2;
         Instant instant = Instant.parse(str1);
         Instant instant2 = Instant.parse(str2);
-        return eventService.castTypeToDto(eventRepository.findAllByEventStartTimeLessThanEqualOrEventStartTimeGreaterThanEqual(instant2,instant, Sort.by(Sort.Direction.DESC, "eventStartTime")));
+        return eventService.castTypeToDto(eventRepository.findAllByEventStartTimeBetween(instant2,instant, Sort.by(Sort.Direction.DESC, "eventStartTime")));
     }
 
     @GetMapping(value = "/search" , params = {"dateStart", "dateEnd", "category", "word"})
