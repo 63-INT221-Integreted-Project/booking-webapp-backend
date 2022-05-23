@@ -228,7 +228,7 @@ public class EventService{
         if(eventCategory.isPresent()){
             eventCategoryName = eventCategory.get().getEventCategoryName();
         }
-        List<Event> events = eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(eventCreateDto.getEventStartTime() , eventCreateDto.getEventStartTime().plusSeconds(eventCreateDto.getEventDuration().longValue() * 60) ,eventCategoryName ,Sort.by(Sort.Direction.DESC, "eventStartTime"));
+        List<Event> events = eventRepository.findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(eventCreateDto.getEventStartTime() , eventCreateDto.getEventStartTime().plusSeconds(eventCreateDto.getEventDuration().longValue() * 60L) ,eventCategoryName ,Sort.by(Sort.Direction.DESC, "eventStartTime"));
         if(events.isEmpty()){
             check = true;
         }

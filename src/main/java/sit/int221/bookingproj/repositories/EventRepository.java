@@ -14,6 +14,7 @@ import java.util.Optional;
 @Repository
 public interface EventRepository extends JpaRepository<Event, Integer> {
     public List<Event> findAllByEventStartTimeBetween(Instant start, Instant end, Sort eventStartTime);
+    public List<Event> findAllByEventStartTimeLessThanEqualAndEventStartTimeGreaterThanEqual(Instant end, Instant start, Sort eventStartTime);
     public List<Event> findAllByEventCategory(Optional<EventCategory> eventCategory);
     public List<Event> findAllByBookingEmailContainingOrBookingNameContaining(String word, String word2, Sort eventStartTime);
     public List<Event> findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(Instant dateStart, Instant dateEnd, String name, Sort eventStartTime);

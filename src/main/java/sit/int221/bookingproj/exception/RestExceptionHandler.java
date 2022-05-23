@@ -61,6 +61,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorModel error = new ErrorModel(HttpStatus.BAD_REQUEST, "Validation Error", errorMaping);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(NotFoundEventException.class)
     public ResponseEntity<Object> handleNotFoundEventException(NotFoundEventException exception) {
         Map<String, String> errorMaping = new HashMap<>();

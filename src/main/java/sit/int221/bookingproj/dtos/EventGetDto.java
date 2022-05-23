@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 public class EventGetDto {
 
     private Integer eventId;
-
     private String bookingName;
     private String bookingEmail;
 
