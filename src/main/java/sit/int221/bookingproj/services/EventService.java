@@ -1,6 +1,5 @@
 package sit.int221.bookingproj.services;
 
-import io.swagger.models.auth.In;
 import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,7 +104,6 @@ public class EventService{
             }
         }
 
-
         if(category != ""){
             EventCategory eventCategory = eventCategoryRepository.findAllByEventCategoryName(category);
             categoryFind = eventRepository.findAllByEventCategory(Optional.ofNullable(eventCategory));
@@ -130,7 +128,7 @@ public class EventService{
     }
 
 
-    public Event create(EventCreateDto eventCreateDto) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException {
+    public Optional<EventGetDto> create(EventCreateDto eventCreateDto) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException {
         if(eventCreateDto.getEventDuration() == null){
             Optional<EventCategory> eventCategory = eventCategoryRepository.findById(eventCreateDto.getEventCategoryId());
             if(checkEventStartTimeNull(eventCreateDto)){
@@ -138,7 +136,8 @@ public class EventService{
             }
         }
         if (checkDuplicateEventTime(eventCreateDto)) {
-            return eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
+            Event event = eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
+            return Optional.ofNullable(convertEntityToDto(event));
         }
         else{
             throw new OverlapTimeException("Start Time can not overlap");

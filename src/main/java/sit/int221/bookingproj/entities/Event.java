@@ -1,16 +1,7 @@
 package sit.int221.bookingproj.entities;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.hibernate.validator.constraints.UniqueElements;
-import org.intellij.lang.annotations.Pattern;
-
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "event")

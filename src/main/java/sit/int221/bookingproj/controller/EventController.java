@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import sit.int221.bookingproj.dtos.EventCreateDto;
 import sit.int221.bookingproj.dtos.EventGetDto;
 import sit.int221.bookingproj.dtos.EventUpdateDto;
-import sit.int221.bookingproj.entities.Event;
 import sit.int221.bookingproj.exception.EventCategoryIdNullException;
 import sit.int221.bookingproj.exception.EventTimeNullException;
 import sit.int221.bookingproj.exception.NotFoundEventException;
@@ -54,7 +53,7 @@ public class EventController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public Event createEvent(@Valid @RequestBody EventCreateDto newEvent) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException {
+    public Optional<EventGetDto> createEvent(@Valid @RequestBody EventCreateDto newEvent) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException {
         return eventService.create(newEvent);
     }
 
