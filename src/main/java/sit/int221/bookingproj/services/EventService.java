@@ -1,5 +1,6 @@
 package sit.int221.bookingproj.services;
 
+import io.swagger.models.auth.In;
 import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -236,6 +237,10 @@ public class EventService{
             check = false;
         }
         return check;
+    }
+
+    public List<EventGetDto> checkBetween(Instant instant, Instant instant2){
+        return castTypeToDto(eventRepository.findAllByEventStartTimeBetween(instant,instant2, Sort.by(Sort.Direction.DESC, "eventStartTime")));
     }
 
 }
