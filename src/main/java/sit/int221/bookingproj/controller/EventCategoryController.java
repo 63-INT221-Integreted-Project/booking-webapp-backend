@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/event-categories")
-@CrossOrigin()
 public class EventCategoryController {
     @Autowired
     public EventCategoryRepository eventCategoryRepository;

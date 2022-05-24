@@ -25,7 +25,6 @@ import java.util.*;
 @Validated
 @RestController()
 @RequestMapping("/api/events")
-@CrossOrigin()
 public class EventController {
     Logger logger = LoggerFactory.getLogger(EventController.class);
     @Autowired
