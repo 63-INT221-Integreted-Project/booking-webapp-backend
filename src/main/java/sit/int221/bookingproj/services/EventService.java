@@ -114,7 +114,7 @@ public class EventService{
             wordFind = eventRepository.findAllByBookingEmailContainingOrBookingNameContaining(word, word ,Sort.by(Sort.Direction.DESC, "eventStartTime") );
         }
 
-        if(dateFind.isEmpty()){
+        if(dateFind.isEmpty() || categoryFind.isEmpty()){
             resultDateAndCategory = ListUtils.union(dateFind, categoryFind);
         }
         else{
