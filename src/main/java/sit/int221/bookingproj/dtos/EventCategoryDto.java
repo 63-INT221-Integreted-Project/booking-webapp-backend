@@ -17,6 +17,7 @@ public class EventCategoryDto {
     private Integer eventCategoryId;
 
     @Size(max = 100 , message = "length exceeded the size")
+    @Column(name = "eventCategoryName")
     private String eventCategoryName;
     @Size(max = 500, message = "length exceeded the size")
     private String eventCategoryDescription;

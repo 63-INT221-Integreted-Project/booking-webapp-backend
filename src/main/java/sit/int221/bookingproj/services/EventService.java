@@ -81,6 +81,7 @@ public class EventService{
         List resultDateAndCategory = new ArrayList();
         String str1 = dateStart;
         String str2 = dateEnd;
+        boolean findCategory = false;
 
         if(dateStart != "" && dateEnd != ""){
             Instant instant = Instant.parse(str1);
@@ -103,6 +104,7 @@ public class EventService{
             }
         }
         if(category != ""){
+            findCategory = true;
             EventCategory eventCategory = eventCategoryRepository.findAllByEventCategoryName(category);
             categoryFind = eventRepository.findAllByEventCategory(Optional.ofNullable(eventCategory),  Sort.by(Sort.Direction.DESC, "eventStartTime"));
         }
@@ -110,7 +112,10 @@ public class EventService{
             wordFind = eventRepository.findAllByBookingEmailContainingOrBookingNameContaining(word, word ,Sort.by(Sort.Direction.DESC, "eventStartTime") );
         }
 
-        if(dateFind.isEmpty() || categoryFind.isEmpty()){
+        if(categoryFind.isEmpty() && findCategory == true){
+            return castTypeToDto(result);
+        }
+        if(dateFind.isEmpty() || (categoryFind.isEmpty() && findCategory == false)){
             resultDateAndCategory = ListUtils.union(dateFind, categoryFind);
         }
         else{
