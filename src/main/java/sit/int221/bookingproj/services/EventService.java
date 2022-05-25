@@ -104,18 +104,17 @@ public class EventService{
             }
         }
         if(category != ""){
-            findCategory = true;
             EventCategory eventCategory = eventCategoryRepository.findAllByEventCategoryName(category);
             categoryFind = eventRepository.findAllByEventCategory(Optional.ofNullable(eventCategory),  Sort.by(Sort.Direction.DESC, "eventStartTime"));
+            if(categoryFind.isEmpty()){
+                return castTypeToDto(result);
+            }
         }
         if(word != ""){
             wordFind = eventRepository.findAllByBookingEmailContainingOrBookingNameContaining(word, word ,Sort.by(Sort.Direction.DESC, "eventStartTime") );
         }
 
-        if(categoryFind.isEmpty() && findCategory == true){
-            return castTypeToDto(result);
-        }
-        if(dateFind.isEmpty() || (categoryFind.isEmpty() && findCategory == false)){
+        if(dateFind.isEmpty()){
             resultDateAndCategory = ListUtils.union(dateFind, categoryFind);
         }
         else{
