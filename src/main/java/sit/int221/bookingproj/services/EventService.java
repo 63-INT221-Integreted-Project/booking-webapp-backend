@@ -73,7 +73,6 @@ public class EventService{
         }
     }
 
-
     public List<EventGetDto> getSearch(String dateStart, String dateEnd, String category, String word){
         List result = new ArrayList();
         List categoryFind = new ArrayList();
@@ -103,10 +102,9 @@ public class EventService{
                 dateFind = eventRepository.findAllByEventStartTimeBetween(instant, instant2 , Sort.by(Sort.Direction.DESC, "eventStartTime"));
             }
         }
-
         if(category != ""){
             EventCategory eventCategory = eventCategoryRepository.findAllByEventCategoryName(category);
-            categoryFind = eventRepository.findAllByEventCategory(Optional.ofNullable(eventCategory));
+            categoryFind = eventRepository.findAllByEventCategory(Optional.ofNullable(eventCategory),  Sort.by(Sort.Direction.DESC, "eventStartTime"));
         }
         if(word != ""){
             wordFind = eventRepository.findAllByBookingEmailContainingOrBookingNameContaining(word, word ,Sort.by(Sort.Direction.DESC, "eventStartTime") );
@@ -136,6 +134,8 @@ public class EventService{
             }
         }
         if (checkDuplicateEventTime(eventCreateDto)) {
+            eventCreateDto.setBookingName(eventCreateDto.getBookingName().trim());
+            eventCreateDto.setBookingEmail(eventCreateDto.getBookingEmail().trim());
             Event event = eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
             return Optional.ofNullable(convertEntityToDto(event));
         }
@@ -143,9 +143,7 @@ public class EventService{
             throw new OverlapTimeException("Start Time can not overlap");
         }
     }
-
-
-        public void update(Integer id, EventUpdateDto eventUpdateDto) throws OverlapTimeException {
+    public void update(Integer id, EventUpdateDto eventUpdateDto) throws OverlapTimeException {
         Optional<Event> events = Optional.of(new Event());
         events = eventRepository.findById(id);
         if(events.isPresent()){
@@ -162,7 +160,6 @@ public class EventService{
                     eventRepository.saveAndFlush(event);
                 });
             }
-
         }
         else{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can not find eventId" + id);
@@ -209,7 +206,6 @@ public class EventService{
         }
         return check;
     }
-
     public boolean checkEventStartTimeNull(EventCreateDto eventCreateDto) throws EventTimeNullException {
         boolean check = false;
         if(eventCreateDto.getEventStartTime() != null){
@@ -241,5 +237,4 @@ public class EventService{
     public List<EventGetDto> checkBetween(Instant instant, Instant instant2){
         return castTypeToDto(eventRepository.findAllByEventStartTimeBetween(instant,instant2, Sort.by(Sort.Direction.DESC, "eventStartTime")));
     }
-
 }

@@ -36,6 +36,8 @@ public class EventCategoryService {
 
     public EventCategory createEventCategory(EventCategory newEventCategory) throws UniqueEventCategoryNameException {
         if(checkUniqueName(newEventCategory)){
+            newEventCategory.setEventCategoryName(newEventCategory.getEventCategoryName().trim());
+            newEventCategory.setEventCategoryDescription(newEventCategory.getEventCategoryDescription().trim());
             return eventCategoryRepository.saveAndFlush(newEventCategory);
         }
         else{

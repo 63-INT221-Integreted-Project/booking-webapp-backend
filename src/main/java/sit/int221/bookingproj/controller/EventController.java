@@ -29,21 +29,19 @@ public class EventController {
     Logger logger = LoggerFactory.getLogger(EventController.class);
     @Autowired
     public EventRepository eventRepository;
-
     @Autowired
     public EventService eventService;
 
     @Autowired
     public EventCategoryRepository eventCategoryRepository;
 
-    @ExceptionHandler(IllegalStateException.class)
-    public void handleIllegalStateException() {}
 
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
     public List<EventGetDto> getAllEvent(){
         return eventService.getAllEvent();
     }
+
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public EventGetDto getEventById(@PathVariable Integer id) throws NotFoundEventException {
