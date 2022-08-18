@@ -3,7 +3,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import sit.int221.bookingproj.entities.EventCategory;
-import sit.int221.bookingproj.exception.NotFoundEventException;
+import sit.int221.bookingproj.exception.NotFoundException;
 import sit.int221.bookingproj.exception.UniqueEventCategoryNameException;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.services.EventCategoryService;
@@ -32,7 +32,7 @@ public class EventCategoryController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<EventCategory> getEventCategoryById(@PathVariable Integer id) throws NotFoundEventException {
+    public Optional<EventCategory> getEventCategoryById(@PathVariable Integer id) throws NotFoundException {
         return eventCategoryService.getEventCategoryById(id);
     }
 
