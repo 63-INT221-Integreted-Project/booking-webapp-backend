@@ -39,6 +39,15 @@ CREATE TABLE IF NOT EXISTS `oasipdb`.`event` (
     ON UPDATE NO ACTION)
     ENGINE = InnoDB;
 
+CREATE TABLE IF NOT EXISTS `oasipdb`.`user`(
+                                               `userId` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                               `name` VARCHAR(100) NOT NULL,
+    `email` VARCHAR(50) NOT NULL,
+    `role` VARCHAR(50) NOT NULL,
+    `createdOn` DATETIME(4) DEFAULT CURRENT_TIMESTAMP(4),
+    `updatedOn` DATETIME(4) DEFAULT CURRENT_TIMESTAMP(4) ON UPDATE CURRENT_TIMESTAMP(4)
+    );
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
     SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
