@@ -27,11 +27,16 @@ public class EventCategoryService {
     @ExceptionHandler(NotFoundException.class)
     public void handleNotFoundEventException() {}
     public List<EventCategoryDto> getAllEventCategoryDto(){
-        return eventCategoryRepository.findAll(Sort.by(Sort.Direction.DESC, "eventCategoryId")).stream().map(this::castEventCategoryDto).collect(Collectors.toList());
+        return eventCategoryRepository.findAll(
+                Sort.by(Sort.Direction.DESC, "eventCategoryId")).stream()
+                .map(this::castEventCategoryDto).collect(Collectors.toList());
     }
 
     public Optional<EventCategory> getEventCategoryById(Integer id) throws NotFoundException {
         return Optional.ofNullable(eventCategoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Can not find for id " + id)));
+    public Optional<EventCategory> getEventCategoryById(Integer id) throws NotFoundEventException {
+        return Optional.ofNullable(eventCategoryRepository.findById(id)
+                .orElseThrow(() -> new NotFoundEventException("Can not find for id " + id)));
     }
 
     public EventCategory createEventCategory(EventCategory newEventCategory) throws UniqueEventCategoryNameException {
