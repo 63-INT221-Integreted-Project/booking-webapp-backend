@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.bookingproj.dtos.EventCategoryDto;
 import sit.int221.bookingproj.entities.EventCategory;
-import sit.int221.bookingproj.exception.NotFoundEventException;
+import sit.int221.bookingproj.exception.NotFoundException;
 import sit.int221.bookingproj.exception.UniqueEventCategoryNameException;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 
@@ -24,7 +24,7 @@ public class EventCategoryService {
 
     @ExceptionHandler(UniqueEventCategoryNameException.class)
     public void handleUniqueEventCategoryNameException() {}
-    @ExceptionHandler(NotFoundEventException.class)
+    @ExceptionHandler(NotFoundException.class)
     public void handleNotFoundEventException() {}
     public List<EventCategoryDto> getAllEventCategoryDto(){
         return eventCategoryRepository.findAll(
@@ -32,6 +32,8 @@ public class EventCategoryService {
                 .map(this::castEventCategoryDto).collect(Collectors.toList());
     }
 
+    public Optional<EventCategory> getEventCategoryById(Integer id) throws NotFoundException {
+        return Optional.ofNullable(eventCategoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Can not find for id " + id)));
     public Optional<EventCategory> getEventCategoryById(Integer id) throws NotFoundEventException {
         return Optional.ofNullable(eventCategoryRepository.findById(id)
                 .orElseThrow(() -> new NotFoundEventException("Can not find for id " + id)));

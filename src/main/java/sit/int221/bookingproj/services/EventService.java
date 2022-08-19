@@ -15,7 +15,7 @@ import sit.int221.bookingproj.entities.Event;
 import sit.int221.bookingproj.entities.EventCategory;
 import sit.int221.bookingproj.exception.EventCategoryIdNullException;
 import sit.int221.bookingproj.exception.EventTimeNullException;
-import sit.int221.bookingproj.exception.NotFoundEventException;
+import sit.int221.bookingproj.exception.NotFoundException;
 import sit.int221.bookingproj.exception.OverlapTimeException;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.repositories.EventRepository;
@@ -34,42 +34,36 @@ public class EventService{
     Logger logger = LoggerFactory.getLogger(EventController.class);
     @ExceptionHandler(IllegalStateException.class)
     public void handleIllegalStateException() {}
-    @ExceptionHandler(OverlapTimeException.class)
-    public void handleOverlapTime() {}
-
-    @ExceptionHandler(EventCategoryIdNullException.class)
-    public void handleEventCategoryIdNullException() {}
 
     @ExceptionHandler(IllegalArgumentException.class)
     public void handleIllegalArgumentException() {}
 
-    @ExceptionHandler(EventTimeNullException.class)
-    public void handleEventTimeNullException() {}
 
-    @ExceptionHandler(NotFoundEventException.class)
+    @ExceptionHandler(NotFoundException.class)
     public void handleNotFoundEventException(){}
 
 
     public List<EventGetDto> getAllEvent(){
         return eventRepository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
+
     public List<EventGetDto> castTypeToDto(List<Event> event){
         return event.stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
 
-    public EventGetDto getById(Integer id) throws NotFoundEventException {
+    public EventGetDto getById(Integer id) throws NotFoundException {
         Optional<Event> event = Optional.of(new Event());
-        event = Optional.ofNullable(eventRepository.findById(id).orElseThrow(() -> new NotFoundEventException("Event not found")));
+        event = Optional.ofNullable(eventRepository.findById(id).orElseThrow(() -> new NotFoundException("Event not found")));
         return convertEntityToDto(event.get());
     }
 
-    public void deleteEvent(Integer id) throws EventCategoryIdNullException, NotFoundEventException {
+    public void deleteEvent(Integer id) throws EventCategoryIdNullException, NotFoundException {
         Optional<Event> event = eventRepository.findById(id);
         if(event != null){
             eventRepository.deleteById(id);
         }
         else{
-            throw new NotFoundEventException("Can not find for id " + id);
+            throw new NotFoundException("Can not find for id " + id);
         }
     }
 

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,10 +60,26 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(NotFoundEventException.class)
-    public ResponseEntity<Object> handleNotFoundEventException(NotFoundEventException exception) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> handleNotFoundEventException(NotFoundException exception) {
         Map<String, String> errorMaping = new HashMap<>();
         errorMaping.put("Event", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.BAD_REQUEST, "Validation Error", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UniqueNameException.class)
+    public ResponseEntity<Object> handleUniqueNameUserException(UniqueNameException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("name", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.BAD_REQUEST, "Validation Error", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UniqueEmailException.class)
+    public ResponseEntity<Object> handleUniqueEmailUserException(UniqueEmailException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("email", exception.getMessage());
         ErrorModel error = new ErrorModel(HttpStatus.BAD_REQUEST, "Validation Error", errorMaping);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
