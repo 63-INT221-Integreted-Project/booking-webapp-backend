@@ -68,16 +68,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Object> handleUniqueNameUserException(NotFoundException exception) {
+    @ExceptionHandler(UniqueNameException.class)
+    public ResponseEntity<Object> handleUniqueNameUserException(UniqueNameException exception) {
         Map<String, String> errorMaping = new HashMap<>();
         errorMaping.put("name", exception.getMessage());
         ErrorModel error = new ErrorModel(HttpStatus.BAD_REQUEST, "Validation Error", errorMaping);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Object> handleUniqueEmailUserException(NotFoundException exception) {
+    @ExceptionHandler(UniqueEmailException.class)
+    public ResponseEntity<Object> handleUniqueEmailUserException(UniqueEmailException exception) {
         Map<String, String> errorMaping = new HashMap<>();
         errorMaping.put("email", exception.getMessage());
         ErrorModel error = new ErrorModel(HttpStatus.BAD_REQUEST, "Validation Error", errorMaping);
