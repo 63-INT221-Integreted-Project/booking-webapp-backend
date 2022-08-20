@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @Validated
 @RestController()
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
