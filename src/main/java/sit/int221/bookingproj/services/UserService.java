@@ -117,9 +117,8 @@ public class UserService {
 
     public boolean checkUniqueName(UserActionDto user) throws UniqueNameException {
         boolean check;
-        User userFind = userRepository.findAllByName(user.getName());
+        User userFind = userRepository.findAllByName(user.getName().trim());
         if(userFind == null || userFind.getUserId().equals(user.getUserId())){
-//            System.out.println(user.getUserId() + " " + userFind.getUserId());
             check = true;
         }
         else{
@@ -131,7 +130,7 @@ public class UserService {
 
     public boolean checkUniqueEmail(UserActionDto user) throws UniqueEmailException {
         boolean check;
-        User userFind = userRepository.findAllByEmail(user.getEmail());
+        User userFind = userRepository.findAllByEmail(user.getEmail().trim());
         if(userFind == null || userFind.getUserId().equals(user.getUserId())){
             check = true;
         }
