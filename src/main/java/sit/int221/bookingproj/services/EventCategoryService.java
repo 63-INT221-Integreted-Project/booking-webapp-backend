@@ -26,6 +26,7 @@ public class EventCategoryService {
     public void handleUniqueEventCategoryNameException() {}
     @ExceptionHandler(NotFoundException.class)
     public void handleNotFoundEventException() {}
+
     public List<EventCategoryDto> getAllEventCategoryDto(){
         return eventCategoryRepository.findAll(Sort.by(Sort.Direction.DESC, "eventCategoryId")).stream().map(this::castEventCategoryDto).collect(Collectors.toList());
     }
