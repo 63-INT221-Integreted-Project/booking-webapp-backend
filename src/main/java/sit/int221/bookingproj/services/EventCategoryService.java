@@ -23,66 +23,66 @@ public class EventCategoryService {
     public EventCategoryRepository eventCategoryRepository;
 
     @ExceptionHandler(UniqueEventCategoryNameException.class)
-    public void handleUniqueEventCategoryNameException() {}
-    @ExceptionHandler(NotFoundException.class)
-    public void handleNotFoundEventException() {}
+    public void handleUniqueEventCategoryNameException() {
+    }
 
-    public List<EventCategoryDto> getAllEventCategoryDto(){
+    @ExceptionHandler(NotFoundException.class)
+    public void handleNotFoundEventException() {
+    }
+
+    public List<EventCategoryDto> getAllEventCategoryDto() {
         return eventCategoryRepository.findAll(
-                Sort.by(Sort.Direction.DESC, "eventCategoryId")).stream()
+                        Sort.by(Sort.Direction.DESC, "eventCategoryId")).stream()
                 .map(this::castEventCategoryDto).collect(Collectors.toList());
     }
 
-    public Optional<EventCategory> getEventCategoryById(Integer id) throws NotFoundException {
-        return Optional.ofNullable(eventCategoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Can not find for id " + id)));
-    public Optional<EventCategory> getEventCategoryById(Integer id) throws NotFoundEventException {
-        return Optional.ofNullable(eventCategoryRepository.findById(id)
-                .orElseThrow(() -> new NotFoundEventException("Can not find for id " + id)));
-    }
-
-    public EventCategory createEventCategory(EventCategory newEventCategory) throws UniqueEventCategoryNameException {
-        if(checkUniqueName(newEventCategory)){
-            newEventCategory.setEventCategoryName(newEventCategory.getEventCategoryName().trim());
-            newEventCategory.setEventCategoryDescription(newEventCategory.getEventCategoryDescription().trim());
-            return eventCategoryRepository.saveAndFlush(newEventCategory);
+        public Optional<EventCategory> getEventCategoryById (Integer id) throws NotFoundException {
+            return Optional.ofNullable(eventCategoryRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException("Can not find for id " + id)));
         }
-        else{
-            throw new UniqueEventCategoryNameException("event category name must be unique");
-        }
-    }
 
-    public EventCategory updateEventCategory(Integer id, @Valid EventCategory updateEventCategory) throws UniqueEventCategoryNameException {
-        Optional<EventCategory> optionalEventCategory = eventCategoryRepository.findById(id);
-        if(optionalEventCategory.isPresent()){
-            if(checkUniqueName(updateEventCategory)){
-                return eventCategoryRepository.saveAndFlush(updateEventCategory);
+        public EventCategory createEventCategory (EventCategory newEventCategory) throws
+        UniqueEventCategoryNameException {
+            if (checkUniqueName(newEventCategory)) {
+                newEventCategory.setEventCategoryName(newEventCategory.getEventCategoryName().trim());
+                newEventCategory.setEventCategoryDescription(newEventCategory.getEventCategoryDescription().trim());
+                return eventCategoryRepository.saveAndFlush(newEventCategory);
+            } else {
+                throw new UniqueEventCategoryNameException("event category name must be unique");
             }
         }
-        else{
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "can not find event category id" + id);
-        }
-        return updateEventCategory;
-    }
 
-    public boolean checkUniqueName(EventCategory eventCategory) throws UniqueEventCategoryNameException {
-        boolean check;
-        EventCategory eventCategory1 = eventCategoryRepository.findAllByEventCategoryName(eventCategory.getEventCategoryName());
-        if(eventCategory1 == null || eventCategory.getEventCategoryId() == eventCategory1.getEventCategoryId()){
-            check = true;
+        public EventCategory updateEventCategory (Integer id, @Valid EventCategory updateEventCategory) throws
+        UniqueEventCategoryNameException {
+            Optional<EventCategory> optionalEventCategory = eventCategoryRepository.findById(id);
+            if (optionalEventCategory.isPresent()) {
+                if (checkUniqueName(updateEventCategory)) {
+                    return eventCategoryRepository.saveAndFlush(updateEventCategory);
+                }
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "can not find event category id" + id);
+            }
+            return updateEventCategory;
         }
-        else{
-            check = false;
-            throw new UniqueEventCategoryNameException("Event Category Name must be Unique");
-        }
-        return check;
-    }
 
-    public EventCategoryDto castEventCategoryDto(EventCategory eventCategory){
-        EventCategoryDto eventCategoryDto = new EventCategoryDto();
-        eventCategoryDto.setEventCategoryId(eventCategory.getEventCategoryId());
-        eventCategoryDto.setEventCategoryName(eventCategory.getEventCategoryName());
-        eventCategoryDto.setEventCategoryDescription(eventCategory.getEventCategoryDescription());
-        eventCategoryDto.setEventDuration(eventCategory.getEventDuration());
-        return  eventCategoryDto;
+        public boolean checkUniqueName (EventCategory eventCategory) throws UniqueEventCategoryNameException {
+            boolean check;
+            EventCategory eventCategory1 = eventCategoryRepository.findAllByEventCategoryName(eventCategory.getEventCategoryName());
+            if (eventCategory1 == null || eventCategory.getEventCategoryId() == eventCategory1.getEventCategoryId()) {
+                check = true;
+            } else {
+                check = false;
+                throw new UniqueEventCategoryNameException("Event Category Name must be Unique");
+            }
+            return check;
+        }
+
+        public EventCategoryDto castEventCategoryDto (EventCategory eventCategory){
+            EventCategoryDto eventCategoryDto = new EventCategoryDto();
+            eventCategoryDto.setEventCategoryId(eventCategory.getEventCategoryId());
+            eventCategoryDto.setEventCategoryName(eventCategory.getEventCategoryName());
+            eventCategoryDto.setEventCategoryDescription(eventCategory.getEventCategoryDescription());
+            eventCategoryDto.setEventDuration(eventCategory.getEventDuration());
+            return eventCategoryDto;
+        }
     }
-}
