@@ -1,5 +1,7 @@
 package sit.int221.bookingproj.services;
 
+import de.mkammerer.argon2.Argon2;
+import de.mkammerer.argon2.Argon2Factory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -41,6 +43,7 @@ public class UserService {
         return userRepository.findAll(Sort.by(Sort.Direction.ASC, "name")).stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
 
+
     public UserGetDto getById(Integer id) throws NotFoundException {
         Optional<User> user = Optional.of(new User());
         user = Optional.ofNullable(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found")));
@@ -48,17 +51,24 @@ public class UserService {
     }
 
     public User createUser(@Valid UserActionDto newUser) throws UniqueEmailException, UniqueNameException {
+        Argon2 argon2 = Argon2Factory.create(
+                Argon2Factory.Argon2Types.ARGON2id,
+                16,
+                16);
         if(checkUniqueName(newUser)){
             if(checkUniqueEmail(newUser)) {
                 newUser.setName(newUser.getName().trim());
                 newUser.setEmail(newUser.getEmail().trim());
                 newUser.setRole(newUser.getRole().trim());
+                newUser.setPassword(newUser.getPassword().trim());
                 if (newUser.getRole().toUpperCase().equals(RoleEnum.STUDENT.toString()) || newUser.getRole().toUpperCase().equals(RoleEnum.LECTURER.toString()) || newUser.getRole().toUpperCase().equals(RoleEnum.ADMIN.toString())) {
                     newUser.setRole(newUser.getRole().toLowerCase());
                 } else {
                     newUser.setRole(RoleEnum.STUDENT.name().toLowerCase());
                 }
-                return userRepository.saveAndFlush(castUserDto(newUser));
+                String hash = argon2.hash(22, 65536, 1, newUser.getPassword());
+                newUser.setPassword(hash);
+                return userRepository.saveAndFlush(castUserDtoCreate(newUser));
             }
             else{
                 throw new UniqueEmailException("email must be unique");
@@ -146,6 +156,16 @@ public class UserService {
         return userGetDto;
     }
 
+    public User castUserDtoCreate(UserActionDto userAction){
+        User user = new User();
+        user.setName(userAction.getName());
+        user.setRole(userAction.getRole());
+        user.setEmail(userAction.getEmail());
+        user.setPassword(userAction.getPassword());
+        user.setCreatedOn(null);
+        user.setUpdatedOn(null);
+        return user;
+    }
     public User castUserDto(UserActionDto userAction){
         User user = new User();
         user.setName(userAction.getName());

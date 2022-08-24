@@ -30,6 +30,10 @@ public class User {
     @Size(max = 50, message = "length exceeded the size")
     private String role;
 
+    @Column(name = "password" , nullable = false)
+    @Size(max = 90, message = "length exceeded the size")
+    private String password;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     @Column(name="createdOn")
     @CreationTimestamp
@@ -85,5 +89,12 @@ public class User {
 
     public void setUpdatedOn(LocalDateTime updatedOn) {
         this.updatedOn = updatedOn;
+    }
+
+    public String getPassword(){
+        return this.password;
+    }
+    public void setPassword(String password){
+        this.password = password;
     }
 }
