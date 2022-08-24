@@ -84,6 +84,21 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(EmailUserNotFoundException.class)
+    public ResponseEntity<Object> handleEmailUserNotFound(EmailUserNotFoundException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("email", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.NOT_FOUND, "Authentication Error", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PasswordUserNotMatchException.class)
+    public ResponseEntity<Object> handlePasswordUserNotMatchException(PasswordUserNotMatchException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("password", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.UNAUTHORIZED, "Authentication Error", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
 
 //    @ExceptionHandler(IllegalStateException.class)
 //    protected ResponseEntity<Object> handleIllegalStateNotValid(IllegalStateException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
