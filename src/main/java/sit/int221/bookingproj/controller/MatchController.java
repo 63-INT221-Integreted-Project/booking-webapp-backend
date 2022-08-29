@@ -12,7 +12,7 @@ import sit.int221.bookingproj.repositories.UserRepository;
 import sit.int221.bookingproj.services.MatchService;
 
 @RestController
-@RequestMapping("/api/match")
+@RequestMapping("/api/auth/match")
 public class MatchController {
 
     @Autowired
