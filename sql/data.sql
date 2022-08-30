@@ -9,4 +9,4 @@ insert into event values(2, "Somsri Rakdee (SJ-3)", "somsri.rak@mail.kmutt.ac.th
 insert into event values(3, "Somkiat TT-4", "somkiat.kay@kmutt.ac.th", "2022-04-23 17:00:00", 30, "ปรึกษาเพื่อนไม่ช่วยงาน", 3);
 
 
-insert into user(name, email, role) values("John Wick", "johnwick2@gmail.com", "admin");
+insert into user(name, email, role, password) values("John Wick", "johnwick2@gmail.com", "admin", "lnwza007");
