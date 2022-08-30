@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS `oasipdb`.`user`(
                                                `name` VARCHAR(100) NOT NULL,
     `email` VARCHAR(50) NOT NULL,
     `role` VARCHAR(50) NOT NULL,
+    `password` VARCHAR(90) NOT NULL,
     `createdOn` DATETIME(4) DEFAULT CURRENT_TIMESTAMP(4),
     `updatedOn` DATETIME(4) DEFAULT CURRENT_TIMESTAMP(4) ON UPDATE CURRENT_TIMESTAMP(4)
     );
