@@ -101,7 +101,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(TokenInvalidException.class)
-    public ResponseEntity<Object> handlePasswordUserNotMatchException(TokenInvalidException exception) {
+    public ResponseEntity<Object> handleTokenInvalidException(TokenInvalidException exception) {
         Map<String, String> errorMaping = new HashMap<>();
         errorMaping.put("token", exception.getMessage());
         ErrorModel error = new ErrorModel(HttpStatus.UNAUTHORIZED, "Authentication Error", errorMaping);

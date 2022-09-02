@@ -6,12 +6,16 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import sit.int221.bookingproj.dtos.UserLoginDto;
 import sit.int221.bookingproj.entities.User;
+import sit.int221.bookingproj.exception.TokenInvalidException;
 import sit.int221.bookingproj.repositories.UserRepository;
 
 @Service
 public class TokenService {
+    @ExceptionHandler(TokenInvalidException.class)
+    public void handleTokenInvalidException() {}
     @Autowired
     public UserRepository userRepository;
     public String tokenize(UserLoginDto userLoginDto){
@@ -24,16 +28,12 @@ public class TokenService {
     };
 
     public DecodedJWT verify(String token) {
-        try {
             JWTVerifier verifier = JWT.require(algorithm())
                     .withIssuer("BackendService")
                     .build();
-            System.out.println("test versify " +  verifier.verify(token).getToken());
+            System.out.println(verifier.verify(token));
+            System.out.println("token verifier" + verifier.verify(token).getPayload());
             return verifier.verify(token);
-
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     private Algorithm algorithm() {
