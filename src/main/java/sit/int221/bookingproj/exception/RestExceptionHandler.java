@@ -100,6 +100,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(TokenInvalidException.class)
+    public ResponseEntity<Object> handleTokenInvalidException(TokenInvalidException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("token", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.UNAUTHORIZED, "Authentication Error", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
 //    @ExceptionHandler(IllegalStateException.class)
 //    protected ResponseEntity<Object> handleIllegalStateNotValid(IllegalStateException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 //        Map<String, String> errorMaping = new HashMap<>();
