@@ -31,7 +31,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //            "/api/users",
 //            "/api/events",
 //            "/api/event-categories",
-//            "/api/users/"
     };
 
     public SecurityConfig(TokenService tokenService) {
@@ -62,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests().antMatchers(PUBLIC).anonymous()
                 .anyRequest().authenticated()
-                .and().apply(new TokenFilterConfiguerer(tokenService));
+                .and().apply(new TokenFilterConfigurer(tokenService));
 
         http.exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
