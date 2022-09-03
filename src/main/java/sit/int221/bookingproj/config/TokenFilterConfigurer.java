@@ -7,11 +7,11 @@ import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import sit.int221.bookingproj.services.TokenService;
 
-public class TokenFilterConfiguerer extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+public class TokenFilterConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
     private final TokenService service;
 
-    public TokenFilterConfiguerer(TokenService service) {
+    public TokenFilterConfigurer(TokenService service) {
         this.service = service;
     }
 

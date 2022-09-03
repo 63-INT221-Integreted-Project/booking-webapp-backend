@@ -12,13 +12,13 @@ import sit.int221.bookingproj.repositories.UserRepository;
 import sit.int221.bookingproj.services.MatchService;
 
 @RestController
-@RequestMapping("/auth/match")
+@RequestMapping("/api/auth")
 public class MatchController {
 
     @Autowired
     public MatchService matchService;
 
-    @PostMapping(name = "")
+    @PostMapping(name = "/match")
     @ResponseStatus(code = HttpStatus.OK)
     public HttpStatus matchPassword(@RequestBody UserLoginDto userLoginDto) throws PasswordUserNotMatchException, EmailUserNotFoundException {
         return matchService.matchUsernameAndPassword(userLoginDto);

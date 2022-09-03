@@ -2,8 +2,8 @@ package sit.int221.bookingproj.services;
 
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import sit.int221.bookingproj.dtos.UserLoginDto;
@@ -26,7 +26,7 @@ public class LoginService {
 
     @Autowired
     public TokenService tokenService;
-    public String login(UserLoginDto userLoginDto) throws EmailUserNotFoundException, PasswordUserNotMatchException {
+    public JSONObject login(UserLoginDto userLoginDto) throws EmailUserNotFoundException, PasswordUserNotMatchException {
         Argon2 argon2 = Argon2Factory.create(
                 Argon2Factory.Argon2Types.ARGON2id,
                 16,
@@ -38,7 +38,9 @@ public class LoginService {
         if(user != null){
             if(argon2.verify(user.getPassword() , userLoginDto.getPassword())){
                 String token = tokenService.tokenize(userLoginDto);
-                return token;
+                JSONObject json = new JSONObject();
+                json.put("access_token", token);
+                return json;
             }
             else{
                 throw new PasswordUserNotMatchException("This password is not match in system");
