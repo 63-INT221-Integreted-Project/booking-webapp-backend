@@ -12,3 +12,4 @@ insert into event values(3, "Somkiat TT-4", "somkiat.kay@kmutt.ac.th", "2022-04-
 insert into user(name, email, role, password) values("John Wick", "johnwick2@gmail.com", "admin", "$argon2id$v=19$m=65536,t=22,p=1$OTMD9u2lz666cIa5AmC8lw$Y/RkvRVM/6dRkib8ZqfoDg");
 -- รหัสคือ somkiat.kay007
 insert into user(name, email, role, password) values("สมเกียรติ ขยันเรียน", "somkiat007y@kmutt.ac.th", "admin", "$argon2id$v=19$m=65536,t=22,p=1$OTMD9u2lz666cIa5AmC8lw$Y/RkvRVM/6dRkib8ZqfoDg");
+insert into user(name, email, role, password) values("สมเกียรติ ขยันเรียน", "somkiat007y@kmutt.ac.th", "admin", "$argon2id$v=19$m=65536,t=22,p=1$OTMD9u2lz666cIa5AmC8lw$Y/RkvRVM/6dRkib8ZqfoDg");
