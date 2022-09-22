@@ -14,7 +14,6 @@ import sit.int221.bookingproj.entities.User;
 import sit.int221.bookingproj.enums.RoleEnum;
 import sit.int221.bookingproj.exception.NotFoundException;
 import sit.int221.bookingproj.exception.UniqueEmailException;
-import sit.int221.bookingproj.exception.UniqueEventCategoryNameException;
 import sit.int221.bookingproj.exception.UniqueNameException;
 import sit.int221.bookingproj.repositories.UserRepository;
 
@@ -166,6 +165,13 @@ public class UserService {
         user.setUpdatedOn(null);
         return user;
     }
+
+    public UserLoginDto castUserToUserLogin(User user){
+        UserLoginDto userLoginDto = new UserLoginDto();
+        userLoginDto.setEmail(user.getEmail());
+        userLoginDto.setPassword(user.getPassword());
+        return userLoginDto;
+    }
     public User castUserDto(UserActionDto userAction){
         User user = new User();
         user.setName(userAction.getName());
@@ -175,4 +181,5 @@ public class UserService {
         user.setUpdatedOn(null);
         return user;
     }
+
 }

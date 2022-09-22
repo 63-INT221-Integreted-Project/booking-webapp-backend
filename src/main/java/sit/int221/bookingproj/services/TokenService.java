@@ -12,18 +12,40 @@ import sit.int221.bookingproj.entities.User;
 import sit.int221.bookingproj.exception.TokenInvalidException;
 import sit.int221.bookingproj.repositories.UserRepository;
 
+import java.util.Calendar;
+import java.util.Date;
+
 @Service
 public class TokenService {
     @ExceptionHandler(TokenInvalidException.class)
     public void handleTokenInvalidException() {}
+
     @Autowired
     public UserRepository userRepository;
+
     public String tokenize(UserLoginDto userLoginDto){
-        User user = userRepository.findAllByEmail(userLoginDto.getEmail());
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, 30);
+        Date expiresAt = calendar.getTime();
+        User user = userRepository.findUserByEmail(userLoginDto.getEmail());
         Algorithm algorithm = Algorithm.HMAC256("oasipLnwzaSecret");
         return JWT.create().withIssuer("BackendService").withClaim("userId", user.getUserId())
                 .withClaim("name", user.getName())
                 .withClaim("role", user.getRole())
+                .withExpiresAt(expiresAt)
+                .sign(algorithm);
+    };
+
+    public String tokenizeRefreshToken(UserLoginDto userLoginDto){
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR, 24);
+        Date expiresAt = calendar.getTime();
+        User user = userRepository.findUserByEmail(userLoginDto.getEmail());
+        Algorithm algorithm = Algorithm.HMAC256("oasipLnwzaSecret");
+        return JWT.create().withIssuer("BackendService").withClaim("userId", user.getUserId())
+                .withClaim("name", user.getName())
+                .withClaim("role", user.getRole())
+                .withExpiresAt(expiresAt)
                 .sign(algorithm);
     };
 
@@ -31,8 +53,6 @@ public class TokenService {
             JWTVerifier verifier = JWT.require(algorithm())
                     .withIssuer("BackendService")
                     .build();
-            System.out.println(verifier.verify(token));
-            System.out.println("token verifier" + verifier.verify(token).getPayload());
             return verifier.verify(token);
     }
 

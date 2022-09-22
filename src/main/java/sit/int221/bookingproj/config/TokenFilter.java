@@ -18,7 +18,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +26,7 @@ public class TokenFilter extends GenericFilterBean {
 
     @ExceptionHandler(TokenInvalidException.class)
     public void handleTokenInvalidException(){}
+
 
     private final TokenService tokenService;
 
@@ -49,23 +49,19 @@ public class TokenFilter extends GenericFilterBean {
                 filterChain.doFilter(servletRequest, servletResponse);
                 return;
             }
-
             String token = authorization.substring(7);
-            DecodedJWT decoded = tokenService.verify(token);
-
-            if (decoded == null) {
+        DecodedJWT decoded = tokenService.verify(token);
+        if (decoded == null) {
                 filterChain.doFilter(servletRequest, servletResponse);
                 return;
             }
 
-            // user id
-            String userId = decoded.getClaim("userId").asString();
+            String userId = decoded.getClaim("userId").toString();
             String name = decoded.getClaim("name").asString();
             String role = decoded.getClaim("role").asString();
 
             List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority(name));
-            authorities.add(new SimpleGrantedAuthority(role));
+            authorities.add(new SimpleGrantedAuthority(role.toLowerCase()));
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, "(protected)", authorities);
             SecurityContext context = SecurityContextHolder.getContext();
             context.setAuthentication(authentication);
