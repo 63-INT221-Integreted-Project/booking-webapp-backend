@@ -5,6 +5,8 @@ import de.mkammerer.argon2.Argon2Factory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,11 +14,13 @@ import org.springframework.web.server.ResponseStatusException;
 import sit.int221.bookingproj.dtos.*;
 import sit.int221.bookingproj.entities.User;
 import sit.int221.bookingproj.enums.RoleEnum;
+import sit.int221.bookingproj.exception.NonSelfGetDataException;
 import sit.int221.bookingproj.exception.NotFoundException;
 import sit.int221.bookingproj.exception.UniqueEmailException;
 import sit.int221.bookingproj.exception.UniqueNameException;
 import sit.int221.bookingproj.repositories.UserRepository;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -43,13 +47,35 @@ public class UserService {
     }
 
 
-    public UserGetDto getById(Integer id) throws NotFoundException {
+    public UserGetDto getById(Integer id) throws NotFoundException, NonSelfGetDataException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Integer userId = Integer.parseInt((String) authentication.getPrincipal());
+        System.out.println("get userID " + userId);
+        Optional<User> userFind = userRepository.findById(userId);
+        Optional<User> userFindRole = Optional.of(new User());
         Optional<User> user = Optional.of(new User());
-        user = Optional.ofNullable(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found")));
+        if(userFind.isEmpty()){
+            user = Optional.ofNullable(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found")));
+        }
+        else{
+            userFindRole = userRepository.findById(userId);
+            if(userFindRole.get().getRole().toLowerCase() == "admin"){
+                user = Optional.ofNullable(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found")));
+            }
+            else{
+                if(id == userFindRole.get().getUserId()){
+                    user = Optional.ofNullable(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found")));
+                }
+                else{
+                    throw new NonSelfGetDataException("Can not get data of other");
+                }
+            }
+        }
         return convertEntityToDto(user.get());
     }
 
     public User createUser(@Valid UserActionDto newUser) throws UniqueEmailException, UniqueNameException {
+
         Argon2 argon2 = Argon2Factory.create(
                 Argon2Factory.Argon2Types.ARGON2id,
                 16,
@@ -79,6 +105,9 @@ public class UserService {
     }
 
     public Optional<User> update(Integer id, @Valid UserActionDto userActionDto) throws UniqueEmailException, UniqueNameException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Integer userId = Integer.parseInt((String) authentication.getPrincipal());
+        System.out.println("update userID " + userId);
         Optional<User> user = Optional.of(new User());
         user = userRepository.findById(id);
         User userReturn = new User();
@@ -114,6 +143,9 @@ public class UserService {
     }
 
     public Optional<User> deleteUser(Integer id) throws NotFoundException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Integer userId = Integer.parseInt((String) authentication.getPrincipal());
+        System.out.println("update userID " + userId);
         Optional<User> user = userRepository.findById(id);
         if(user != null){
             userRepository.deleteById(id);

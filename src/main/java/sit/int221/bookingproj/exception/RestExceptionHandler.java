@@ -110,6 +110,22 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(NonSelfGetDataException.class)
+    public ResponseEntity<Object> handleNonSelfGetDataException(NonSelfGetDataException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("Authorized Error", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.FORBIDDEN, "Authentication Error", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(NotMatchEmailCreteEventException.class)
+    public ResponseEntity<Object> handleNotMatchEmailCreteEventException(NotMatchEmailCreteEventException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("bookingEmail", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.BAD_REQUEST, "Bad Request", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
 //    @ExceptionHandler(IllegalStateException.class)
 //    protected ResponseEntity<Object> handleIllegalStateNotValid(IllegalStateException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 //        Map<String, String> errorMaping = new HashMap<>();

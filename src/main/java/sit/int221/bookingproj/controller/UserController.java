@@ -8,10 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import sit.int221.bookingproj.dtos.UserActionDto;
 import sit.int221.bookingproj.dtos.UserGetDto;
 import sit.int221.bookingproj.entities.User;
-import sit.int221.bookingproj.exception.NotFoundException;
-import sit.int221.bookingproj.exception.UniqueEmailException;
-import sit.int221.bookingproj.exception.UniqueEventCategoryNameException;
-import sit.int221.bookingproj.exception.UniqueNameException;
+import sit.int221.bookingproj.exception.*;
 import sit.int221.bookingproj.repositories.UserRepository;
 import sit.int221.bookingproj.services.UserService;
 
@@ -39,7 +36,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserGetDto getUserById(@PathVariable(name = "id") Integer id) throws NotFoundException {
+    public UserGetDto getUserById(@PathVariable(name = "id") Integer id) throws NotFoundException, NonSelfGetDataException {
         return userService.getById(id);
     }
 
