@@ -41,13 +41,13 @@ public class EventController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EventGetDto getEventById(@PathVariable Integer id) throws NotFoundException, NonSelfGetDataException {
+    public EventGetDto getEventById(@PathVariable Integer id) throws NotFoundException, NonSelfGetDataException, LecuterPermissionException {
         return eventService.getById(id);
     }
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public Optional<EventGetDto> createEvent(@Valid @RequestBody EventCreateDto newEvent) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException, NotMatchEmailCreteEventException {
+    public Optional<EventGetDto> createEvent(@Valid @RequestBody EventCreateDto newEvent) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException, NotMatchEmailCreteEventException, LecuterPermissionException {
         return eventService.create(newEvent);
     }
 
@@ -65,7 +65,7 @@ public class EventController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable(name = "id") Integer id) throws EventCategoryIdNullException, NotFoundException, NonSelfGetDataException {
+    public void delete(@PathVariable(name = "id") Integer id) throws EventCategoryIdNullException, NotFoundException, NonSelfGetDataException, LecuterPermissionException {
         eventService.deleteEvent(id);
     }
 

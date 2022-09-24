@@ -126,6 +126,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(LecuterPermissionException.class)
+    public ResponseEntity<Object> handleLecuterPermissionException(LecuterPermissionException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("permission", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.FORBIDDEN, "Permission Forbidden", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
 //    @ExceptionHandler(IllegalStateException.class)
 //    protected ResponseEntity<Object> handleIllegalStateNotValid(IllegalStateException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 //        Map<String, String> errorMaping = new HashMap<>();

@@ -66,6 +66,10 @@ public class EventService{
         else if(getUserByToken().get().getRole().toLowerCase().equals("student")){
             eventGetDtos = eventRepository.findAllByBookingEmail(getUserByToken().get().getEmail()).stream().map(this::convertEntityToDto).collect(Collectors.toList());
         }
+        else if(getUserByToken().get().getRole().toLowerCase().equals("lecturer")){
+            Optional<User> user = userRepository.findById(getUserByToken().get().getUserId());
+            eventGetDtos = eventRepository.findAllByEventCategory_Owner(user.get()).stream().map(this::convertEntityToDto).collect(Collectors.toList());
+        }
         return eventGetDtos;
     }
 
@@ -73,7 +77,8 @@ public class EventService{
         return event.stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
 
-    public EventGetDto getById(Integer id) throws NotFoundException, NonSelfGetDataException {
+    public EventGetDto getById(Integer id) throws NotFoundException, NonSelfGetDataException, LecuterPermissionException {
+        List<EventGetDto> eventGetDtos = new ArrayList<>();
         Optional<Event> event = Optional.of(new Event());
         if(getUserByToken().get().getRole().equals("admin")){
             event = Optional.ofNullable(eventRepository.findById(id).orElseThrow(() -> new NotFoundException("Event not found")));
@@ -88,12 +93,23 @@ public class EventService{
                 throw new NonSelfGetDataException("Can not Get Event That You're not Owner");
             }
         }
+        else if(getUserByToken().get().getRole().equals("lecturer")){
+            Optional<User> user = userRepository.findById(getUserByToken().get().getUserId());
+            eventGetDtos = eventRepository.findAllByEventCategory_Owner(user.get()).stream().map(this::convertEntityToDto).collect(Collectors.toList());
+            for(int i = 0; i < eventGetDtos.size(); i++){
+                if(id.equals(eventGetDtos.get(i).getEventId())){
+                    return convertEntityToDto(event.get());
+                }
+            }
+            throw new LecuterPermissionException("You don't have permission to get data that you're not lecturer");
+        }
+
         event = Optional.ofNullable(eventRepository.findById(id).orElseThrow(() -> new NotFoundException("Event not found")));
 
         return convertEntityToDto(event.get());
     }
 
-    public void deleteEvent(Integer id) throws EventCategoryIdNullException, NotFoundException, NonSelfGetDataException {
+    public void deleteEvent(Integer id) throws EventCategoryIdNullException, NotFoundException, NonSelfGetDataException, LecuterPermissionException {
         Optional<Event> event = eventRepository.findById(id);
         if(getUserByToken().get().getRole().equals("admin")){
             if(event != null){
@@ -107,6 +123,9 @@ public class EventService{
             else{
                 throw new NonSelfGetDataException("Can not Delete Event That You're not Owner");
             }
+        }
+        else if(getUserByToken().get().getRole().equals("lecturer")){
+            throw new LecuterPermissionException("Lecturer can not do this");
         }
         else{
             throw new NotFoundException("Can not find for id " + id);
@@ -170,7 +189,7 @@ public class EventService{
     }
 
 
-    public Optional<EventGetDto> create(EventCreateDto eventCreateDto) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException, NotMatchEmailCreteEventException {
+    public Optional<EventGetDto> create(EventCreateDto eventCreateDto) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException, NotMatchEmailCreteEventException, LecuterPermissionException {
         if(eventCreateDto.getEventDuration() == null){
             Optional<EventCategory> eventCategory = eventCategoryRepository.findById(eventCreateDto.getEventCategoryId());
             if(checkEventStartTimeNull(eventCreateDto)){
@@ -191,6 +210,9 @@ public class EventService{
                 else{
                     throw new NotMatchEmailCreteEventException("Booking Email Must Be The Same as  Student's Email");
                 }
+            }
+            else if(getUserByToken().get().getRole().equals("lecturer")){
+                throw new LecuterPermissionException("Lecturer can not do this");
             }
             return Optional.ofNullable(convertEntityToDto(event));
         }
@@ -225,6 +247,13 @@ public class EventService{
                             } catch (NonSelfGetDataException e) {
                                 throw new RuntimeException(e);
                             }
+                        }
+                    }
+                    else if(getUserByToken().get().getRole().equals("lecturer")){
+                        try {
+                            throw new LecuterPermissionException("Lecturer can not do this");
+                        } catch (LecuterPermissionException e) {
+                            throw new RuntimeException(e);
                         }
                     }
                 });

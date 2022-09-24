@@ -1,17 +1,17 @@
 package sit.int221.bookingproj.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.validator.constraints.UniqueElements;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
+@ToString
 @Table(name = "event_category")
 public class EventCategory {
 
@@ -37,6 +37,18 @@ public class EventCategory {
     @JsonIgnore
     @OneToMany(mappedBy = "eventCategory" , cascade = CascadeType.DETACH)
     private Set<Event> events = new LinkedHashSet<>();
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "event_category_owner",
+    joinColumns = {
+            @JoinColumn(name = "eventCategoryId", referencedColumnName = "eventCategoryId")
+    },
+    inverseJoinColumns = {
+            @JoinColumn(name = "userId", referencedColumnName = "userId")
+    })
+    public List<User> owner;
+
 
     public Set<Event> getEvents() {
         return events;
@@ -86,4 +98,11 @@ public class EventCategory {
         this.eventCategoryId = id;
     }
 
+    public List<User> getOwner() {
+        return owner;
+    }
+
+    public void setOwner(List<User> owner) {
+        this.owner = owner;
+    }
 }
