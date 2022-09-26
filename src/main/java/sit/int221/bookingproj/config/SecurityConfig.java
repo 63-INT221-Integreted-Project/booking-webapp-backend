@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // ในนี้คือไม่ต้องใช้ token ยืนยัน
             "/api/auth/login",
 //            "/api/auth/match",
-//            "/api/users",
+            "/api/users",
 //            "/api/events",
 //            "/api/event-categories",
     };
@@ -48,6 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         System.out.println(http.authorizeHttpRequests().toString());
         http.authorizeHttpRequests(authorization -> authorization
                         .antMatchers(HttpMethod.GET,"/api/users").hasAnyAuthority("admin")
+//                        .antMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .antMatchers("/api/users", "api/users/", "api/events", "api/events/", "api/event-categories", "api/event-categories/").hasAnyAuthority("admin","student", "lecturer")
                         .antMatchers("/api/auth/match").hasAnyAuthority("admin")
 //                .mvcMatchers("/api/events/").hasAnyAuthority("student")
