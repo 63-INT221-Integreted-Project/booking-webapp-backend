@@ -4,6 +4,9 @@ import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import sit.int221.bookingproj.dtos.UserLoginDto;
@@ -11,6 +14,8 @@ import sit.int221.bookingproj.entities.User;
 import sit.int221.bookingproj.exception.EmailUserNotFoundException;
 import sit.int221.bookingproj.exception.PasswordUserNotMatchException;
 import sit.int221.bookingproj.repositories.UserRepository;
+
+import java.util.Optional;
 
 @Service
 public class LoginService {
@@ -23,6 +28,9 @@ public class LoginService {
 
     @Autowired
     public UserRepository userRepository;
+
+    @Autowired
+    public UserService userService;
 
     @Autowired
     public TokenService tokenService;
@@ -49,6 +57,38 @@ public class LoginService {
         else{
             throw new EmailUserNotFoundException("This Email is Not Found");
         }
+    }
+
+    public JSONObject refreshToken(){
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        Integer userId = Integer.parseInt((String) authentication.getPrincipal());
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isPresent()){
+            User userGet = user.get();
+            UserLoginDto userLoginDto = userService.castUserToUserLogin(userGet);
+            String token = tokenService.tokenizeRefreshToken(userLoginDto);
+            JSONObject refreshToken = new JSONObject();
+            refreshToken.put("refresh_token", token);
+            return refreshToken;
+        }
+        return null;
+    }
+
+    public JSONObject reToken(){
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        Integer userId = Integer.parseInt((String) authentication.getPrincipal());
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isPresent()){
+            User userGet = user.get();
+            UserLoginDto userLoginDto = userService.castUserToUserLogin(userGet);
+            String token = tokenService.tokenize(userLoginDto);
+            JSONObject refreshToken = new JSONObject();
+            refreshToken.put("access_token", token);
+            return refreshToken;
+        }
+        return null;
     }
 
 }

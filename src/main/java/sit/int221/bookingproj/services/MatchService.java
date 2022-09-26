@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestBody;
-import sit.int221.bookingproj.dtos.UserActionDto;
 import sit.int221.bookingproj.dtos.UserLoginDto;
 import sit.int221.bookingproj.entities.User;
 import sit.int221.bookingproj.exception.EmailUserNotFoundException;

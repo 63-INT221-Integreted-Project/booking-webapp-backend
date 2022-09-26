@@ -8,4 +8,6 @@ import sit.int221.bookingproj.entities.User;
 public interface UserRepository extends JpaRepository<User, Integer> {
     public User findAllByName(String name);
     public User findAllByEmail(String email);
+
+    public User findUserByEmail(String email);
 }

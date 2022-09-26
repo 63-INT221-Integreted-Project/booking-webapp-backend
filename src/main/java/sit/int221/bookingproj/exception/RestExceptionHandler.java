@@ -1,11 +1,13 @@
 package sit.int221.bookingproj.exception;
 
+import org.springframework.data.rest.webmvc.support.ExceptionMessage;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -106,6 +108,30 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         errorMaping.put("token", exception.getMessage());
         ErrorModel error = new ErrorModel(HttpStatus.UNAUTHORIZED, "Authentication Error", errorMaping);
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(NonSelfGetDataException.class)
+    public ResponseEntity<Object> handleNonSelfGetDataException(NonSelfGetDataException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("Authorized Error", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.FORBIDDEN, "Authentication Error", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(NotMatchEmailCreteEventException.class)
+    public ResponseEntity<Object> handleNotMatchEmailCreteEventException(NotMatchEmailCreteEventException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("bookingEmail", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.BAD_REQUEST, "Bad Request", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(LecuterPermissionException.class)
+    public ResponseEntity<Object> handleLecuterPermissionException(LecuterPermissionException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("permission", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.FORBIDDEN, "Permission Forbidden", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
 //    @ExceptionHandler(IllegalStateException.class)

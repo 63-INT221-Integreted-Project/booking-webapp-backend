@@ -2,6 +2,7 @@ package sit.int221.bookingproj.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,8 +27,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final String[] PUBLIC = {
             // ในนี้คือไม่ต้องใช้ token ยืนยัน
-            "/auth/login",
-            "/auth/match",
+            "/api/auth/login",
+//            "/api/auth/match",
 //            "/api/users",
 //            "/api/events",
 //            "/api/event-categories",
@@ -44,6 +45,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        System.out.println(http.authorizeHttpRequests().toString());
+        http.authorizeHttpRequests(authorization -> authorization
+                        .antMatchers(HttpMethod.GET,"/api/users").hasAnyAuthority("admin")
+                        .antMatchers("/api/users", "api/users/", "api/events", "api/events/", "api/event-categories", "api/event-categories/").hasAnyAuthority("admin","student", "lecturer")
+                        .antMatchers("/api/auth/match").hasAnyAuthority("admin")
+//                .mvcMatchers("/api/events/").hasAnyAuthority("student")
+                .antMatchers("/**").permitAll()
+                .anyRequest().denyAll()
+        );
         http.cors(config -> {
                     CorsConfiguration cors = new CorsConfiguration();
                     cors.setAllowCredentials(true);

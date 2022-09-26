@@ -1,20 +1,22 @@
 package sit.int221.bookingproj.dtos;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.hibernate.validator.constraints.UniqueElements;
-import org.springframework.lang.Nullable;
-import sit.int221.bookingproj.entities.User;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.*;
-import java.util.List;
-import java.util.Set;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
+import java.util.ArrayList;
 
 @Data
-public class EventCategoryDto {
+@AllArgsConstructor
+@NoArgsConstructor
+public class EventCategoryCreateUpdateDto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer eventCategoryId;
@@ -29,16 +31,7 @@ public class EventCategoryDto {
     @Min(value = 1,message = "must higher than 1")
     private Integer eventDuration;
 
-    private List<UserGetDto> owner;
-
-    public EventCategoryDto(Integer eventCategoryId, String eventCategoryName) {
-        this.eventCategoryId = eventCategoryId;
-        this.eventCategoryName = eventCategoryName;
-    }
-
-    public EventCategoryDto() {
-
-    }
+    public ArrayList userId;
 
     public Integer getEventCategoryId() {
         return eventCategoryId;
@@ -72,11 +65,11 @@ public class EventCategoryDto {
         this.eventDuration = eventDuration;
     }
 
-    public List<UserGetDto> getOwner() {
-        return owner;
+    public ArrayList getUserId() {
+        return userId;
     }
 
-    public void setOwner(List<UserGetDto> owner) {
-        this.owner = owner;
+    public void setUserId(ArrayList userId) {
+        this.userId = userId;
     }
 }
