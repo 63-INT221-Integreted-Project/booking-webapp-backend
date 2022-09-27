@@ -19,6 +19,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,10 +52,12 @@ public class TokenFilter extends GenericFilterBean {
             }
             String token = authorization.substring(7);
         DecodedJWT decoded = tokenService.verify(token);
+
         if (decoded == null) {
                 filterChain.doFilter(servletRequest, servletResponse);
                 return;
             }
+
 
             String userId = decoded.getClaim("userId").toString();
             String name = decoded.getClaim("name").asString();

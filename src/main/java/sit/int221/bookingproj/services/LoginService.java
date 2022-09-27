@@ -1,5 +1,6 @@
 package sit.int221.bookingproj.services;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import net.minidev.json.JSONObject;
@@ -15,6 +16,8 @@ import sit.int221.bookingproj.exception.EmailUserNotFoundException;
 import sit.int221.bookingproj.exception.PasswordUserNotMatchException;
 import sit.int221.bookingproj.repositories.UserRepository;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @Service
@@ -46,8 +49,10 @@ public class LoginService {
         if(user != null){
             if(argon2.verify(user.getPassword() , userLoginDto.getPassword())){
                 String token = tokenService.tokenize(userLoginDto);
+                String refreshToken = tokenService.tokenizeRefreshToken(userLoginDto);
                 JSONObject json = new JSONObject();
                 json.put("access_token", token);
+                json.put("refresh_token", refreshToken);
                 return json;
             }
             else{
@@ -67,10 +72,10 @@ public class LoginService {
         if(user.isPresent()){
             User userGet = user.get();
             UserLoginDto userLoginDto = userService.castUserToUserLogin(userGet);
-            String token = tokenService.tokenizeRefreshToken(userLoginDto);
-            JSONObject refreshToken = new JSONObject();
-            refreshToken.put("refresh_token", token);
-            return refreshToken;
+            String token = tokenService.tokenize(userLoginDto);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("access_token", token);
+            return jsonObject;
         }
         return null;
     }

@@ -45,7 +45,6 @@ public class EventService{
     @ExceptionHandler(IllegalArgumentException.class)
     public void handleIllegalArgumentException() {}
 
-
     @ExceptionHandler(NotFoundException.class)
     public void handleNotFoundEventException(){}
 

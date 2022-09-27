@@ -45,7 +45,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        System.out.println(http.authorizeHttpRequests().toString());
         http.authorizeHttpRequests(authorization -> authorization
                         .antMatchers(HttpMethod.GET,"/api/users").hasAnyAuthority("admin")
 //                        .antMatchers(HttpMethod.POST, "/api/users").permitAll()
