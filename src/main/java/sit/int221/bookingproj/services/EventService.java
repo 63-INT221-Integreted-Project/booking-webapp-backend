@@ -33,6 +33,9 @@ public class EventService{
     private EventCategoryRepository eventCategoryRepository;
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
     private UserRepository userRepository;
 
     Logger logger = LoggerFactory.getLogger(EventController.class);
@@ -202,10 +205,14 @@ public class EventService{
             Event event = new Event();
             if(getUserByToken().get().getRole().equals("admin")){
                 event = eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
+                emailService.sendMail(event.getBookingEmail(), "Your Booking's Details at OASIP", emailService.createBody(eventCreateDto));
+                emailService.sendPreConfiguredMail(emailService.createBody(eventCreateDto));
             }
             else if(getUserByToken().get().getRole().equals("student")){
                 if(getUserByToken().get().getEmail().equals(eventCreateDto.getBookingEmail())){
                     event = eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
+                    emailService.sendMail(event.getBookingEmail(), "Your Booking's Details at OASIP", emailService.createBody(eventCreateDto));
+                    emailService.sendPreConfiguredMail(emailService.createBody(eventCreateDto));
                 }
                 else{
                     throw new NotMatchEmailCreteEventException("Booking Email Must Be The Same as  Student's Email");
