@@ -91,4 +91,20 @@ public class LoginService {
         return null;
     }
 
+    public JSONObject getProfile(){
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        Integer userId = Integer.parseInt((String) authentication.getPrincipal());
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isPresent()){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("role", user.get().getRole());
+            jsonObject.put("email", user.get().getEmail());
+            jsonObject.put("name", user.get().getName());
+            jsonObject.put("userId", user.get().getUserId());
+            return jsonObject;
+        }
+        return null;
+    }
+
 }

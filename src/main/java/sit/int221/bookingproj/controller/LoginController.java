@@ -23,6 +23,11 @@ public class LoginController {
         return loginService.login(userLoginDto);
     }
 
+    @GetMapping("/profile")
+    public JSONObject getProfile(){
+        return loginService.getProfile();
+    }
+
     @GetMapping("/refresh")
     public JSONObject refreshToken(){
         return loginService.refreshToken();
