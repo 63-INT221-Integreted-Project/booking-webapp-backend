@@ -55,7 +55,7 @@ public class TokenService {
                 .sign(algorithm);
     };
 
-    public DecodedJWT verify(String token) throws JwtTokenExpiredException {
+    public DecodedJWT verify(String token) throws JwtTokenExpiredException{
             JWTVerifier verifier = JWT.require(algorithm())
                     .withIssuer("BackendService")
                     .build();
@@ -66,7 +66,7 @@ public class TokenService {
                 }
             }
             catch (TokenExpiredException ex){
-                throw new JwtTokenExpiredException("Expired Token Please Use Refresh Token for get new Accress Token");
+                throw new JwtTokenExpiredException("Expired Token Please Use Refresh Token for get new Access Token");
             }
 
             return null;
