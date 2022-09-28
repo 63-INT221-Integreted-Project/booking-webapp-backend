@@ -1,13 +1,12 @@
 package sit.int221.bookingproj.exception;
 
-import org.springframework.data.rest.webmvc.support.ExceptionMessage;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -132,6 +131,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         errorMaping.put("permission", exception.getMessage());
         ErrorModel error = new ErrorModel(HttpStatus.FORBIDDEN, "Permission Forbidden", errorMaping);
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(JwtTokenExpiredException.class)
+    public ResponseEntity<Object> handleJwtTokenExpiredException(JwtTokenExpiredException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("expiredToken", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.UNAUTHORIZED, "Token Expired", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
 //    @ExceptionHandler(IllegalStateException.class)

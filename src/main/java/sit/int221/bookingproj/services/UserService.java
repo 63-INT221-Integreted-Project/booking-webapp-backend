@@ -46,7 +46,6 @@ public class UserService {
         return userRepository.findAll(Sort.by(Sort.Direction.ASC, "name")).stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
 
-
     public UserGetDto getById(Integer id) throws NotFoundException, NonSelfGetDataException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Integer userId = Integer.parseInt((String) authentication.getPrincipal());
