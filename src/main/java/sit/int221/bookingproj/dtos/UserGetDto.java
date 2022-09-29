@@ -2,6 +2,7 @@ package sit.int221.bookingproj.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.JoinColumn;
 import javax.persistence.Temporal;
@@ -10,6 +11,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
 public class UserGetDto {
     private Integer userId;
     private String name;

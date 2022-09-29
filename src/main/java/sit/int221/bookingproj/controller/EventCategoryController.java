@@ -2,6 +2,8 @@ package sit.int221.bookingproj.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import sit.int221.bookingproj.dtos.EventCategoryCreateUpdateDto;
+import sit.int221.bookingproj.dtos.EventCategoryDto;
 import sit.int221.bookingproj.entities.EventCategory;
 import sit.int221.bookingproj.exception.NotFoundException;
 import sit.int221.bookingproj.exception.UniqueEventCategoryNameException;
@@ -32,19 +34,19 @@ public class EventCategoryController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<EventCategory> getEventCategoryById(@PathVariable Integer id) throws NotFoundException {
+    public Optional<EventCategoryDto> getEventCategoryById(@PathVariable Integer id) throws NotFoundException {
         return eventCategoryService.getEventCategoryById(id);
     }
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public EventCategory createEventCategory(@Valid @RequestBody EventCategory newEventCategory) throws UniqueEventCategoryNameException {
+    public EventCategory createEventCategory(@Valid @RequestBody EventCategoryCreateUpdateDto newEventCategory) throws UniqueEventCategoryNameException {
         return eventCategoryService.createEventCategory(newEventCategory);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EventCategory updateEventCategory(@PathVariable(name = "id") Integer id, @Valid @RequestBody EventCategory updateEventCategory) throws UniqueEventCategoryNameException {
+    public EventCategory updateEventCategory(@PathVariable(name = "id") Integer id, @Valid @RequestBody EventCategoryCreateUpdateDto updateEventCategory) throws UniqueEventCategoryNameException {
         return eventCategoryService.updateEventCategory(id,updateEventCategory);
     }
 

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import sit.int221.bookingproj.entities.Event;
 import sit.int221.bookingproj.entities.EventCategory;
+import sit.int221.bookingproj.entities.User;
 
 import java.time.Instant;
 import java.util.List;
@@ -17,4 +18,8 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     public List<Event> findAllByBookingEmailContainingOrBookingNameContaining(String word, String word2, Sort eventStartTime);
     public List<Event> findAllByEventStartTimeBetweenAndEventCategory_EventCategoryName(Instant dateStart, Instant dateEnd, String name, Sort eventStartTime);
     public Event findAllByEventStartTimeBetweenAndEventCategory_EventCategoryId(Instant dateStart, Instant dateEnd, Integer id, Sort eventStartTime);
+
+    public List<Event> findAllByBookingEmail(String email);
+
+    public List<Event> findAllByEventCategory_Owner(User user);
 }

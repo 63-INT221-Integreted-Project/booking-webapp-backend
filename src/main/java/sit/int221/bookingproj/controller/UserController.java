@@ -2,18 +2,17 @@ package sit.int221.bookingproj.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import sit.int221.bookingproj.dtos.UserActionDto;
 import sit.int221.bookingproj.dtos.UserGetDto;
 import sit.int221.bookingproj.entities.User;
-import sit.int221.bookingproj.exception.NotFoundException;
-import sit.int221.bookingproj.exception.UniqueEmailException;
-import sit.int221.bookingproj.exception.UniqueEventCategoryNameException;
-import sit.int221.bookingproj.exception.UniqueNameException;
+import sit.int221.bookingproj.exception.*;
 import sit.int221.bookingproj.repositories.UserRepository;
 import sit.int221.bookingproj.services.UserService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +36,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserGetDto getUserById(@PathVariable(name = "id") Integer id) throws NotFoundException {
+    public UserGetDto getUserById(@PathVariable(name = "id") Integer id) throws NotFoundException, NonSelfGetDataException {
         return userService.getById(id);
     }
 

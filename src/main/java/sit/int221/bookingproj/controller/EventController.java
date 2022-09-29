@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import sit.int221.bookingproj.dtos.EventCreateDto;
 import sit.int221.bookingproj.dtos.EventGetDto;
 import sit.int221.bookingproj.dtos.EventUpdateDto;
-import sit.int221.bookingproj.exception.EventCategoryIdNullException;
-import sit.int221.bookingproj.exception.EventTimeNullException;
-import sit.int221.bookingproj.exception.NotFoundException;
-import sit.int221.bookingproj.exception.OverlapTimeException;
+import sit.int221.bookingproj.exception.*;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.repositories.EventRepository;
 import sit.int221.bookingproj.services.EventService;
@@ -44,13 +41,13 @@ public class EventController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EventGetDto getEventById(@PathVariable Integer id) throws NotFoundException {
+    public EventGetDto getEventById(@PathVariable Integer id) throws NotFoundException, NonSelfGetDataException, LecuterPermissionException {
         return eventService.getById(id);
     }
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public Optional<EventGetDto> createEvent(@Valid @RequestBody EventCreateDto newEvent) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException {
+    public Optional<EventGetDto> createEvent(@Valid @RequestBody EventCreateDto newEvent) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException, NotMatchEmailCreteEventException, LecuterPermissionException {
         return eventService.create(newEvent);
     }
 
@@ -68,7 +65,7 @@ public class EventController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable(name = "id") Integer id) throws EventCategoryIdNullException, NotFoundException {
+    public void delete(@PathVariable(name = "id") Integer id) throws EventCategoryIdNullException, NotFoundException, NonSelfGetDataException, LecuterPermissionException {
         eventService.deleteEvent(id);
     }
 
