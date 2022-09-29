@@ -213,4 +213,15 @@ public class UserService {
         return user;
     }
 
+    public List<UserGetDto> findUserByRole(String role){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Integer userId = Integer.parseInt((String) authentication.getPrincipal());
+        Optional<User> userFind = userRepository.findById(userId);
+        if(userFind.get().getRole().equals("admin")){
+            return userRepository.findAllByRole(role).stream().map(this::convertEntityToDto).collect(Collectors.toList());
+        }
+        return null;
+
+    }
+
 }
