@@ -6,10 +6,11 @@ insert into event_category values(5,"Server-side Clinic", null, 30);
 
 insert into event values(1, "Somchai Jaidee (OR-7)", "somchai.jai@mail.kmutt.ac.th", "2022-04-24 00:00:00", 30, "", 1);
 insert into event values(6, "Somsri Rakdee (SJ-3) 123", "komkrid.rak@mail.kmutt.ac.th", "2022-08-25 00:00:00", 30, "", 1);
-insert into event values(3, "Somkiat TT-4", "somkiat.kay@kmutt.ac.th", "2022-04-23 17:00:00", 30, "ปรึกษาเพื่อนไม่ช่วยงาน", 3);
+insert into event values(3, "Somkiat TT-4", "somkiat.kay@kmutt.ac.th", "2022-04-23 17:00:00", 30, "เลท 30 นาที ติดธุระ", 3);
 
-
-insert into user(name, email, role, password) values("John Wick", "johnwick2@gmail.com", "admin", "$argon2id$v=19$m=65536,t=22,p=1$OTMD9u2lz666cIa5AmC8lw$Y/RkvRVM/6dRkib8ZqfoDg");
-
-select * from event_category_owner;
-insert into event_category_owner values(1,1);
+-- password: testadmin 
+insert into user(name, email, role, password) values("Test Admin", "testadmin@gmail.com", "admin", "$argon2id$v=19$m=65536,t=22,p=1$RXEdKF0LEOGdw4NHvAHFDQ$pxopU4S+2nplQ0EAffCNFg");
+-- password: teststudent
+insert into user(name, email, role, password) values("Test Student", "teststudent@gmail.com", "student", "$argon2id$v=19$m=65536,t=22,p=1$8UwRcOQL4cDywElx+MYzVw$rPSwObuPmgD/j2+YFYiINg");
+-- password: testlecturer
+insert into user(name, email, role, password) values("Test Lecturer", "testlecturer@gmail.com", "lecturer", "$argon2id$v=19$m=65536,t=22,p=1$vcedMZfvcXobNEJ4Ke9DTQ$1mIf9E504GMfxXrt1Tptxg");
