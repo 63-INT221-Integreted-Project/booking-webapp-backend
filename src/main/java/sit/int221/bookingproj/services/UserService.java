@@ -46,7 +46,6 @@ public class UserService {
         return userRepository.findAll(Sort.by(Sort.Direction.ASC, "name")).stream().map(this::convertEntityToDto).collect(Collectors.toList());
     }
 
-
     public UserGetDto getById(Integer id) throws NotFoundException, NonSelfGetDataException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Integer userId = Integer.parseInt((String) authentication.getPrincipal());
@@ -212,6 +211,17 @@ public class UserService {
         user.setCreatedOn(null);
         user.setUpdatedOn(null);
         return user;
+    }
+
+    public List<UserGetDto> findUserByRole(String role){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Integer userId = Integer.parseInt((String) authentication.getPrincipal());
+        Optional<User> userFind = userRepository.findById(userId);
+        if(userFind.get().getRole().equals("admin")){
+            return userRepository.findAllByRole(role).stream().map(this::convertEntityToDto).collect(Collectors.toList());
+        }
+        return null;
+
     }
 
 }
