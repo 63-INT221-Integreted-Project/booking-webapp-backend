@@ -47,9 +47,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         System.out.println(http.authorizeHttpRequests().toString());
         http.authorizeHttpRequests(authorization -> authorization
-                        .antMatchers(HttpMethod.GET,"/api/users").hasAnyAuthority("admin")
+//                        .antMatchers(HttpMethod.GET,"/api/users").hasAnyAuthority("admin")
 //                        .antMatchers(HttpMethod.POST, "/api/users").permitAll()
-                        .antMatchers("/api/users", "api/users/", "api/events", "api/events/", "api/event-categories", "api/event-categories/").hasAnyAuthority("admin","student", "lecturer")
+//                        .antMatchers("/api/users", "api/users/", "api/events", "api/events/", "api/event-categories", "api/event-categories/").hasAnyAuthority("admin","student", "lecturer")
                         .antMatchers("/api/auth/match").hasAnyAuthority("admin")
 //                .mvcMatchers("/api/events/").hasAnyAuthority("student")
                 .antMatchers("/**").permitAll()
