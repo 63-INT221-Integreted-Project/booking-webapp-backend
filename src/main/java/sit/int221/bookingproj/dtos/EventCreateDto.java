@@ -1,6 +1,7 @@
 package sit.int221.bookingproj.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.models.auth.In;
 import lombok.Data;
 import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.lang.Nullable;
@@ -34,6 +35,9 @@ public class EventCreateDto {
     @Size(max = 500, message = "length exceeded the size")
     private String eventNotes;
     private Integer eventCategoryId;
+
+    @Nullable
+    private Integer fileId;
 
     public Integer getEventId() {
         return eventId;
@@ -90,4 +94,13 @@ public class EventCreateDto {
     public void setEventCategoryId(Integer eventCategoryId) {
         this.eventCategoryId = eventCategoryId;
     }
+
+    public Integer getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(Integer fileId) {
+        this.fileId = fileId;
+    }
+
 }

@@ -35,7 +35,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/auth/login",
 //            "/api/auth/match",
             "/api/users",
-//            "/api/events",
+            "/uploadFile",
+            "/downloadFile/**",
+
+//            "/api/events/**",
 //            "/api/event-categories",
     };
 

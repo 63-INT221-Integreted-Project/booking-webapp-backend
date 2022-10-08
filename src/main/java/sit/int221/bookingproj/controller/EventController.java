@@ -32,7 +32,6 @@ public class EventController {
     @Autowired
     public EventCategoryRepository eventCategoryRepository;
 
-
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
     public List<EventGetDto> getAllEvent(){
@@ -47,7 +46,7 @@ public class EventController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public Optional<EventGetDto> createEvent(@Valid @RequestBody EventCreateDto newEvent) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException, NotMatchEmailCreteEventException, LecuterPermissionException {
+    public Optional<EventGetDto> createEvent(@Valid @RequestBody EventCreateDto newEvent) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException, NotMatchEmailCreteEventException, LecuterPermissionException, NotFoundException {
         return eventService.create(newEvent);
     }
 

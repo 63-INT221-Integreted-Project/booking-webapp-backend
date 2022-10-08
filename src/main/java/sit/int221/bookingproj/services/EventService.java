@@ -15,10 +15,12 @@ import sit.int221.bookingproj.controller.EventController;
 import sit.int221.bookingproj.dtos.*;
 import sit.int221.bookingproj.entities.Event;
 import sit.int221.bookingproj.entities.EventCategory;
+import sit.int221.bookingproj.entities.File;
 import sit.int221.bookingproj.entities.User;
 import sit.int221.bookingproj.exception.*;
 import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.repositories.EventRepository;
+import sit.int221.bookingproj.repositories.FileRepository;
 import sit.int221.bookingproj.repositories.UserRepository;
 
 import java.time.Instant;
@@ -37,6 +39,9 @@ public class EventService{
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private FileRepository fileRepository;
 
     Logger logger = LoggerFactory.getLogger(EventController.class);
     @ExceptionHandler(IllegalStateException.class)
@@ -198,10 +203,12 @@ public class EventService{
                 eventCreateDto.setEventDuration(eventCategory.get().getEventDuration());
             }
         }
+
         if (checkDuplicateEventTime(eventCreateDto)) {
             eventCreateDto.setBookingName(eventCreateDto.getBookingName().trim());
             eventCreateDto.setBookingEmail(eventCreateDto.getBookingEmail().trim());
             Event event = new Event();
+
             if(getUserByToken().get().getRole().equals("admin")){
                 event = eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
                 emailService.sendMail(event.getBookingEmail(), "Your Booking's Details at OASIP", emailService.createBody(eventCreateDto));
@@ -273,6 +280,7 @@ public class EventService{
     public Event convertDtoToEvent(EventCreateDto eventCreateDto){
         EventCategory eventCategory = new EventCategory();
         eventCategory = eventCategoryRepository.findById(eventCreateDto.getEventCategoryId()).orElse(null);
+        Optional<File> file = fileRepository.findById(eventCreateDto.getFileId());
         Event event = new Event();
         event.setEventId(eventCreateDto.getEventId());
         event.setBookingName(eventCreateDto.getBookingName());
@@ -281,6 +289,7 @@ public class EventService{
         event.setEventDuration(eventCreateDto.getEventDuration());
         event.setEventNotes(eventCreateDto.getEventNotes());
         event.setEventCategory(eventCategory);
+        event.setFile(file.get());
         return event;
     }
 
@@ -294,6 +303,7 @@ public class EventService{
         eventDto.setEventDuration(event.getEventDuration());
         eventDto.setEventNotes(event.getEventNotes());
         eventDto.setEventCategory(eventCategoryInEventDto);
+        eventDto.setFile(event.getFile());
         return eventDto;
     }
 
