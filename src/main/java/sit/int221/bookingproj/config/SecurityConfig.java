@@ -34,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // ในนี้คือไม่ต้องใช้ token ยืนยัน
             "/api/auth/login",
 //            "/api/auth/match",
-            "/api/users",
+//            "/api/users",
 //            "/api/events",
 //            "/api/event-categories",
     };
