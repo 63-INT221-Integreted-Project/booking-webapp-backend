@@ -141,6 +141,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(FileSizeTooLargeException.class)
+    public ResponseEntity<Object> handleFileSizeTooLargeException(FileSizeTooLargeException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("fileSize", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.BAD_REQUEST, "File Size Too Large", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
 //    @ExceptionHandler(IllegalStateException.class)
 //    protected ResponseEntity<Object> handleIllegalStateNotValid(IllegalStateException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 //        Map<String, String> errorMaping = new HashMap<>();

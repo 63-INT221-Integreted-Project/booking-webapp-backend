@@ -47,7 +47,13 @@ public class EmailService
         String thTimeFormatted = thTime.format(formatter);
         String name = "ชื่อการจอง: " + eventCreateDto.getBookingName();
         String email = "อีเมลที่จอง: " + eventCreateDto.getBookingEmail();
-        String notes = "โน๊ต: " + eventCreateDto.getEventNotes();
+        String notes = "โน๊ต: ";
+        if(eventCreateDto.getEventNotes().equals(null)){
+            notes += "-";
+        }
+        else{
+            notes += eventCreateDto.getEventNotes();
+        }
         String eventStartTime = "เวลาที่เริ่มต้น " + thTimeFormatted;
         String duration = "ระยะเวลา: " + eventCreateDto.getEventDuration() + " นาที";
         return name + "\n" + email + "\n" + notes + "\n" + eventStartTime + "\n" + duration;

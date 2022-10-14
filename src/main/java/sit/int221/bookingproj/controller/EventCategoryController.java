@@ -26,7 +26,7 @@ public class EventCategoryController {
     @ExceptionHandler(IllegalStateException.class)
     public void handleIllegalStateException() {}
 
-    @GetMapping("/")
+    @GetMapping("")
     @ResponseStatus(HttpStatus.OK)
     public List getAllEventCategrory(){
         return eventCategoryService.getAllEventCategoryDto();

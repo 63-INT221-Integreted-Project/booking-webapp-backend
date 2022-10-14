@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 import sit.int221.bookingproj.dtos.EventCategoryCreateUpdateDto;
 import sit.int221.bookingproj.dtos.EventCategoryDto;
 import sit.int221.bookingproj.dtos.UserGetDto;
+import sit.int221.bookingproj.dtos.UserGetOwnerDto;
 import sit.int221.bookingproj.entities.EventCategory;
 import sit.int221.bookingproj.entities.User;
 import sit.int221.bookingproj.exception.NotFoundException;
@@ -28,6 +29,8 @@ public class EventCategoryService {
     @Autowired
     public UserRepository userRepository;
 
+    @Autowired
+    public UserService userService;
 
     @ExceptionHandler(UniqueEventCategoryNameException.class)
     public void handleUniqueEventCategoryNameException() {
@@ -131,16 +134,24 @@ public class EventCategoryService {
         return userGetDto;
     }
 
-        public EventCategoryDto castEventCategoryDto (EventCategory eventCategory){
+    public UserGetOwnerDto castUserToUserGetOwner(User user){
+        UserGetOwnerDto userGetOwnerDto = new UserGetOwnerDto();
+        userGetOwnerDto.setUserId(user.getUserId());
+        userGetOwnerDto.setName(user.getName());
+        userGetOwnerDto.setEmail(user.getEmail());
+        return userGetOwnerDto;
+    }
+
+    public EventCategoryDto castEventCategoryDto (EventCategory eventCategory){
             EventCategoryDto eventCategoryDto = new EventCategoryDto();
             eventCategoryDto.setEventCategoryId(eventCategory.getEventCategoryId());
             eventCategoryDto.setEventCategoryName(eventCategory.getEventCategoryName());
             eventCategoryDto.setEventCategoryDescription(eventCategory.getEventCategoryDescription());
             eventCategoryDto.setEventDuration(eventCategory.getEventDuration());
             eventCategoryDto.setOwner(eventCategory.getOwner().stream()
-                    .map(this::castUserToUserGet).collect(Collectors.toList()));
+                    .map(this::castUserToUserGetOwner).collect(Collectors.toList()));
             return eventCategoryDto;
-        }
+    }
 
     public EventCategoryDto castEventCategoryDtoOptional (Optional<EventCategory> eventCategory){
         EventCategoryDto eventCategoryDto = new EventCategoryDto();
@@ -149,7 +160,8 @@ public class EventCategoryService {
         eventCategoryDto.setEventCategoryDescription(eventCategory.get().getEventCategoryDescription());
         eventCategoryDto.setEventDuration(eventCategory.get().getEventDuration());
         eventCategoryDto.setOwner(eventCategory.get().getOwner().stream()
-                .map(this::castUserToUserGet).collect(Collectors.toList()));
+                .map(this::castUserToUserGetOwner).collect(Collectors.toList()));
         return eventCategoryDto;
     }
+
     }

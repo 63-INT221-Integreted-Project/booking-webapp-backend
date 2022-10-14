@@ -29,6 +29,10 @@ public class Event {
     @JoinColumn(name = "eventCategoryId", nullable = true, referencedColumnName = "eventCategoryId")
     private EventCategory eventCategory;
 
+    @OneToOne
+    @JoinColumn(name = "fileId" , nullable = true, referencedColumnName = "fileId")
+    private File file;
+
 
     public Integer getEventDuration() {
         return eventDuration;
@@ -84,5 +88,13 @@ public class Event {
 
     public void setEventId(Integer id) {
         this.eventId = id;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 }

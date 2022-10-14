@@ -29,7 +29,7 @@ public class EventCategoryDto {
     @Min(value = 1,message = "must higher than 1")
     private Integer eventDuration;
 
-    private List<UserGetDto> owner;
+    private List<UserGetOwnerDto> owner;
 
     public EventCategoryDto(Integer eventCategoryId, String eventCategoryName) {
         this.eventCategoryId = eventCategoryId;
@@ -72,11 +72,11 @@ public class EventCategoryDto {
         this.eventDuration = eventDuration;
     }
 
-    public List<UserGetDto> getOwner() {
+    public List<UserGetOwnerDto> getOwner() {
         return owner;
     }
 
-    public void setOwner(List<UserGetDto> owner) {
+    public void setOwner(List<UserGetOwnerDto> owner) {
         this.owner = owner;
     }
 }

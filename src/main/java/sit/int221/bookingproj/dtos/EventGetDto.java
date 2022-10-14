@@ -5,9 +5,11 @@ import lombok.Data;
 import org.springframework.lang.Nullable;
 import sit.int221.bookingproj.entities.Event;
 import sit.int221.bookingproj.entities.EventCategory;
+import sit.int221.bookingproj.entities.File;
 
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -26,6 +28,10 @@ public class EventGetDto {
     private String eventNotes;
 
     private EventCategoryInEventDto eventCategory;
+
+    @OneToOne
+    @JoinColumn(name = "fileId" , nullable = true, referencedColumnName = "fileId")
+    private File file;
 
     public Integer getEventId() {
         return eventId;
