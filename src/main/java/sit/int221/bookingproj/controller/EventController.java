@@ -5,8 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sit.int221.bookingproj.dtos.EventCreateDto;
 import sit.int221.bookingproj.dtos.EventGetDto;
 import sit.int221.bookingproj.dtos.EventUpdateDto;
@@ -16,6 +18,7 @@ import sit.int221.bookingproj.repositories.EventRepository;
 import sit.int221.bookingproj.services.EventService;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
 
@@ -50,21 +53,33 @@ public class EventController {
         return eventService.create(newEvent);
     }
 
+    @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_MIXED_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createEvent(@Valid @RequestPart("event") EventCreateDto newEvent, @RequestPart(value = "file",required = false ) MultipartFile multipartFile) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException, NotMatchEmailCreteEventException, LecuterPermissionException, NotFoundException, IOException, FileSizeTooLargeException {
+        eventService.createWithFile(newEvent, multipartFile);
+    }
+
     @GetMapping("/find/sort/")
     @ResponseStatus(HttpStatus.OK)
     public List<EventGetDto> findAndSort(){
         return eventService.castTypeToDto(eventRepository.findAll(Sort.by(Sort.Direction.DESC, "eventStartTime")));
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateEvent(@PathVariable Integer id,@Valid @RequestBody EventUpdateDto eventUpdateDto) throws OverlapTimeException {
         eventService.update(id,eventUpdateDto);
     }
 
+    @PatchMapping(path = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_MIXED_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @ResponseStatus(HttpStatus.OK)
+    public void updateEventWithFile(@PathVariable Integer id,@Valid @RequestPart(value = "event",required = false ) EventUpdateDto eventUpdateDto, @RequestPart(value = "file") MultipartFile multipartFile) throws OverlapTimeException, IOException {
+        eventService.uploadWithFile(id, eventUpdateDto, multipartFile);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable(name = "id") Integer id) throws EventCategoryIdNullException, NotFoundException, NonSelfGetDataException, LecuterPermissionException {
+    public void delete(@PathVariable(name = "id") Integer id) throws EventCategoryIdNullException, NotFoundException, NonSelfGetDataException, LecuterPermissionException, IOException {
         eventService.deleteEvent(id);
     }
 

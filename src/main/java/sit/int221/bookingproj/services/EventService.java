@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.bookingproj.controller.EventController;
 import sit.int221.bookingproj.dtos.*;
@@ -23,6 +25,7 @@ import sit.int221.bookingproj.repositories.EventRepository;
 import sit.int221.bookingproj.repositories.FileRepository;
 import sit.int221.bookingproj.repositories.UserRepository;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,6 +42,9 @@ public class EventService{
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private FileService fileService;
 
     @Autowired
     private FileRepository fileRepository;
@@ -116,15 +122,17 @@ public class EventService{
         return convertEntityToDto(event.get());
     }
 
-    public void deleteEvent(Integer id) throws EventCategoryIdNullException, NotFoundException, NonSelfGetDataException, LecuterPermissionException {
+    public void deleteEvent(Integer id) throws EventCategoryIdNullException, NotFoundException, NonSelfGetDataException, LecuterPermissionException, IOException {
         Optional<Event> event = eventRepository.findById(id);
         if(getUserByToken().get().getRole().equals("admin")){
             if(event != null){
+                deleteEventDeleteFile(event.get());
                 eventRepository.deleteById(id);
             }
         }
         else if(getUserByToken().get().getRole().equals("student")){
             if(event != null && getUserByToken().get().getEmail().equals(event.get().getBookingEmail())){
+                deleteEventDeleteFile(event.get());
                 eventRepository.deleteById(id);
             }
             else{
@@ -138,6 +146,12 @@ public class EventService{
             throw new NotFoundException("Can not find for id " + id);
         }
     }
+
+    public void deleteEventDeleteFile(Event event) throws IOException {
+        if(!event.getFile().getFileId().equals(null))
+        deleteFile(event.getFile().getFileId());
+    }
+
 
     public List<EventGetDto> getSearch(String dateStart, String dateEnd, String category, String word){
         List result = new ArrayList();
@@ -233,6 +247,7 @@ public class EventService{
             throw new OverlapTimeException("Start Time can not overlap");
         }
     }
+
     public void update(Integer id, EventUpdateDto eventUpdateDto) throws OverlapTimeException {
         Optional<Event> events = Optional.of(new Event());
         events = eventRepository.findById(id);
@@ -351,4 +366,147 @@ public class EventService{
     public List<EventGetDto> checkBetween(Instant instant, Instant instant2){
         return castTypeToDto(eventRepository.findAllByEventStartTimeBetween(instant,instant2, Sort.by(Sort.Direction.DESC, "eventStartTime")));
     }
+
+    public Optional<EventGetDto> createWithFile(EventCreateDto eventCreateDto, MultipartFile multipartFile) throws NotMatchEmailCreteEventException, LecuterPermissionException, OverlapTimeException, EventTimeNullException, IOException, FileSizeTooLargeException {
+        if(eventCreateDto.getEventDuration() == null){
+            Optional<EventCategory> eventCategory = eventCategoryRepository.findById(eventCreateDto.getEventCategoryId());
+            if(checkEventStartTimeNull(eventCreateDto)){
+                eventCreateDto.setEventDuration(eventCategory.get().getEventDuration());
+            }
+        }
+
+        if (checkDuplicateEventTime(eventCreateDto)) {
+            eventCreateDto.setBookingName(eventCreateDto.getBookingName().trim());
+            eventCreateDto.setBookingEmail(eventCreateDto.getBookingEmail().trim());
+            Event event = new Event();
+
+            if(checkSizeOfFile(multipartFile) == true){
+                eventCreateDto.setFileId(uploadFileAndCreateEvent(multipartFile));
+            }
+
+            if(getUserByToken().get().getRole().equals("admin")){
+                event = eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
+                emailService.sendMail(event.getBookingEmail(), "Your Booking's Details at OASIP", emailService.createBody(eventCreateDto));
+                emailService.sendPreConfiguredMail(emailService.createBody(eventCreateDto));
+            }
+            else if(getUserByToken().get().getRole().equals("student")){
+                if(getUserByToken().get().getEmail().equals(eventCreateDto.getBookingEmail())){
+                    event = eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
+                    emailService.sendMail(event.getBookingEmail(), "Your Booking's Details at OASIP", emailService.createBody(eventCreateDto));
+                    emailService.sendPreConfiguredMail(emailService.createBody(eventCreateDto));
+                }
+                else{
+                    throw new NotMatchEmailCreteEventException("Booking Email Must Be The Same as  Student's Email");
+                }
+            }
+            else if(getUserByToken().get().getRole().equals("lecturer")){
+                throw new LecuterPermissionException("Lecturer can not do this");
+            }
+            return Optional.ofNullable(convertEntityToDto(event));
+        }
+        else{
+            throw new OverlapTimeException("Start Time can not overlap");
+        }
+    }
+
+    public boolean checkSizeOfFile(MultipartFile multipartFile) throws FileSizeTooLargeException{
+        if (multipartFile.getSize() > 10485760){
+            throw new FileSizeTooLargeException("File Size Too Large");
+        }
+        return true;
+    }
+
+    public Integer uploadFileAndCreateEvent(MultipartFile multipartFile) throws IOException {
+        Event event = new Event();
+        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+        long size = multipartFile.getSize();
+        String fileCode = fileService.uploadFile(fileName, multipartFile);
+        File file = new File();
+        file.setFileName(fileName);
+        file.setFileSize(Long.toString(size));
+        file.setFilePath("/downloadFile/" + fileCode);
+        File fileUpload = fileRepository.saveAndFlush(file);
+        return fileUpload.getFileId();
+    }
+
+
+    public void uploadWithFile(Integer id, EventUpdateDto eventUpdateDto, MultipartFile multipartFile) throws IOException, OverlapTimeException {
+        Optional<Event> events = Optional.of(new Event());
+        events = eventRepository.findById(id);
+        if(events.isPresent()){
+            if(eventUpdateDto.getEventStartTime() == null) {
+                events.get().setEventStartTime(events.get().getEventStartTime());
+                eventUpdateDto.setEventStartTime(events.get().getEventStartTime());
+            }
+            if(checkDuplicateEventTimeForUpdate(events,eventUpdateDto.getEventStartTime())){
+                events.ifPresent(event -> {
+                    event.setEventNotes(eventUpdateDto.getEventNotes());
+                    if(eventUpdateDto.getEventStartTime() != null){
+                        event.setEventStartTime(eventUpdateDto.getEventStartTime());
+                    }
+                    if(getUserByToken().get().getRole().equals("admin")){
+                        try {
+                            eventRepository.saveAndFlush(uploadAndDelete(event, multipartFile));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        } catch (FileSizeTooLargeException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    else if(getUserByToken().get().getRole().equals("student")){
+                        if(event.getBookingEmail().equals(getUserByToken().get().getEmail())){
+                            try {
+                                eventRepository.saveAndFlush(uploadAndDelete(event, multipartFile));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            } catch (FileSizeTooLargeException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                        else{
+                            try {
+                                throw new NonSelfGetDataException("Can not Update Event That You're not Owner");
+                            } catch (NonSelfGetDataException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                    else if(getUserByToken().get().getRole().equals("lecturer")){
+                        try {
+                            throw new LecuterPermissionException("Lecturer can not do this");
+                        } catch (LecuterPermissionException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+            }
+        }
+        else{
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can not find eventId" + id);
+        }
+    }
+
+    public Event uploadAndDelete(Event event, MultipartFile multipartFile) throws IOException, FileSizeTooLargeException {
+        if(checkSizeOfFile(multipartFile)) {
+            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+            long size = multipartFile.getSize();
+            String fileCode = fileService.uploadFile(fileName, multipartFile);
+            File file = new File();
+            file.setFileName(fileName);
+            file.setFileSize(Long.toString(size));
+            file.setFilePath("/downloadFile/" + fileCode);
+            File fileUpload = fileRepository.saveAndFlush(file);
+            deleteFile(event.getFile().getFileId());
+            event.setFile(fileUpload);
+            return event;
+        }
+        return null;
+    }
+
+
+    public void deleteFile(Integer fileId) throws IOException {
+        Optional<File> file =fileRepository.findById(fileId);
+        fileService.deleteFile(file.get());
+    }
+
 }

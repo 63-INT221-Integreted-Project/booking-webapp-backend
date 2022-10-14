@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 import org.springframework.core.io.Resource;
+import sit.int221.bookingproj.entities.File;
 
 @Service
 public class FileService {
@@ -41,5 +42,17 @@ public class FileService {
             return new UrlResource(foundFile.toUri());
         }
         return null;
+    }
+
+    public void deleteFile(File file) throws IOException {
+        String filePath = "files/";
+        String fileName = file.getFilePath().substring(14);
+        fileName += "-" + file.getFileName();
+        String pathFileName = filePath + fileName;
+        try {
+            Files.delete(Paths.get(pathFileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

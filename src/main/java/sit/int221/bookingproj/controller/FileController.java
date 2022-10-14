@@ -15,6 +15,8 @@ import sit.int221.bookingproj.services.FileService;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @RestController
 public class FileController {
@@ -28,7 +30,6 @@ public class FileController {
     public File uploadFile(@RequestParam("file") MultipartFile multipartFile) throws IOException {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         long size = multipartFile.getSize();
-
         String fileCode = fileService.uploadFile(fileName, multipartFile);
         File file = new File();
         file.setFileName(fileName);
@@ -54,4 +55,5 @@ public class FileController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
                 .body(resource);
     }
+
 }
