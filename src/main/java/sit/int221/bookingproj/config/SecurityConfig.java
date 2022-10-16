@@ -29,10 +29,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private FilterChainExceptionHandler filterChainExceptionHandler;
 
     private final TokenService tokenService;
-
     private final String[] PUBLIC = {
             // ในนี้คือไม่ต้องใช้ token ยืนยัน
             "/api/auth/login",
+            "/api/auth/register",
 //            "/api/auth/match",
 //            "/api/users",
 //            "/api/events",
