@@ -29,14 +29,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private FilterChainExceptionHandler filterChainExceptionHandler;
 
     private final TokenService tokenService;
+
     private final String[] PUBLIC = {
             // ในนี้คือไม่ต้องใช้ token ยืนยัน
             "/api/auth/login",
-            "/api/auth/register",
 //            "/api/auth/match",
-//            "/api/users",
-//            "/api/events",
-//            "/api/event-categories",
+            "/api/users",
+            "/api/auth/register",
+            "/uploadFile",
+            "/downloadFile/**",
+//            "/api/events/**",
+            "/api/event-categories",
     };
 
     public SecurityConfig(TokenService tokenService) {
@@ -52,9 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.addFilterBefore(filterChainExceptionHandler, LogoutFilter.class);
         http.authorizeHttpRequests(authorization -> authorization
-//                        .antMatchers(HttpMethod.GET,"/api/users").hasAnyAuthority("admin")
-//                        .antMatchers(HttpMethod.POST, "/api/users").permitAll()
-//                        .antMatchers("/api/users", "api/users/", "api/events", "api/events/", "api/event-categories", "api/event-categories/").hasAnyAuthority("admin","student", "lecturer")
+                        .antMatchers(HttpMethod.GET,"/api/users").hasAnyAuthority("admin")
+                        .antMatchers(HttpMethod.POST, "/api/users").permitAll()
+                        .antMatchers("/api/users", "/api/users/", "/api/events", "/api/events/", "/api/event-categories/").hasAnyAuthority("admin","student", "lecturer")
                         .antMatchers("/api/auth/match").hasAnyAuthority("admin")
 //                .mvcMatchers("/api/events/").hasAnyAuthority("student")
                 .antMatchers("/**").permitAll()
