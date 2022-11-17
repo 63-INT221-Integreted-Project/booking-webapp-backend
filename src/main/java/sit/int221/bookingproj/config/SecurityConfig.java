@@ -3,6 +3,7 @@ package sit.int221.bookingproj.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -33,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final String[] PUBLIC = {
             // ในนี้คือไม่ต้องใช้ token ยืนยัน
             "/api/auth/login",
+            "/api/auth/login-azure",
 //            "/api/auth/match",
             "/api/users",
             "/api/auth/register",
@@ -53,16 +55,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        System.out.println("เข้า SecurityConfig");
         http.addFilterBefore(filterChainExceptionHandler, LogoutFilter.class);
-        http.authorizeHttpRequests(authorization -> authorization
-                        .antMatchers(HttpMethod.GET,"/api/users").hasAnyAuthority("admin")
-                        .antMatchers(HttpMethod.POST, "/api/users").permitAll()
-                        .antMatchers("/api/users", "/api/users/", "/api/events", "/api/events/", "/api/event-categories/").hasAnyAuthority("admin","student", "lecturer")
-                        .antMatchers("/api/auth/match").hasAnyAuthority("admin")
-//                .mvcMatchers("/api/events/").hasAnyAuthority("student")
-                .antMatchers("/**").permitAll()
-                .anyRequest().denyAll()
+        http.authorizeHttpRequests(authorization -> {
+                        authorization
+                                        .antMatchers(HttpMethod.GET,"/api/users").hasAnyAuthority("admin")
+                                        .antMatchers(HttpMethod.POST, "/api/users").permitAll()
+                                        .antMatchers("/api/users", "/api/users/", "/api/events", "/api/events/", "/api/event-categories/").hasAnyAuthority("admin","student", "lecturer")
+                                        .antMatchers("/api/auth/match").hasAnyAuthority("admin")
+                //                .mvcMatchers("/api/events/").hasAnyAuthority("student")
+                                .antMatchers("/**").permitAll()
+                                .anyRequest().denyAll();
+                }
+
         );
+
         http.cors(config -> {
                     CorsConfiguration cors = new CorsConfiguration();
                     cors.setAllowCredentials(true);
@@ -81,7 +88,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers(PUBLIC).anonymous()
                 .anyRequest().authenticated()
                 .and().apply(new TokenFilterConfigurer(tokenService));
-
+                // add for azure ad
+//                .and()
+//                .oauth2ResourceServer().jwt()
         http.exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
     }

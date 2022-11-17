@@ -49,7 +49,7 @@ public class EventController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public Optional<EventGetDto> createEvent(@Valid @RequestPart(value = "event",required = false ) EventCreateDto newEvent) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException, NotMatchEmailCreteEventException, LecuterPermissionException, NotFoundException {
+    public Optional<EventGetDto> createEvent(@Valid @RequestBody EventCreateDto newEvent) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException, NotMatchEmailCreteEventException, LecuterPermissionException, NotFoundException {
         return eventService.create(newEvent);
     }
 
@@ -67,7 +67,7 @@ public class EventController {
 
     @PatchMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateEvent(@PathVariable Integer id,@Valid @RequestPart(value = "event",required = false ) EventUpdateDto eventUpdateDto) throws OverlapTimeException {
+    public void updateEvent(@PathVariable Integer id,@Valid @RequestBody EventUpdateDto eventUpdateDto) throws OverlapTimeException {
         eventService.update(id,eventUpdateDto);
     }
 

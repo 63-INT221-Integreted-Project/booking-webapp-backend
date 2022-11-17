@@ -20,7 +20,6 @@ import sit.int221.bookingproj.exception.UniqueEmailException;
 import sit.int221.bookingproj.exception.UniqueNameException;
 import sit.int221.bookingproj.repositories.UserRepository;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -74,7 +73,6 @@ public class UserService {
     }
 
     public User createUser(@Valid UserActionDto newUser) throws UniqueEmailException, UniqueNameException {
-
         Argon2 argon2 = Argon2Factory.create(
                 Argon2Factory.Argon2Types.ARGON2id,
                 16,
