@@ -63,6 +63,7 @@ public class TokenFilter extends GenericFilterBean {
             String token = authorization.substring(7);
             DecodedJWT decoded = tokenService.verify(token);
 
+
         if (decoded == null) {
                 filterChain.doFilter(servletRequest, servletResponse);
                 return;

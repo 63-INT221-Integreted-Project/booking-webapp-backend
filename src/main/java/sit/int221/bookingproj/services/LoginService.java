@@ -1,6 +1,7 @@
 package sit.int221.bookingproj.services;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.core.JsonToken;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import net.minidev.json.JSONObject;
@@ -63,6 +64,7 @@ public class LoginService {
             throw new EmailUserNotFoundException("This Email is Not Found");
         }
     }
+
 
     public JSONObject refreshToken(){
         SecurityContext context = SecurityContextHolder.getContext();
