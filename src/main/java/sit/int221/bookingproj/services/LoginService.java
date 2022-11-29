@@ -1,7 +1,5 @@
 package sit.int221.bookingproj.services;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fasterxml.jackson.core.JsonToken;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import net.minidev.json.JSONObject;
@@ -17,8 +15,6 @@ import sit.int221.bookingproj.exception.EmailUserNotFoundException;
 import sit.int221.bookingproj.exception.PasswordUserNotMatchException;
 import sit.int221.bookingproj.repositories.UserRepository;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @Service

@@ -38,6 +38,7 @@ public class EventCreateDto {
     @Nullable
     @Size(max = 500, message = "length exceeded the size")
     private String eventNotes;
+
     private Integer eventCategoryId;
 
     @Nullable

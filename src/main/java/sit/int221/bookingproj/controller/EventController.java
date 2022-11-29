@@ -55,8 +55,8 @@ public class EventController {
 
     @PostMapping(value = "/", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_MIXED_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
-    public void createEvent(@Valid @RequestPart("event") EventCreateDto newEvent, @RequestPart(value = "file",required = false ) MultipartFile multipartFile) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException, NotMatchEmailCreteEventException, LecuterPermissionException, NotFoundException, IOException, FileSizeTooLargeException {
-        eventService.createWithFile(newEvent, multipartFile);
+    public Optional<EventGetDto> createEvent(@Valid @RequestPart("event") EventCreateDto newEvent, @RequestPart(value = "file",required = false ) MultipartFile multipartFile) throws OverlapTimeException, EventCategoryIdNullException, EventTimeNullException, NotMatchEmailCreteEventException, LecuterPermissionException, NotFoundException, IOException, FileSizeTooLargeException {
+        return eventService.createWithFile(newEvent, multipartFile);
     }
 
     @GetMapping("/find/sort/")

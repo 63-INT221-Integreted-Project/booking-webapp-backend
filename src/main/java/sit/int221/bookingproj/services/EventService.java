@@ -222,8 +222,19 @@ public class EventService{
             eventCreateDto.setBookingName(eventCreateDto.getBookingName().trim());
             eventCreateDto.setBookingEmail(eventCreateDto.getBookingEmail().trim());
             Event event = new Event();
-
-            if(getUserByToken().get().getRole().equals("admin")){
+            if(getUserByToken().isEmpty()){
+                System.out.println("เข้าจ้า");
+                event = eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
+                emailService.sendMail(event.getBookingEmail(), "Your Booking's Details at OASIP", emailService.createBody(eventCreateDto));
+                emailService.sendPreConfiguredMail(emailService.createBody(eventCreateDto));
+            }
+            // for azure token that don't have role
+            else if(getUserByToken().get().getRole().equals("") || getUserByToken().get().getRole().equals(null)){
+                event = eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
+                emailService.sendMail(event.getBookingEmail(), "Your Booking's Details at OASIP", emailService.createBody(eventCreateDto));
+                emailService.sendPreConfiguredMail(emailService.createBody(eventCreateDto));
+            }
+            else if(getUserByToken().get().getRole().equals("admin")){
                 event = eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
                 emailService.sendMail(event.getBookingEmail(), "Your Booking's Details at OASIP", emailService.createBody(eventCreateDto));
                 emailService.sendPreConfiguredMail(emailService.createBody(eventCreateDto));
@@ -369,6 +380,7 @@ public class EventService{
 
     public Optional<EventGetDto> createWithFile(EventCreateDto eventCreateDto, MultipartFile multipartFile) throws NotMatchEmailCreteEventException, LecuterPermissionException, OverlapTimeException, EventTimeNullException, IOException, FileSizeTooLargeException {
         if(eventCreateDto.getEventDuration() == null){
+            System.out.println(eventCreateDto.getEventCategoryId());
             Optional<EventCategory> eventCategory = eventCategoryRepository.findById(eventCreateDto.getEventCategoryId());
             if(checkEventStartTimeNull(eventCreateDto)){
                 eventCreateDto.setEventDuration(eventCategory.get().getEventDuration());
@@ -384,23 +396,43 @@ public class EventService{
                 eventCreateDto.setFileId(uploadFileAndCreateEvent(multipartFile));
             }
 
-            if(getUserByToken().get().getRole().equals("admin")){
-                event = eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
-                emailService.sendMail(event.getBookingEmail(), "Your Booking's Details at OASIP", emailService.createBody(eventCreateDto));
-                emailService.sendPreConfiguredMail(emailService.createBody(eventCreateDto));
-            }
-            else if(getUserByToken().get().getRole().equals("student")){
-                if(getUserByToken().get().getEmail().equals(eventCreateDto.getBookingEmail())){
+//            if(getUserByToken().get().getRole().equals(){
+//                event = eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
+//                emailService.sendMail(event.getBookingEmail(), "Your Booking's Details at OASIP", emailService.createBody(eventCreateDto));
+//                emailService.sendPreConfiguredMail(emailService.createBody(eventCreateDto));
+//            }
+            // for azure token that don't have role
+            try{
+                if(getUserByToken().get().getRole().equals("") || getUserByToken().get().getRole().equals(null)){
                     event = eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
                     emailService.sendMail(event.getBookingEmail(), "Your Booking's Details at OASIP", emailService.createBody(eventCreateDto));
                     emailService.sendPreConfiguredMail(emailService.createBody(eventCreateDto));
                 }
-                else{
-                    throw new NotMatchEmailCreteEventException("Booking Email Must Be The Same as  Student's Email");
+
+                else if(getUserByToken().get().getRole().equals("admin")){
+                    event = eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
+                    emailService.sendMail(event.getBookingEmail(), "Your Booking's Details at OASIP", emailService.createBody(eventCreateDto));
+                    emailService.sendPreConfiguredMail(emailService.createBody(eventCreateDto));
+                }
+                else if(getUserByToken().get().getRole().equals("student")){
+                    if(getUserByToken().get().getEmail().equals(eventCreateDto.getBookingEmail())){
+                        event = eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
+                        emailService.sendMail(event.getBookingEmail(), "Your Booking's Details at OASIP", emailService.createBody(eventCreateDto));
+                        emailService.sendPreConfiguredMail(emailService.createBody(eventCreateDto));
+                    }
+                    else{
+                        throw new NotMatchEmailCreteEventException("Booking Email Must Be The Same as  Student's Email");
+                    }
+                }
+                else if(getUserByToken().get().getRole().equals("lecturer")){
+                    throw new LecuterPermissionException("Lecturer can not do this");
                 }
             }
-            else if(getUserByToken().get().getRole().equals("lecturer")){
-                throw new LecuterPermissionException("Lecturer can not do this");
+            catch (Exception e){
+                // for a
+                event = eventRepository.saveAndFlush(convertDtoToEvent(eventCreateDto));
+                emailService.sendMail(event.getBookingEmail(), "Your Booking's Details at OASIP", emailService.createBody(eventCreateDto));
+                emailService.sendPreConfiguredMail(emailService.createBody(eventCreateDto));
             }
             return Optional.ofNullable(convertEntityToDto(event));
         }
