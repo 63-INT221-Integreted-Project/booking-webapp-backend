@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import sit.int221.bookingproj.services.TokenService;
@@ -24,6 +25,7 @@ import java.util.Collections;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
+@CrossOrigin
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -35,6 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // ในนี้คือไม่ต้องใช้ token ยืนยัน
             "/api/auth/login",
             "/api/auth/login-azure",
+//            "/api/events",
+//            "/api/events/",
 //            "/api/auth/match",
             "/api/users",
             "/api/auth/register",
@@ -55,13 +59,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        System.out.println("เข้า SecurityConfig");
         http.addFilterBefore(filterChainExceptionHandler, LogoutFilter.class);
         http.authorizeHttpRequests(authorization -> {
                         authorization
                                         .antMatchers(HttpMethod.GET,"/api/users").hasAnyAuthority("admin")
                                         .antMatchers(HttpMethod.POST, "/api/users").permitAll()
-                                        .antMatchers("/api/users", "/api/users/", "/api/events", "/api/events/", "/api/event-categories/").hasAnyAuthority("admin","student", "lecturer")
+                                        .antMatchers(HttpMethod.POST, "/api/events", "/api/events/").permitAll()
+                                        .antMatchers( "/api/events", "/api/events/").hasAnyAuthority("admin","student", "lecturer")
+                                        .antMatchers("/api/users", "/api/users/", "/api/event-categories/").hasAnyAuthority("admin","student", "lecturer")
                                         .antMatchers("/api/auth/match").hasAnyAuthority("admin")
                 //                .mvcMatchers("/api/events/").hasAnyAuthority("student")
                                 .antMatchers("/**").permitAll()
