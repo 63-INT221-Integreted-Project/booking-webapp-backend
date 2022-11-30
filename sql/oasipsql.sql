@@ -64,8 +64,8 @@ CREATE TABLE IF NOT EXISTS `oasipdb`.`user` (
   `role` VARCHAR(50) NOT NULL,
   `createdOn` DATETIME NULL,
   `updatedOn` DATETIME NULL,
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC),
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
 ENGINE = InnoDB;
 
 
