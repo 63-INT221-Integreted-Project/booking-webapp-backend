@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `oasipdb`.`event` (
   `eventCategoryId` INT NOT NULL,
   `fileId` INT NULL,
   PRIMARY KEY (`eventId`),
-  INDEX `fk_event_eventCategory_idx` (`eventCategoryId` ASC) VISIBLE,
+  INDEX `fk_event_eventCategory_idx` (`eventCategoryId` ASC),
   CONSTRAINT `fk_event_event_category`
     FOREIGN KEY (`eventCategoryId`)
     REFERENCES `oasipdb`.`event_category` (`eventCategoryId`)
@@ -76,8 +76,8 @@ CREATE TABLE IF NOT EXISTS `oasipdb`.`event_category_owner` (
   `eventCategoryId` INT AUTO_INCREMENT NOT NULL,
   `userId` INT NOT NULL,
   PRIMARY KEY (`eventCategoryId`, `userId`),
-  INDEX `fk_event_category_has_user_user_idx` (`userId` ASC) VISIBLE,
-  INDEX `fk_event_category_has_user_eventC_ctegory_idx` (`eventCategoryId` ASC) VISIBLE,
+  INDEX `fk_event_category_has_user_user_idx` (`userId` ASC),
+  INDEX `fk_event_category_has_user_eventC_ctegory_idx` (`eventCategoryId` ASC),
   CONSTRAINT `fk_event_category_has_user_event_category`
     FOREIGN KEY (`eventCategoryId`)
     REFERENCES `oasipdb`.`event_category` (`eventCategoryId`)
