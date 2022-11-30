@@ -1,3 +1,4 @@
+-- MySQL Workbench Forward Engineering
 drop database oasipdb;
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -36,11 +37,17 @@ CREATE TABLE IF NOT EXISTS `oasipdb`.`event` (
   `eventDuration` INT NOT NULL,
   `eventNotes` VARCHAR(500) NULL,
   `eventCategoryId` INT NOT NULL,
+  `fileId` INT NULL,
   PRIMARY KEY (`eventId`),
-  INDEX `fk_event_eventCategory_idx` (`eventCategoryId` ASC) VISIBLE,
+  INDEX `fk_event_eventCategory_idx` (`eventCategoryId` ASC),
   CONSTRAINT `fk_event_event_category`
     FOREIGN KEY (`eventCategoryId`)
     REFERENCES `oasipdb`.`event_category` (`eventCategoryId`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+    CONSTRAINT `fk_event_file`
+    FOREIGN KEY (`fileId`)
+    REFERENCES `oasipdb`.`file` (`fileId`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -57,8 +64,8 @@ CREATE TABLE IF NOT EXISTS `oasipdb`.`user` (
   `role` VARCHAR(50) NOT NULL,
   `createdOn` DATETIME NULL,
   `updatedOn` DATETIME NULL,
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC),
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
 ENGINE = InnoDB;
 
 
@@ -66,11 +73,11 @@ ENGINE = InnoDB;
 -- Table `mydb`.`ecentCategoryOwner`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `oasipdb`.`event_category_owner` (
-  `eventCategoryId` INT NOT NULL,
+  `eventCategoryId` INT AUTO_INCREMENT NOT NULL,
   `userId` INT NOT NULL,
   PRIMARY KEY (`eventCategoryId`, `userId`),
-  INDEX `fk_event_category_has_user_user_idx` (`userId` ASC) VISIBLE,
-  INDEX `fk_event_category_has_user_eventC_ctegory_idx` (`eventCategoryId` ASC) VISIBLE,
+  INDEX `fk_event_category_has_user_user_idx` (`userId` ASC),
+  INDEX `fk_event_category_has_user_eventC_ctegory_idx` (`eventCategoryId` ASC),
   CONSTRAINT `fk_event_category_has_user_event_category`
     FOREIGN KEY (`eventCategoryId`)
     REFERENCES `oasipdb`.`event_category` (`eventCategoryId`)
@@ -83,7 +90,16 @@ CREATE TABLE IF NOT EXISTS `oasipdb`.`event_category_owner` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+CREATE TABLE IF NOT EXISTS `oasipdb`.`file` (
+  `fileId` INT NOT NULL AUTO_INCREMENT,
+  `fileName` VARCHAR(100) NULL,
+  `filePath` VARCHAR(100) NULL,
+  `fileSize` VARCHAR(50) NULL,
+  PRIMARY KEY (`fileId`))
+ENGINE = InnoDB;
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
