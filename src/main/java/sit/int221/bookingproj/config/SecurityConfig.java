@@ -25,7 +25,6 @@ import java.util.Collections;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
-@CrossOrigin
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
