@@ -17,7 +17,7 @@ services:
 
   mysqldb:
     container_name: oasip-mysqldb
-    image: mysql:8.0.26
+    image: mysql:5.7
     networks:
       - oasip-network
     environment:
