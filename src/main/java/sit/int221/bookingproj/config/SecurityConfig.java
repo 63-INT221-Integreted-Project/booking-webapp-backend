@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //            "/api/events",
 //            "/api/events/",
 //            "/api/auth/match",
-            "/api/users",
+            "/api/auth/token/guest",
             "/api/auth/register",
             "/uploadFile",
             "/downloadFile/**",
@@ -61,12 +61,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(filterChainExceptionHandler, LogoutFilter.class);
         http.authorizeHttpRequests(authorization -> {
                         authorization
-                                        .antMatchers(HttpMethod.GET,"/api/users").hasAnyAuthority("admin")
-                                        .antMatchers(HttpMethod.POST, "/api/users").permitAll()
-                                        .antMatchers(HttpMethod.POST, "/api/events", "/api/events/").permitAll()
-                                        .antMatchers( "/api/events", "/api/events/").hasAnyAuthority("admin","student", "lecturer")
-                                        .antMatchers("/api/users", "/api/users/", "/api/event-categories/").hasAnyAuthority("admin","student", "lecturer")
-                                        .antMatchers("/api/auth/match").hasAnyAuthority("admin")
+                                .antMatchers(HttpMethod.GET,"/api/users").hasAnyAuthority("admin")
+                                .antMatchers(HttpMethod.POST, "/api/users").permitAll()
+                                .antMatchers(HttpMethod.POST, "/api/events", "/api/events/").permitAll()
+                                .antMatchers( "/api/events", "/api/events/").hasAnyAuthority("admin","student", "lecturer")
+                                .antMatchers("/api/users", "/api/users/", "/api/event-categories/").hasAnyAuthority("admin","student", "lecturer")
+                                .antMatchers("/api/auth/match").hasAnyAuthority("admin")
                 //                .mvcMatchers("/api/events/").hasAnyAuthority("student")
                                 .antMatchers("/**").permitAll()
                                 .anyRequest().denyAll();

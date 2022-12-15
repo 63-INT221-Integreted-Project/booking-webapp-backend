@@ -45,6 +45,18 @@ public class TokenService {
                 .sign(algorithm);
     };
 
+    public String tokenizeGuestToken(User user){
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, 30);
+        Date expiresAt = calendar.getTime();
+        Algorithm algorithm = Algorithm.HMAC256("oasipLnwzaSecret");
+        return JWT.create().withIssuer("BackendService").withClaim("userId", user.getUserId())
+                .withClaim("name", user.getName())
+                .withClaim("role", user.getRole())
+                .withExpiresAt(expiresAt)
+                .sign(algorithm);
+    };
+
     public String tokenizeToken(UserAzureDto userAzureDto){
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MINUTE, 30);
@@ -90,6 +102,18 @@ public class TokenService {
         calendar.add(Calendar.HOUR, 24);
         Date expiresAt = calendar.getTime();
         User user = userRepository.findUserByEmail(userLoginDto.getEmail());
+        Algorithm algorithm = Algorithm.HMAC256("oasipLnwzaSecret");
+        return JWT.create().withIssuer("BackendService").withClaim("userId", user.getUserId())
+                .withClaim("name", user.getName())
+                .withClaim("role", user.getRole())
+                .withExpiresAt(expiresAt)
+                .sign(algorithm);
+    };
+
+    public String tokenizeRefreshGuestToken(User user){
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR, 24);
+        Date expiresAt = calendar.getTime();
         Algorithm algorithm = Algorithm.HMAC256("oasipLnwzaSecret");
         return JWT.create().withIssuer("BackendService").withClaim("userId", user.getUserId())
                 .withClaim("name", user.getName())
@@ -152,5 +176,7 @@ public class TokenService {
     private Algorithm algorithm() {
         return Algorithm.HMAC256("oasipLnwzaSecret");
     }
+
+
 
 }

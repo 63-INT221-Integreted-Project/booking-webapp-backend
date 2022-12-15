@@ -54,4 +54,9 @@ public class LoginController {
         return userService.createUser(userActionDto);
     }
 
+    @GetMapping("/token/guest")
+    public JSONObject getNewGuestToken(){
+        return loginService.getGuestToken();
+    }
+
 }
