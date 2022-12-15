@@ -98,16 +98,40 @@ public class LoginService {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
         Integer userId = Integer.parseInt((String) authentication.getPrincipal());
-        Optional<User> user = userRepository.findById(userId);
-        if(user.isPresent()){
+        if(userId.equals(0)){
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("role", user.get().getRole());
-            jsonObject.put("email", user.get().getEmail());
-            jsonObject.put("name", user.get().getName());
-            jsonObject.put("userId", user.get().getUserId());
+            jsonObject.put("role", "guest");
+            jsonObject.put("email", "guest@gmail.com");
+            jsonObject.put("name", "Guest");
+            jsonObject.put("userId", userId);
             return jsonObject;
         }
+        else{
+            Optional<User> user = userRepository.findById(userId);
+            if(user.isPresent()){
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("role", user.get().getRole());
+                jsonObject.put("email", user.get().getEmail());
+                jsonObject.put("name", user.get().getName());
+                jsonObject.put("userId", user.get().getUserId());
+                return jsonObject;
+            }
+        }
         return null;
+    }
+
+    public JSONObject getGuestToken() {
+        User user = new User();
+        user.setUserId(0);
+        user.setName("Guest");
+        user.setRole("guest");
+        user.setEmail("guest@gmail.com");
+        String token = tokenService.tokenizeGuestToken(user);
+        String refreshToken = tokenService.tokenizeRefreshGuestToken(user);
+        JSONObject json = new JSONObject();
+        json.put("access_token", token);
+        json.put("refresh_token", refreshToken);
+        return json;
     }
 
 }
