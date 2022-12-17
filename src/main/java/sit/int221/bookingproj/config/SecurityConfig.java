@@ -44,7 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/uploadFile",
             "/downloadFile/**",
 //            "/api/events/**",
-            "/api/event-categories",
+//            "/api/event-categories",
+            "/api/event-categories/guest",
     };
 
     public SecurityConfig(TokenService tokenService) {
@@ -60,16 +61,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.addFilterBefore(filterChainExceptionHandler, LogoutFilter.class);
         http.authorizeHttpRequests(authorization -> {
-                        authorization
-                                .antMatchers(HttpMethod.GET,"/api/users").hasAnyAuthority("admin")
-                                .antMatchers(HttpMethod.POST, "/api/users").permitAll()
-                                .antMatchers(HttpMethod.POST, "/api/events", "/api/events/").permitAll()
-                                .antMatchers( "/api/events", "/api/events/").hasAnyAuthority("admin","student", "lecturer")
-                                .antMatchers("/api/users", "/api/users/", "/api/event-categories/").hasAnyAuthority("admin","student", "lecturer")
-                                .antMatchers("/api/auth/match").hasAnyAuthority("admin")
-                //                .mvcMatchers("/api/events/").hasAnyAuthority("student")
-                                .antMatchers("/**").permitAll()
-                                .anyRequest().denyAll();
+            authorization
+                    .antMatchers("/api/users", "/api/users/").hasAnyAuthority("admin")
+//                    .antMatchers(HttpMethod.POST, "/api/users").hasAnyAuthority("admin","student", "lecturer")
+//                    .antMatchers(HttpMethod.PATCH, "/api/users").hasAnyAuthority("admin","student", "lecturer")
+//                    .antMatchers(HttpMethod.DELETE, "/api/users").hasAnyAuthority("admin","student", "lecturer")
+                    .antMatchers(HttpMethod.POST, "/api/events", "/api/events/").permitAll()
+                    .antMatchers(HttpMethod.PATCH, "/api/events", "/api/events/").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/events/search").hasAnyAuthority("admin")
+                    .antMatchers( "/api/events", "/api/events/").hasAnyAuthority("admin","student", "lecturer")
+                    .antMatchers("/api/event-categories").hasAnyAuthority("admin","student", "lecturer")
+                    .antMatchers("/api/event-categories/").hasAnyAuthority("admin","student", "lecturer")
+                    .antMatchers("/api/auth/match").hasAnyAuthority("admin")
+                    //                .mvcMatchers("/api/events/").hasAnyAuthority("student")
+                    .antMatchers("/**").permitAll()
+                    .anyRequest().denyAll();
                 }
 
         );
@@ -81,9 +87,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     cors.addAllowedHeader("*");
                     cors.addAllowedMethod("GET");
                     cors.addAllowedMethod("POST");
+                    cors.addAllowedMethod("PATCH");
                     cors.addAllowedMethod("PUT");
                     cors.addAllowedMethod("DELETE");
                     cors.addAllowedMethod("OPTIONS");
+                    cors.addAllowedMethod(HttpMethod.PATCH);
+                    cors.addAllowedMethod(HttpMethod.POST);
+                    cors.addAllowedMethod(HttpMethod.GET);
+                    cors.addAllowedMethod(HttpMethod.DELETE);
+                    cors.addAllowedMethod(HttpMethod.PUT);
+                    cors.addAllowedMethod(HttpMethod.HEAD);
+                    cors.addAllowedMethod(HttpMethod.OPTIONS);
                     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
                     source.registerCorsConfiguration("/**", cors);
                     config.configurationSource(source);
