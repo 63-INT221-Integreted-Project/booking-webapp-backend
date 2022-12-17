@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Validated
-@RestController()
+@RestController
 @RequestMapping("/api/users")
 public class UserController {
 
@@ -54,7 +54,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<User> delete(@PathVariable Integer id) throws NotFoundException {
+    public Optional<User> delete(@PathVariable Integer id) throws NotFoundException, OneEventCategoryOwnerException {
         return userService.deleteUser(id);
     }
 

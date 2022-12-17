@@ -32,6 +32,12 @@ public class EventCategoryController {
         return eventCategoryService.getAllEventCategoryDto();
     }
 
+    @GetMapping("/guest")
+    @ResponseStatus(HttpStatus.OK)
+    public List getAllEventCategroryGuest(){
+        return eventCategoryService.getAllEventCategoryDto();
+    }
+
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Optional<EventCategoryDto> getEventCategoryById(@PathVariable Integer id) throws NotFoundException {

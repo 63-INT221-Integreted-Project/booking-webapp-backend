@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 @Data
 public class UserActionDto {
     private Integer userId;
+
     @NotBlank(message = "can not blank")
     @Size(max = 100, message = "length exceeded the size")
     private String name;

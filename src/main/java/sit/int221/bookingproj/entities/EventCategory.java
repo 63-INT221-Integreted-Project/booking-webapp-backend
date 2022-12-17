@@ -2,6 +2,7 @@ package sit.int221.bookingproj.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.ToString;
+import org.springframework.data.jpa.repository.Modifying;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
