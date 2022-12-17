@@ -12,12 +12,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
 import sit.int221.bookingproj.dtos.*;
+import sit.int221.bookingproj.entities.EventCategory;
 import sit.int221.bookingproj.entities.User;
 import sit.int221.bookingproj.enums.RoleEnum;
-import sit.int221.bookingproj.exception.NonSelfGetDataException;
-import sit.int221.bookingproj.exception.NotFoundException;
-import sit.int221.bookingproj.exception.UniqueEmailException;
-import sit.int221.bookingproj.exception.UniqueNameException;
+import sit.int221.bookingproj.exception.*;
+import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.repositories.UserRepository;
 
 import javax.validation.Valid;
@@ -40,6 +39,9 @@ public class UserService {
 
     @Autowired
     public UserRepository userRepository;
+
+    @Autowired
+    public EventCategoryRepository eventCategoryRepository;
 
     public List<UserGetDto> getAllUser(){
         return userRepository.findAll(Sort.by(Sort.Direction.ASC, "name")).stream().map(this::convertEntityToDto).collect(Collectors.toList());
@@ -82,7 +84,7 @@ public class UserService {
                 newUser.setName(newUser.getName().trim());
                 newUser.setEmail(newUser.getEmail().trim());
                 newUser.setRole(newUser.getRole().trim());
-                newUser.setPassword(newUser.getPassword().trim());
+//                newUser.setPassword(newUser.getPassword().trim());
                 if (newUser.getRole().toUpperCase().equals(RoleEnum.STUDENT.toString()) || newUser.getRole().toUpperCase().equals(RoleEnum.LECTURER.toString()) || newUser.getRole().toUpperCase().equals(RoleEnum.ADMIN.toString())) {
                     newUser.setRole(newUser.getRole().toLowerCase());
                 } else {
@@ -104,7 +106,6 @@ public class UserService {
     public Optional<User> update(Integer id, @Valid UserActionDto userActionDto) throws UniqueEmailException, UniqueNameException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Integer userId = Integer.parseInt((String) authentication.getPrincipal());
-        System.out.println("update userID " + userId);
         Optional<User> user = Optional.of(new User());
         user = userRepository.findById(id);
         User userReturn = new User();
@@ -139,11 +140,26 @@ public class UserService {
         }
     }
 
-    public Optional<User> deleteUser(Integer id) throws NotFoundException {
+    public Optional<User> deleteUser(Integer id) throws NotFoundException, OneEventCategoryOwnerException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Integer userId = Integer.parseInt((String) authentication.getPrincipal());
-        System.out.println("update userID " + userId);
         Optional<User> user = userRepository.findById(id);
+        // ทำการลบผู้ใช้
+        if(user.get().getRole().equals("lecturer")){
+            if(eventCategoryRepository.findAllByOwner(user.get()) != null){
+                List<EventCategory> eventCategory = eventCategoryRepository.findAllByOwner(user.get());
+                for(int i = 0; i < eventCategory.size(); i++){
+                    // เช็คว่ามีคนมากกว่า 1 หรือเปล่า
+                    if(eventCategory.get(i).getOwner().size() > 1){
+                        // มากกว่า 1 ลบได้
+                        userRepository.deleteById(id);
+                    }
+                    else {
+                        throw new OneEventCategoryOwnerException("Event Category Owner Must Be More Than 1");
+                    }
+                }
+            }
+        }
         if(user != null){
             userRepository.deleteById(id);
             return user;

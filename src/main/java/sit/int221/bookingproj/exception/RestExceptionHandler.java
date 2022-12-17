@@ -149,6 +149,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(OneEventCategoryOwnerException.class)
+    public ResponseEntity<Object> handleOneEventCategoryOwnerException(OneEventCategoryOwnerException exception) {
+        Map<String, String> errorMaping = new HashMap<>();
+        errorMaping.put("eventCategoryOwner", exception.getMessage());
+        ErrorModel error = new ErrorModel(HttpStatus.BAD_REQUEST, "Event Category Owner Must Be More Than 1", errorMaping);
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
 //    @ExceptionHandler(IllegalStateException.class)
 //    protected ResponseEntity<Object> handleIllegalStateNotValid(IllegalStateException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 //        Map<String, String> errorMaping = new HashMap<>();
