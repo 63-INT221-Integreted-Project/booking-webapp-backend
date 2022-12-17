@@ -61,21 +61,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.addFilterBefore(filterChainExceptionHandler, LogoutFilter.class);
         http.authorizeHttpRequests(authorization -> {
-            authorization
-                    .antMatchers("/api/users", "/api/users/").hasAnyAuthority("admin")
+                    authorization
+                            .antMatchers("/api/users", "/api/users/").hasAnyAuthority("admin")
 //                    .antMatchers(HttpMethod.POST, "/api/users").hasAnyAuthority("admin","student", "lecturer")
 //                    .antMatchers(HttpMethod.PATCH, "/api/users").hasAnyAuthority("admin","student", "lecturer")
 //                    .antMatchers(HttpMethod.DELETE, "/api/users").hasAnyAuthority("admin","student", "lecturer")
-                    .antMatchers(HttpMethod.POST, "/api/events", "/api/events/").permitAll()
-                    .antMatchers(HttpMethod.PATCH, "/api/events", "/api/events/").permitAll()
-                    .antMatchers(HttpMethod.GET, "/api/events/search").hasAnyAuthority("admin")
-                    .antMatchers( "/api/events", "/api/events/").hasAnyAuthority("admin","student", "lecturer")
-                    .antMatchers("/api/event-categories").hasAnyAuthority("admin","student", "lecturer")
-                    .antMatchers("/api/event-categories/").hasAnyAuthority("admin","student", "lecturer")
-                    .antMatchers("/api/auth/match").hasAnyAuthority("admin")
-                    //                .mvcMatchers("/api/events/").hasAnyAuthority("student")
-                    .antMatchers("/**").permitAll()
-                    .anyRequest().denyAll();
+                            .antMatchers(HttpMethod.POST, "/api/events", "/api/events/").permitAll()
+                            .antMatchers(HttpMethod.PATCH, "/api/events", "/api/events/").permitAll()
+                            .antMatchers(HttpMethod.GET, "/api/events/search").hasAnyAuthority("admin")
+                            .antMatchers( "/api/events", "/api/events/").hasAnyAuthority("admin","student", "lecturer")
+                            .antMatchers("/api/event-categories").hasAnyAuthority("admin","student", "lecturer")
+                            .antMatchers("/api/event-categories/").hasAnyAuthority("admin","student", "lecturer")
+                            .antMatchers("/api/auth/match").hasAnyAuthority("admin")
+                            //                .mvcMatchers("/api/events/").hasAnyAuthority("student")
+                            .antMatchers("/**").permitAll()
+                            .anyRequest().denyAll();
                 }
 
         );
@@ -106,7 +106,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers(PUBLIC).anonymous()
                 .anyRequest().authenticated()
                 .and().apply(new TokenFilterConfigurer(tokenService));
-                // add for azure ad
+        // add for azure ad
 //                .and()
 //                .oauth2ResourceServer().jwt()
         http.exceptionHandling()
