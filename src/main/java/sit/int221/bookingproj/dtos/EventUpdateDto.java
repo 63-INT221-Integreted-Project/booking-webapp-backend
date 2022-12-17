@@ -17,8 +17,6 @@ public class EventUpdateDto {
     @Size(max = 500, message = "length exceeded the size")
     private String eventNotes;
 
-    @Nullable
-    private Integer fileId;
 
     public String getEventNotes() {
         return eventNotes;
@@ -36,11 +34,4 @@ public class EventUpdateDto {
         this.eventStartTime = eventStartTime;
     }
 
-    public Integer getFileId() {
-        return fileId;
-    }
-
-    public void setFileId(Integer fileId) {
-        this.fileId = fileId;
-    }
 }

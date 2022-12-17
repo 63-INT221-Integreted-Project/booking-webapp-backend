@@ -54,6 +54,8 @@ public class EventCategoryService {
         public EventCategory createEventCategory (EventCategoryCreateUpdateDto newEventCategory) throws
         UniqueEventCategoryNameException {
             if (checkUniqueNameCreate(newEventCategory)) {
+                List<EventCategory> eventCategories = eventCategoryRepository.findAll();
+                newEventCategory.setEventCategoryId(eventCategories.size() + 1);
                 newEventCategory.setEventCategoryName(newEventCategory.getEventCategoryName().trim());
                 newEventCategory.setEventCategoryDescription(newEventCategory.getEventCategoryDescription().trim());
                 return eventCategoryRepository.saveAndFlush(castCreateDtoToEventCategory(newEventCategory));
@@ -75,12 +77,14 @@ public class EventCategoryService {
         public List<User> addOwnerToEventCategory(EventCategoryCreateUpdateDto eventCategoryCreateUpdateDto){
         List<Optional<User>> ownerSet = new ArrayList<>();
         List<User> ownerSetUser = new ArrayList();
-        for(int i = 0; i < eventCategoryCreateUpdateDto.getUserId().size(); i++) {
-            ownerSet.add(userRepository.findById((Integer) eventCategoryCreateUpdateDto.getUserId().get(i)));
-        }
-        ownerSetUser = ownerSet.stream()
+        if(eventCategoryCreateUpdateDto.getUserId() != null){
+            for(int i = 0; i < eventCategoryCreateUpdateDto.getUserId().size(); i++) {
+                ownerSet.add(userRepository.findById((Integer) eventCategoryCreateUpdateDto.getUserId().get(i)));
+            }
+            ownerSetUser = ownerSet.stream()
                     .flatMap(Optional::stream)
                     .collect(Collectors.toList());
+        }
         return ownerSetUser;
         }
 
