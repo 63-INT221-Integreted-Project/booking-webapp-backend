@@ -20,6 +20,7 @@ import sit.int221.bookingproj.repositories.EventCategoryRepository;
 import sit.int221.bookingproj.repositories.UserRepository;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -141,32 +142,55 @@ public class UserService {
     }
 
     public Optional<User> deleteUser(Integer id) throws NotFoundException, OneEventCategoryOwnerException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Integer userId = Integer.parseInt((String) authentication.getPrincipal());
         Optional<User> user = userRepository.findById(id);
         // ทำการลบผู้ใช้
         if(user.get().getRole().equals("lecturer")){
-            if(eventCategoryRepository.findAllByOwner(user.get()) != null){
-                List<EventCategory> eventCategory = eventCategoryRepository.findAllByOwner(user.get());
-                for(int i = 0; i < eventCategory.size(); i++){
-                    // เช็คว่ามีคนมากกว่า 1 หรือเปล่า
-                    if(eventCategory.get(i).getOwner().size() > 1){
-                        // มากกว่า 1 ลบได้
-                        userRepository.deleteById(id);
-                    }
-                    else {
+            List<EventCategory> eventCategories = eventCategoryRepository.findAllByOwner(user.get());
+            // เช็คว่ามีคนมากกว่า 1 หรือเปล่า
+            if(eventCategories.size() > 1){
+                for(int i = 0; i < eventCategories.size(); i++){
+                    List ownerList = eventCategories.get(i).getOwner();
+                    if(ownerList.size() == 1){
                         throw new OneEventCategoryOwnerException("Event Category Owner Must Be More Than 1");
                     }
+                    else {
+                        for (int j = 0; j < ownerList.size(); j++) {
+                            if (ownerList.get(j).equals(user.get())) {
+                                ownerList.remove(j);
+                                eventCategories.get(i).setOwner(ownerList);
+                            }
+                        }
+                    }
+                    eventCategories.get(i).setOwner(ownerList);
+                    eventCategoryRepository.saveAndFlush(eventCategories.get(i));
                 }
+                // มากกว่า 1 ลบได้
+                userRepository.delete(user.get());
+            } else {
+                List ownerList = eventCategories.get(0).getOwner();
+                if(ownerList.size() == 1){
+                    throw new OneEventCategoryOwnerException("Event Category Owner Must Be More Than 1");
+                }
+                else {
+                    for (int j = 0; j < ownerList.size(); j++) {
+                        if (ownerList.get(j).equals(user.get())) {
+                            ownerList.remove(j);
+                            eventCategories.get(0).setOwner(ownerList);
+                        }
+                    }
+                }
+                eventCategories.get(0).setOwner(ownerList);
+                eventCategoryRepository.saveAndFlush(eventCategories.get(0));
             }
         }
-        if(user != null){
-            userRepository.deleteById(id);
+        else if(user != null){
+            userRepository.delete(user.get());
             return user;
         }
         else{
             throw new NotFoundException("Can not find for id " + id);
         }
+        return null;
     }
 
     public boolean checkUniqueName(UserActionDto user) throws UniqueNameException {

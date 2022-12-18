@@ -26,4 +26,5 @@ public class File {
     @Size(max = 50)
     @Column(name = "fileSize")
     private String fileSize;
+
 }
