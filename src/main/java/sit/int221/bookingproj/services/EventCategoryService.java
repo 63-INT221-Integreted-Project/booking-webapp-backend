@@ -57,7 +57,9 @@ public class EventCategoryService {
                 List<EventCategory> eventCategories = eventCategoryRepository.findAll();
                 newEventCategory.setEventCategoryId(eventCategories.size() + 1);
                 newEventCategory.setEventCategoryName(newEventCategory.getEventCategoryName().trim());
-                newEventCategory.setEventCategoryDescription(newEventCategory.getEventCategoryDescription().trim());
+                if(newEventCategory.getEventCategoryDescription() != null){
+                    newEventCategory.setEventCategoryDescription(newEventCategory.getEventCategoryDescription().trim());
+                }
                 return eventCategoryRepository.saveAndFlush(castCreateDtoToEventCategory(newEventCategory));
             } else {
                 throw new UniqueEventCategoryNameException("event category name must be unique");
