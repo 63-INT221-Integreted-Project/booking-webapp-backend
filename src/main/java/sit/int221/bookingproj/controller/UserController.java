@@ -58,9 +58,9 @@ public class UserController {
         return userService.deleteUser(id);
     }
 
-    @GetMapping("")
+    @GetMapping("/role/{role}")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserGetDto> getUserByRole(@RequestParam(name = "role") String role) {
+    public List<UserGetDto> getUserByRole(@PathVariable String role) {
         return userService.findUserByRole(role);
     }
 
