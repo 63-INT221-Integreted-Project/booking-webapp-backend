@@ -21,6 +21,9 @@ public class FileService {
     public String uploadFile(String fileName, MultipartFile multipartFile) throws IOException {
         String fileCode = RandomStringUtils.randomAlphabetic(8);
         Path uploadDirectory = Paths.get("files");
+        if(!Files.exists(Paths.get("files")) ){
+            Files.createDirectories(Paths.get("files"));
+        }
         try(InputStream inputStream = multipartFile.getInputStream()){
             Path filePath = uploadDirectory.resolve(fileCode + "-" + fileName);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
