@@ -26,7 +26,7 @@ public class FileController {
     @Autowired
     public FileRepository fileRepository;
 
-    @PostMapping("/uploadFile")
+    @PostMapping("/api/uploadFile")
     public File uploadFile(@RequestParam("file") MultipartFile multipartFile) throws IOException {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         long size = multipartFile.getSize();
@@ -38,7 +38,7 @@ public class FileController {
         return fileRepository.saveAndFlush(file);
     }
 
-    @GetMapping("/downloadFile/{fileCode}")
+    @GetMapping("/api/downloadFile/{fileCode}")
     public ResponseEntity<?> downloadFile(@PathVariable("fileCode") String fileCode){
         Resource resource = null;
         try{
