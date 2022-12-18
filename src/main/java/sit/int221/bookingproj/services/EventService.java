@@ -387,7 +387,8 @@ public class EventService{
         List<Event> eventGet = new ArrayList<>();
         List<EventGetDto> eventGetDtos = new ArrayList<>();
         if(getUserByToken().get().getRole().toLowerCase().equals("admin")){
-            eventGetDtos = eventRepository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList());
+            eventGet = eventRepository.findAll();
+            eventGetDtos = ListUtils.intersection(eventByTime, eventGet).stream().map(this::convertEntityToDto).collect(Collectors.toList());
         }
         else if(getUserByToken().get().getRole().toLowerCase().equals("student")){
             eventGet = eventRepository.findAllByBookingEmail(getUserByToken().get().getEmail());
