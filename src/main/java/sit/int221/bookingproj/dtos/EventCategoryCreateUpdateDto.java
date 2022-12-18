@@ -3,6 +3,7 @@ package sit.int221.bookingproj.dtos;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -10,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 
@@ -25,6 +27,7 @@ public class EventCategoryCreateUpdateDto {
     @Column(name = "eventCategoryName")
     private String eventCategoryName;
     @Size(max = 500, message = "length exceeded the size")
+    @Nullable
     private String eventCategoryDescription;
 
     @Max(value = 480, message = "event duration is out of range")
