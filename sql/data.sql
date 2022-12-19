@@ -57,7 +57,7 @@ insert into user(userId,name, email, role, password) values(12, "INT491 User001"
 -- password: IP21lecturer
 insert into user(userId,name, email, role, password) values(13, "INT491 User002", "int491.user002@mail.kmutt.ac.th", "lecturer", "$argon2id$v=19$m=65536,t=22,p=1$/upVHoMbeNdheVDyBJPMYA$K1DP7e+wwtvRbPQmaRA6Vg");
 -- password: IP21guest
-insert into user(userId,name, email, role, password) values(14, "INT491 User004", "int491.user004@mail.kmutt.ac.th", "", "$argon2id$v=19$m=65536,t=22,p=1$Pq0izh3oj4irxtx4r/YccQ$4YH+aHcCLa3rTJeujjWRKw");
+insert into user(userId,name, email, role, password) values(14, "INT491 User004", "int491.user004@mail.kmutt.ac.th", "guest", "$argon2id$v=19$m=65536,t=22,p=1$Pq0izh3oj4irxtx4r/YccQ$4YH+aHcCLa3rTJeujjWRKw");
 
 
 -- insert into file values (1, "testpic.jpg", "/downloadFile/taurCHoF", "612507");
