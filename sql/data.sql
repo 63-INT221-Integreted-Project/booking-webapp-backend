@@ -1,27 +1,26 @@
-
 insert into event_category values(1,"Project Management Clinic", "ตารางนัดหมายนี้ใช้สำหรับนัดหมาย project management clinic ในวิชา INT221 integrated project I ให้นักศึกษาเตรียมเอกสารที่เกี่ยวข้องเพื่อแสดงระหว่างขอคำปรึกษา", 30);
 insert into event_category values(2,"DevOps/Infra Clinic", "Use this event category for DevOps/Infra clinic.", 30);
 insert into event_category values(3,"Database Clinic", "ตารางนัดหมายนี้ใช้สำหรับนัดหมาย database clinic ในวิชา INT221 integrated project I", 30);
 insert into event_category values(4,"Client-side Clinic", "ตารางนัดหมายนี้ใช้สำหรับนัดหมาย client-side clinic ในวิชา INT221 integrated project I", 30);
 insert into event_category values(5,"Server-side Clinic", null, 30);
 
-insert into event values(1, "Jirachoti Aekopas", "somchai.jai@mail.kmutt.ac.th", "2022-12-24 00:00:00", 30, "", 1, null);
-insert into event values(2, "Jirachoti Aekopas", "komkrid.rak@mail.kmutt.ac.th", "2022-12-25 00:00:00", 30, "", 2, null);
+insert into event values(1, "Jirachoti Aekopas", "somchai.jai@mail.kmutt.ac.th", "2022-12-24 13:00:00", 30, "", 1, null);
+insert into event values(2, "Jirachoti Aekopas", "komkrid.rak@mail.kmutt.ac.th", "2022-12-25 13:00:00", 30, "", 2, null);
 insert into event values(3, "Jirachoti Aekopas", "teststudent2@mail.kmutt.ac.th", "2022-12-23 17:00:00", 30, "เลท 30 นาที ติดธุระ", 3 , null);
-insert into event values(4, "Jirachoti Aekopas", "teststudent2@mail.kmutt.ac.th", "2022-11-24 00:00:00", 30, "", 4, null);
-insert into event values(5, "Daranpob Posamran", "teststudent@mail.kmutt.ac.th", "2022-11-25 00:00:00", 30, "", 5, null);
+insert into event values(4, "Jirachoti Aekopas", "teststudent2@mail.kmutt.ac.th", "2022-11-24 13:00:00", 30, "", 4, null);
+insert into event values(5, "Daranpob Posamran", "teststudent@mail.kmutt.ac.th", "2022-11-25 13:00:00", 30, "", 5, null);
 insert into event values(6, "Daranpob Posamran", "teststudent@mail.kmutt.ac.th", "2022-12-23 17:00:00", 30, "เลท 30 นาที ติดธุระ", 1 , null);
-insert into event values(7, "Daranpob Posamran", "teststudent@mail.kmutt.ac.th", "2022-12-24 00:00:00", 30, "", 2, null);
-insert into event values(8, "Daranpob Posamran", "teststudent@mail.kmutt.ac.th", "2022-11-25 00:00:00", 30, "", 1, null);
-insert into event values(9, "Daranpob Posamran", "teststudent@mail.kmutt.ac.th", "2022-12-23 17:00:00", 30, "เลท 30 นาที ติดธุระ", 2 , null);
-insert into event values(10, "Daranpob Posamran", "somchai.jai@mail.kmutt.ac.th", "2022-12-24 00:00:00", 30, "", 5, null);
-insert into event values(11, "Somsri Rakdee (SJ-3)", "komkrid.rak@mail.kmutt.ac.th", "2022-12-01 00:00:00", 30, "", 1, null);
-insert into event values(12, "Jirachoti Aekopas", "teststudent2@mail.kmutt.ac.th", "2022-12-02 17:00:00", 30, "เลท 30 นาที ติดธุระ", 3 , null);
-insert into event values(13, "Jirachoti Aekopas", "teststudent2@mail.kmutt.ac.th", "2022-11-03 00:00:00", 30, "", 4, null);
-insert into event values(14, "Daranpob Posamran", "teststudent@mail.kmutt.ac.th", "2022-11-04 00:00:00", 30, "", 5, null);
+insert into event values(7, "Daranpob Posamran", "teststudent@mail.kmutt.ac.th", "2022-12-24 13:00:00", 30, "", 2, null);
+insert into event values(8, "Daranpob Posamran", "teststudent@mail.kmutt.ac.th", "2022-11-25 09:00:00", 30, "", 1, null);
+insert into event values(9, "Daranpob Posamran", "teststudent@mail.kmutt.ac.th", "2022-12-23 16:00:00", 30, "เลท 30 นาที ติดธุระ", 2 , null);
+insert into event values(10, "Daranpob Posamran", "somchai.jai@mail.kmutt.ac.th", "2022-12-24 09:00:00", 30, "", 5, null);
+insert into event values(11, "Somsri Rakdee (SJ-3)", "komkrid.rak@mail.kmutt.ac.th", "2022-12-01 08:00:00", 30, "", 1, null);
+insert into event values(12, "Jirachoti Aekopas", "teststudent2@mail.kmutt.ac.th", "2022-12-02 10:00:00", 30, "เลท 30 นาที ติดธุระ", 3 , null);
+insert into event values(13, "Jirachoti Aekopas", "teststudent2@mail.kmutt.ac.th", "2022-11-03 11:00:00", 30, "", 4, null);
+insert into event values(14, "Daranpob Posamran", "teststudent@mail.kmutt.ac.th", "2022-11-04 15:00:00", 30, "", 5, null);
 insert into event values(15, "Daranpob Posamran", "teststudent@mail.kmutt.ac.th", "2022-12-05 17:00:00", 30, "เลท 30 นาที ติดธุระ", 3 , null);
-insert into event values(16, "Daranpob Posamran", "teststudent@mail.kmutt.ac.th", "2022-12-06 00:00:00", 30, "", 2, null);
-insert into event values(17, "Daranpob Posamran", "teststudent@mail.kmutt.ac.th", "2022-11-07 00:00:00", 30, "", 1, null);
+insert into event values(16, "Daranpob Posamran", "teststudent@mail.kmutt.ac.th", "2022-12-06 07:00:00", 30, "", 2, null);
+insert into event values(17, "Daranpob Posamran", "teststudent@mail.kmutt.ac.th", "2022-11-07 07:30:00", 30, "", 1, null);
 
 insert into event values(18, "INT491 User003", "int491.user003@mail.kmutt.ac.th", "2022-12-01 17:00:00", 30, "เลท 30 นาที ติดธุระ", 5 , null);
 insert into event values(19, "INT491 User003", "int491.user003@mail.kmutt.ac.th", "2022-12-02 00:00:00", 30, "", 5, null);
