@@ -437,8 +437,7 @@ public class EventService{
             Optional<User> user = userRepository.findById(getUserByToken().get().getUserId());
             eventGetNot = eventRepository.findAllByEventCategory_OwnerNot(user.get()).stream().map(this::convertEntityToBlindDto).collect(Collectors.toList());
             eventGet = eventRepository.findAllByEventCategory_Owner(user.get());
-            System.out.println(eventGetNot);
-            eventGetBeforeIntersec = eventGet.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+            eventGetBeforeIntersec = ListUtils.intersection(eventByTime, eventGet).stream().map(this::convertEntityToDto).collect(Collectors.toList());
             eventGetBeforeIntersec.addAll(eventGetNot);
             eventGetDtos = eventGetBeforeIntersec;
         }
