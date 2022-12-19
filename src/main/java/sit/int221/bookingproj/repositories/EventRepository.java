@@ -20,7 +20,7 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     public Event findAllByEventStartTimeBetweenAndEventCategory_EventCategoryId(Instant dateStart, Instant dateEnd, Integer id, Sort eventStartTime);
     public List<Event> findAllByBookingEmailNot(String email);
 
-    public List<Event> findAllByEventCategory_OwnerNot(User user);
+    public List<Event> findAllByEventCategory_OwnerNotContains(User user);
 
     public List<Event> findAllByBookingEmail(String email);
 
