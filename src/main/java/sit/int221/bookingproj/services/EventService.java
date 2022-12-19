@@ -91,9 +91,8 @@ public class EventService{
         }
         else if(getUserByToken().get().getRole().toLowerCase().equals("lecturer")){
             Optional<User> user = userRepository.findById(getUserByToken().get().getUserId());
-            eventGetNot = eventRepository.findAllByEventCategory_OwnerNot(user.get()).stream().map(this::convertEntityToBlindDto).collect(Collectors.toList());
+            eventGetNot = eventRepository.findAllByEventCategory_OwnerNotContains(user.get()).stream().map(this::convertEntityToBlindDto).collect(Collectors.toList());
             eventGet = eventRepository.findAllByEventCategory_Owner(user.get());
-            System.out.println(eventGetNot);
             eventGetBeforeIntersec = eventGet.stream().map(this::convertEntityToDto).collect(Collectors.toList());
             eventGetBeforeIntersec.addAll(eventGetNot);
             eventGetDtos = eventGetBeforeIntersec;
@@ -435,7 +434,7 @@ public class EventService{
         }
         else if(getUserByToken().get().getRole().toLowerCase().equals("lecturer")){
             Optional<User> user = userRepository.findById(getUserByToken().get().getUserId());
-            eventGetNot = eventRepository.findAllByEventCategory_OwnerNot(user.get()).stream().map(this::convertEntityToBlindDto).collect(Collectors.toList());
+            eventGetNot = eventRepository.findAllByEventCategory_OwnerNotContains(user.get()).stream().map(this::convertEntityToBlindDto).collect(Collectors.toList());
             eventGet = eventRepository.findAllByEventCategory_Owner(user.get());
             eventGetBeforeIntersec = ListUtils.intersection(eventByTime, eventGet).stream().map(this::convertEntityToDto).collect(Collectors.toList());
             eventGetBeforeIntersec.addAll(eventGetNot);
