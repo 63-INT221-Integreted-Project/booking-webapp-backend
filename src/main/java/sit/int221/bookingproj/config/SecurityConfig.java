@@ -36,15 +36,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // ในนี้คือไม่ต้องใช้ token ยืนยัน
             "/api/auth/login",
             "/api/auth/login-azure",
-//            "/api/events",
-//            "/api/events/",
-//            "/api/auth/match",
             "/api/auth/token/guest",
             "/api/auth/register",
             "/api/uploadFile",
             "/api/downloadFile/**",
-//            "/api/events/**",
-//            "/api/event-categories",
             "/api/event-categories/guest",
     };
 
@@ -63,9 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeHttpRequests(authorization -> {
                     authorization
                             .antMatchers("/api/users", "/api/users/").hasAnyAuthority("admin")
-//                    .antMatchers(HttpMethod.POST, "/api/users").hasAnyAuthority("admin","student", "lecturer")
-//                    .antMatchers(HttpMethod.PATCH, "/api/users").hasAnyAuthority("admin","student", "lecturer")
-//                    .antMatchers(HttpMethod.DELETE, "/api/users").hasAnyAuthority("admin","student", "lecturer")
                             .antMatchers(HttpMethod.POST, "/api/events", "/api/events/").permitAll()
                             .antMatchers(HttpMethod.PATCH, "/api/events", "/api/events/").permitAll()
                             .antMatchers(HttpMethod.GET, "/api/events/search").hasAnyAuthority("admin")
@@ -73,7 +65,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             .antMatchers("/api/event-categories").hasAnyAuthority("admin","student", "lecturer")
                             .antMatchers("/api/event-categories/").hasAnyAuthority("admin","student", "lecturer")
                             .antMatchers("/api/auth/match").hasAnyAuthority("admin")
-                            //                .mvcMatchers("/api/events/").hasAnyAuthority("student")
                             .antMatchers("/**").permitAll()
                             .anyRequest().denyAll();
                 }
@@ -83,7 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors(config -> {
                     CorsConfiguration cors = new CorsConfiguration();
                     cors.setAllowCredentials(true);
-                    cors.setAllowedOriginPatterns(Collections.singletonList("https://*"));
+                    cors.setAllowedOriginPatterns(Collections.singletonList("http://*"));
                     cors.addAllowedHeader("*");
                     cors.addAllowedMethod("GET");
                     cors.addAllowedMethod("POST");
@@ -106,9 +97,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers(PUBLIC).anonymous()
                 .anyRequest().authenticated()
                 .and().apply(new TokenFilterConfigurer(tokenService));
-        // add for azure ad
-//                .and()
-//                .oauth2ResourceServer().jwt()
         http.exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
     }

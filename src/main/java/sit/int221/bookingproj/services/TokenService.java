@@ -150,24 +150,6 @@ public class TokenService {
             }
 
         } catch (Exception e) {
-            // ใช้สำหรับ Issuer ของ Microsoft
-//            System.out.println("เข้าอีกอันจ้าา");
-//            System.out.println(e.getMessage());
-//            String publicKey = "https://login.windows.net/common/discovery/keys";
-//            String issuer = "https://sts.windows.net/6f4432dc-20d2-441d-b1db-ac3380ba633d/";
-////            JWTVerifier verifier = JWT.require(Algorithm.RSA256(publicKey).withIssuer(issuer).build();
-//            JWTVerifier verifier = JWT.require(algorithm())
-//                    .withIssuer("https://sts.windows.net/6f4432dc-20d2-441d-b1db-ac3380ba633d/")
-//                    .build();
-//            try {
-//                verifier.verify(token);
-//                if (verifier.verify(token) != null) {
-//                    return verifier.verify(token);
-//                }
-//            } catch (TokenExpiredException ex) {
-//                throw new JwtTokenExpiredException("Expired Token Please Use Refresh Token for get new Access Token");
-//            }
-
 
         }
         return null;
