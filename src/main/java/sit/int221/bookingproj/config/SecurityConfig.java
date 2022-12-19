@@ -41,6 +41,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/uploadFile",
             "/api/downloadFile/**",
             "/api/event-categories/guest",
+            "/api/events/guest",
+            "/api/events/check-between/guest"
     };
 
     public SecurityConfig(TokenService tokenService) {

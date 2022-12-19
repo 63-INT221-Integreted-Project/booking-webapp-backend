@@ -41,6 +41,12 @@ public class EventController {
         return eventService.getAllEvent();
     }
 
+    @GetMapping("/guest")
+    @ResponseStatus(HttpStatus.OK)
+    public List<EventGetDto> getBlindEvent(){
+        return eventService.getBlindEvent();
+    }
+
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public EventGetDto getEventById(@PathVariable Integer id) throws NotFoundException, NonSelfGetDataException, LecuterPermissionException {
@@ -91,6 +97,16 @@ public class EventController {
         Instant instant = Instant.parse(str1);
         Instant instant2 = Instant.parse(str2);
         return eventService.checkBetween(instant,instant2);
+    }
+
+    @GetMapping("/check-between/guest")
+    @ResponseStatus(HttpStatus.OK)
+    public List getByMonthGuest(@RequestParam(name = "date1") String date1, @RequestParam(name = "date2") String date2){
+        String str1 = date1;
+        String str2 = date2;
+        Instant instant = Instant.parse(str1);
+        Instant instant2 = Instant.parse(str2);
+        return eventService.checkBetweenGuest(instant,instant2);
     }
 
     @GetMapping(value = "/search" , params = {"dateStart", "dateEnd", "category", "word"})

@@ -1,6 +1,8 @@
 package sit.int221.bookingproj.services;
 
 import org.apache.commons.collections4.ListUtils;
+import org.modelmapper.internal.util.Iterables;
+import org.modelmapper.internal.util.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class EventService{
@@ -72,22 +75,38 @@ public class EventService{
     }
 
     public List<EventGetDto> getAllEvent(){
+        List<Event> eventGet = new ArrayList<>();
+        List<EventGetDto> eventGetNot = new ArrayList<>();
         List<EventGetDto> eventGetDtos = new ArrayList<>();
+        List<EventGetDto> eventGetBeforeIntersec = new ArrayList<>();
         if(getUserByToken().get().getRole().toLowerCase().equals("admin")){
             eventGetDtos = eventRepository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList());
         }
         else if(getUserByToken().get().getRole().toLowerCase().equals("student")){
-            eventGetDtos = eventRepository.findAllByBookingEmail(getUserByToken().get().getEmail()).stream().map(this::convertEntityToDto).collect(Collectors.toList());
+            eventGetNot = eventRepository.findAllByBookingEmailNot(getUserByToken().get().getEmail()).stream().map(this::convertEntityToBlindDto).collect(Collectors.toList());
+            eventGet = eventRepository.findAllByBookingEmail(getUserByToken().get().getEmail());
+            eventGetBeforeIntersec = eventGet.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+            eventGetBeforeIntersec.addAll(eventGetNot);
+            eventGetDtos = eventGetBeforeIntersec;
         }
         else if(getUserByToken().get().getRole().toLowerCase().equals("lecturer")){
             Optional<User> user = userRepository.findById(getUserByToken().get().getUserId());
-            eventGetDtos = eventRepository.findAllByEventCategory_Owner(user.get()).stream().map(this::convertEntityToDto).collect(Collectors.toList());
+            eventGetNot = eventRepository.findAllByEventCategory_OwnerNot(user.get()).stream().map(this::convertEntityToBlindDto).collect(Collectors.toList());
+            eventGet = eventRepository.findAllByEventCategory_Owner(user.get());
+            System.out.println(eventGetNot);
+            eventGetBeforeIntersec = eventGet.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+            eventGetBeforeIntersec.addAll(eventGetNot);
+            eventGetDtos = eventGetBeforeIntersec;
         }
         return eventGetDtos;
     }
 
     public List<EventGetDto> castTypeToDto(List<Event> event){
         return event.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+    }
+
+    public List<EventGetDto> getBlindEvent(){
+        return eventRepository.findAll().stream().map(this::convertEntityToBlindDto).collect(Collectors.toList());
     }
 
     public EventGetDto getById(Integer id) throws NotFoundException, NonSelfGetDataException, LecuterPermissionException {
@@ -341,6 +360,20 @@ public class EventService{
         return eventDto;
     }
 
+    public EventGetDto convertEntityToBlindDto(Event event){
+        EventGetDto eventDto = new EventGetDto();
+        EventCategoryInEventDto eventCategoryInEventDto = new EventCategoryInEventDto(event.getEventCategory().getEventCategoryId(), event.getEventCategory().getEventCategoryName(),event.getEventCategory().getEventDuration() );
+        eventDto.setEventId(null);
+        eventDto.setBookingName(null);
+        eventDto.setBookingEmail(null);
+        eventDto.setEventStartTime(event.getEventStartTime());
+        eventDto.setEventDuration(event.getEventDuration());
+        eventDto.setEventNotes(null);
+        eventDto.setEventCategory(eventCategoryInEventDto);
+        eventDto.setFile(null);
+        return eventDto;
+    }
+
     public boolean checkDuplicateEventTimeForUpdate(Event event, Instant startTime) throws OverlapTimeException {
         boolean check;
         Event eventTimeIn = new Event();
@@ -384,23 +417,40 @@ public class EventService{
 
     public List<EventGetDto> checkBetween(Instant instant, Instant instant2){
         List<Event> eventByTime = eventRepository.findAllByEventStartTimeBetween(instant,instant2, Sort.by(Sort.Direction.DESC, "eventStartTime"));
+//        List<Event> eventGetBlind = eventRepository.findAll()
         List<Event> eventGet = new ArrayList<>();
+        List<EventGetDto> eventGetNot = new ArrayList<>();
         List<EventGetDto> eventGetDtos = new ArrayList<>();
+        List<EventGetDto> eventGetBeforeIntersec = new ArrayList<>();
         if(getUserByToken().get().getRole().toLowerCase().equals("admin")){
             eventGet = eventRepository.findAll();
             eventGetDtos = ListUtils.intersection(eventByTime, eventGet).stream().map(this::convertEntityToDto).collect(Collectors.toList());
         }
         else if(getUserByToken().get().getRole().toLowerCase().equals("student")){
+            eventGetNot = eventRepository.findAllByBookingEmailNot(getUserByToken().get().getEmail()).stream().map(this::convertEntityToBlindDto).collect(Collectors.toList());
             eventGet = eventRepository.findAllByBookingEmail(getUserByToken().get().getEmail());
-            eventGetDtos = ListUtils.intersection(eventByTime, eventGet).stream().map(this::convertEntityToDto).collect(Collectors.toList());
+            eventGetBeforeIntersec = ListUtils.intersection(eventByTime, eventGet).stream().map(this::convertEntityToDto).collect(Collectors.toList());
+            eventGetBeforeIntersec.addAll(eventGetNot);
+            eventGetDtos = eventGetBeforeIntersec;
         }
         else if(getUserByToken().get().getRole().toLowerCase().equals("lecturer")){
             Optional<User> user = userRepository.findById(getUserByToken().get().getUserId());
+            eventGetNot = eventRepository.findAllByEventCategory_OwnerNot(user.get()).stream().map(this::convertEntityToBlindDto).collect(Collectors.toList());
             eventGet = eventRepository.findAllByEventCategory_Owner(user.get());
-            eventGetDtos = ListUtils.intersection(eventByTime, eventGet).stream().map(this::convertEntityToDto).collect(Collectors.toList());
+            System.out.println(eventGetNot);
+            eventGetBeforeIntersec = eventGet.stream().map(this::convertEntityToDto).collect(Collectors.toList());
+            eventGetBeforeIntersec.addAll(eventGetNot);
+            eventGetDtos = eventGetBeforeIntersec;
         }
         return eventGetDtos;
 //        return castTypeToDto(eventRepository.findAllByEventStartTimeBetween(instant,instant2, Sort.by(Sort.Direction.DESC, "eventStartTime")));
+    }
+
+    public List<EventGetDto> checkBetweenGuest(Instant instant, Instant instant2){
+        List<Event> eventByTime = eventRepository.findAllByEventStartTimeBetween(instant,instant2, Sort.by(Sort.Direction.DESC, "eventStartTime"));
+        List<Event> eventFindAll = eventRepository.findAll();
+        List<Event> eventFilterd = ListUtils.intersection(eventByTime, eventFindAll);
+        return eventFilterd.stream().map(this::convertEntityToBlindDto).collect(Collectors.toList());
     }
 
     public Optional<EventGetDto> createWithFile(EventCreateDto eventCreateDto, MultipartFile multipartFile) throws NotMatchEmailCreteEventException, LecuterPermissionException, OverlapTimeException, EventTimeNullException, IOException, FileSizeTooLargeException {
